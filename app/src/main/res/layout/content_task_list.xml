@@ -12,8 +12,10 @@
     tools:context="com.mathias.apps.tasktracker.TaskList"
     tools:showIn="@layout/activity_task_list">
 
-    <TextView
+    <ListView
+        android:id="@+id/listViewTasks"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>
