@@ -1,4 +1,4 @@
-package com.mathias.apps.tasktracker;
+package com.mathias.apps.tasktracker.models;
 
 import java.util.List;
 

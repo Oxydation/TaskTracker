@@ -1,4 +1,4 @@
-package com.mathias.apps.tasktracker;
+package com.mathias.apps.tasktracker.activities;
 
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ProgressBar;
+
+import com.mathias.apps.tasktracker.R;
 
 public class TimerActivity extends AppCompatActivity {
 

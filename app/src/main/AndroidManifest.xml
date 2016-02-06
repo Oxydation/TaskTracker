@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".TaskList"
+            android:name=".activities.TaskList"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -19,21 +19,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".TaskList">
+            android:parentActivityName=".activities.TaskList">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.mathias.apps.tasktracker.TaskList" />
+                android:value=".activities.TaskList" />
         </activity>
         <activity
-            android:name=".TimerActivity"
+            android:name=".activities.TimerActivity"
             android:label="@string/title_activity_timer"
-            android:parentActivityName=".TaskList"
+            android:parentActivityName=".activities.TaskList"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.mathias.apps.tasktracker.TaskList" />
+                android:value=".activities.TaskList" />
         </activity>
     </application>
 

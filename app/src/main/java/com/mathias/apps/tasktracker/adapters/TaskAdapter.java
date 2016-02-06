@@ -1,4 +1,4 @@
-package com.mathias.apps.tasktracker;
+package com.mathias.apps.tasktracker.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,6 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.mathias.apps.tasktracker.R;
+import com.mathias.apps.tasktracker.models.Task;
 
 import java.util.ArrayList;
 

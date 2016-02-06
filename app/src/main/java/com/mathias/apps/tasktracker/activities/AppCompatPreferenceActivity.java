@@ -1,4 +1,4 @@
-package com.mathias.apps.tasktracker;
+package com.mathias.apps.tasktracker.activities;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
