@@ -32,14 +32,6 @@ public class TaskList extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Open "AddTaskActivity"
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         // https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
         tasks = new ArrayList<>();
@@ -95,6 +87,7 @@ public class TaskList extends AppCompatActivity {
 
     public void addNewTask(View view) {
         // Open new activity and add new task
-        //Intent intent = new Intent(this, )
+        Intent intent = new Intent(this, NewTaskActivity.class);
+        startActivity(intent);
     }
 }
