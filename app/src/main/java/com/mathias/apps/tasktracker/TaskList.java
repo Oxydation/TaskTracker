@@ -31,44 +31,38 @@ public class TaskList extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                // Open "AddTaskActivity"
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-//
-//        // https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
-//        tasks = new ArrayList<>();
-//        listViewTasks = (ListView) findViewById(R.id.listViewTasks);
-//
-//        // Create the adapter to convert the array to views
-//        TaskAdapter adapter = new TaskAdapter(this, tasks);
-//
-//        listViewTasks.setAdapter(adapter);
-//        listViewTasks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                // Get name of selected item and show snackbar
-//                Task clickedItem = (Task) parent.getItemAtPosition(position);
-//                Snackbar.make(parent, "Clicked: " + clickedItem.getName(), Snackbar.LENGTH_LONG).setAction("Action", null).show();
-//            }
-//        });
-//
-//        //Add some items to the Arraylist
-//        adapter.add(new Task("test"));
-//
-//        //Add some items to the Arraylist
-//        adapter.add(new Task("Second"));
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Open "AddTaskActivity"
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
 
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        ObjectAnimator animation = ObjectAnimator.ofInt (progressBar, "progress", 0, 100); // see this max value coming back here, we animale towards that value
-        animation.setDuration(5000); //in milliseconds
-        animation.setInterpolator(new DecelerateInterpolator());
-        animation.start();
+        // https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
+        tasks = new ArrayList<>();
+        listViewTasks = (ListView) findViewById(R.id.listViewTasks);
+
+        // Create the adapter to convert the array to views
+        TaskAdapter adapter = new TaskAdapter(this, tasks);
+
+        listViewTasks.setAdapter(adapter);
+        listViewTasks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Get name of selected item and show snackbar
+                Task clickedItem = (Task) parent.getItemAtPosition(position);
+                Snackbar.make(parent, "Clicked: " + clickedItem.getName(), Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            }
+        });
+
+        //Add some items to the Arraylist
+        adapter.add(new Task("test"));
+
+        //Add some items to the Arraylist
+        adapter.add(new Task("Second"));
     }
 
     @Override
@@ -85,9 +79,13 @@ public class TaskList extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_settings:
+                return true;
+            case R.id.action_exit:
+                this.finish();
+                System.exit(0);
+                break;
         }
 
         return super.onOptionsItemSelected(item);

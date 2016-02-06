@@ -24,8 +24,8 @@
             android:layout_height="170dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:max="100"
-            android:progress="90"
+            android:max="500"
+            android:progress="0"
             android:progressDrawable="@drawable/circular"
             android:indeterminate="false" />
         <TextView
