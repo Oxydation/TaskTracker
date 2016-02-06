@@ -26,6 +26,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mathias.apps.tasktracker.TaskList" />
         </activity>
+        <activity
+            android:name=".TimerActivity"
+            android:label="@string/title_activity_timer"
+            android:parentActivityName=".TaskList"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mathias.apps.tasktracker.TaskList" />
+        </activity>
     </application>
 
 </manifest>
