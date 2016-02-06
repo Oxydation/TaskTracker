@@ -1,5 +1,6 @@
 package com.mathias.apps.tasktracker.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -80,6 +81,8 @@ public class TaskList extends AppCompatActivity {
 
         switch (id) {
             case R.id.action_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
                 return true;
             case R.id.action_exit:
                 this.finish();
@@ -92,6 +95,6 @@ public class TaskList extends AppCompatActivity {
 
     public void addNewTask(View view) {
         // Open new activity and add new task
-
+        //Intent intent = new Intent(this, )
     }
 }

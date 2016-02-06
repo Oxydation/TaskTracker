@@ -63,4 +63,5 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="title_activity_timer">Timer</string>
+    <string name="title_activity_new_task">NewTaskActivity</string>
 </resources>
