@@ -1,7 +1,5 @@
 package com.mathias.apps.tasktracker.models;
 
-import android.graphics.Color;
-
 import java.util.List;
 
 /**
@@ -10,7 +8,7 @@ import java.util.List;
 public class Task {
     private String name;
     private List<Task> subTasks;
-    private Color color;
+    private int color;
     private double timeEstaminated;
     private double timeDone;
     private boolean done;
@@ -22,7 +20,7 @@ public class Task {
         this.name = name;
     }
 
-    public Task(String name, List<Task> subTasks, Color color, double timeEstaminated) {
+    public Task(String name, List<Task> subTasks, int color, double timeEstaminated) {
         this.name = name;
         this.subTasks = subTasks;
         this.color = color;
@@ -37,11 +35,11 @@ public class Task {
         this.name = name;
     }
 
-    public Color getColor() {
+    public int getColor() {
         return color;
     }
 
-    public void setColor(Color color) {
+    public void setColor(int color) {
         this.color = color;
     }
 
