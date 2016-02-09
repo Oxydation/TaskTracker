@@ -8,6 +8,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".activities.TaskList"
             android:label="@string/app_name"
@@ -45,5 +46,5 @@
                 android:value="com.mathias.apps.tasktracker.activities.TaskList" />
         </activity>
     </application>
-
+    <uses-permission android:name="android.permission.VIBRATE" />
 </manifest>

@@ -31,7 +31,7 @@ public class TaskAdapter extends ArrayAdapter<Task> implements View.OnCreateCont
     public View getView(int position, View convertView, ViewGroup parent) {
 
         // Get the data item for this position
-        Task task = getItem(position);
+        final Task task = getItem(position);
 
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
@@ -85,7 +85,9 @@ public class TaskAdapter extends ArrayAdapter<Task> implements View.OnCreateCont
         editImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getContext().startActivity(new Intent(getContext(), NewTaskActivity.class));
+                Intent intent = new Intent(getContext(), NewTaskActivity.class);
+                intent.putExtra("selectedTask", task);
+                getContext().startActivity(intent);
             }
         });
 
@@ -93,7 +95,9 @@ public class TaskAdapter extends ArrayAdapter<Task> implements View.OnCreateCont
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getContext().startActivity(new Intent(getContext(), TimerActivity.class));
+                Intent intent = new Intent(getContext(), TimerActivity.class);
+                intent.putExtra("selectedTask", task);
+                getContext().startActivity(intent);
             }
         });
 

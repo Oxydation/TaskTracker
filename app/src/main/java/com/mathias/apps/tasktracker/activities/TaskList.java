@@ -84,7 +84,16 @@ public class TaskList extends AppCompatActivity {
     public void addNewTask(View view) {
         // Open new activity and add new task
         Intent intent = new Intent(this, NewTaskActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, 100);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            Task result = (Task) data.getExtras().get("createdTask");
+            adapter.add(result);
+        }
     }
 
     @Override

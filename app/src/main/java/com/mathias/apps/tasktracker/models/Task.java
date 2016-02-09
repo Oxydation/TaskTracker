@@ -1,11 +1,12 @@
 package com.mathias.apps.tasktracker.models;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Mathias on 06/02/2016.
  */
-public class Task {
+public class Task implements Serializable {
     private String name;
     private List<Task> subTasks;
     private int color;

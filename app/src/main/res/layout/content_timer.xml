@@ -20,33 +20,42 @@
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="170dp"
-            android:layout_height="170dp"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
+            android:indeterminate="false"
             android:max="500"
-            android:progress="0"
-            android:progressDrawable="@drawable/circular"
-            android:indeterminate="false" />
+            android:progress="500"
+            android:progressDrawable="@drawable/circular" />
+
         <TextView
+            android:id="@+id/tvTimeLeft"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:text="03:22"
-            android:textColor="#000000"
-            android:textSize="28sp"
-            android:id="@+id/textView" />
+            android:text="00:00"
+            android:textSize="60sp" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/progressBar"
+            android:layout_centerHorizontal="true"
             android:layout_gravity="bottom|end"
-            android:src="@android:drawable/ic_media_play"
-            android:layout_alignParentBottom="true"
-            android:layout_alignRight="@+id/textView"
-            android:layout_alignEnd="@+id/textView"
-            android:layout_marginBottom="60dp" />
+            android:src="@android:drawable/ic_media_play" />
+
+        <Switch
+            android:id="@+id/switchPomodoro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enable Pomodoro"
+            android:textSize="18sp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
     </RelativeLayout>
 </RelativeLayout>

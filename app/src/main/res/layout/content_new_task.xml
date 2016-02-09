@@ -12,7 +12,6 @@
     tools:context="com.mathias.apps.tasktracker.activities.NewTaskActivity"
     tools:showIn="@layout/activity_new_task">
 
-
     <TextView
         android:id="@+id/tvName"
         android:layout_width="wrap_content"
@@ -25,36 +24,40 @@
         android:textSize="18sp" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/editTextTaskName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/tvName"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/tvName"
-        android:layout_toRightOf="@+id/tvName"
-        android:hint="@string/new_task_hint" />
+        android:layout_toEndOf="@+id/textView2"
+        android:layout_toRightOf="@+id/textView2"
+        android:hint="@string/new_task_hint"
+        android:maxEms="10"
+        android:minEms="2"
+        android:maxLines="1" />
 
     <ImageButton
         android:id="@+id/buttonAddSubTask"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/editText"
-        android:layout_toEndOf="@+id/tvName"
-        android:layout_toRightOf="@+id/tvName"
-        android:src="@drawable/ic_add_white_24px" />
+        android:layout_alignEnd="@+id/editTextTaskName"
+        android:layout_alignRight="@+id/editTextTaskName"
+        android:layout_below="@+id/editTextTaskName"
+        android:src="@drawable/ic_add_white_24px"
+        android:layout_marginTop="3dp" />
 
     <EditText
         android:id="@+id/subtaskName"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
 
+        android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/buttonAddSubTask"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_toEndOf="@+id/buttonAddSubTask"
-        android:layout_toRightOf="@+id/buttonAddSubTask"
+        android:layout_alignLeft="@+id/editTextTaskName"
+        android:layout_alignStart="@+id/editTextTaskName"
+        android:layout_toLeftOf="@+id/buttonAddSubTask"
+        android:layout_toStartOf="@+id/buttonAddSubTask"
         android:hint="Subtask Name" />
 
     <Button
@@ -66,36 +69,52 @@
         android:layout_marginBottom="10dp"
         android:text="Add and Save" />
 
-    <TextView
-        android:id="@+id/tvEstimatedTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:text="Estimated Time:"
-        android:textSize="18sp" />
-
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/editTextEstTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/tvEstimatedTime"
-        android:layout_toEndOf="@+id/tvEstimatedTime"
 
+        android:layout_alignLeft="@+id/subtaskName"
+        android:layout_alignStart="@+id/subtaskName"
+        android:layout_below="@+id/buttonAddSubTask"
         android:layout_toLeftOf="@+id/tvMinutes"
-        android:layout_toRightOf="@+id/tvEstimatedTime"
         android:ems="5"
+        android:hint="Estimated Time"
         android:inputType="number" />
 
     <TextView
         android:id="@+id/tvMinutes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/editTextEstTime"
+        android:layout_alignBottom="@+id/editTextEstTime"
+        android:layout_alignEnd="@+id/buttonAddSubTask"
+        android:layout_alignRight="@+id/buttonAddSubTask"
         android:text="Minutes"
-        android:textSize="18sp"
-        android:layout_alignTop="@+id/tvEstimatedTime"
-        android:layout_toRightOf="@+id/buttonSave"
-        android:layout_toEndOf="@+id/buttonSave" />
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/editTextDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/tvMinutes"
+        android:layout_alignRight="@+id/tvMinutes"
+        android:layout_below="@+id/editTextEstTime"
+        android:ems="10"
+        android:hint="Description"
+        android:inputType="textMultiLine"
+        android:layout_alignLeft="@+id/editTextEstTime"
+        android:layout_alignStart="@+id/editTextEstTime" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tvMinutes"
+        android:layout_alignBaseline="@+id/editTextEstTime"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:text="Est. Time:"
+        android:textSize="18sp" />
 
 </RelativeLayout>
