@@ -1,19 +1,17 @@
 package com.mathias.apps.tasktracker.activities;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.mathias.apps.tasktracker.R;
 import com.mathias.apps.tasktracker.adapters.TaskAdapter;
@@ -25,6 +23,8 @@ public class TaskList extends AppCompatActivity {
     private ArrayList<Task> tasks;
     private ListView listViewTasks;
     private ArrayAdapter<Task> adapter;
+
+    // Think about using recycling view: http://developer.android.com/training/material/lists-cards.html
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,25 +40,16 @@ public class TaskList extends AppCompatActivity {
         listViewTasks = (ListView) findViewById(R.id.listViewTasks);
 
         // Create the adapter to convert the array to views
-        TaskAdapter adapter = new TaskAdapter(this, tasks);
-
+        adapter = new TaskAdapter(this, tasks);
         listViewTasks.setAdapter(adapter);
-        listViewTasks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Get name of selected item and show snackbar
-                Task clickedItem = (Task) parent.getItemAtPosition(position);
-                Snackbar.make(parent, "Clicked: " + clickedItem.getName(), Snackbar.LENGTH_LONG).setAction("Action", null).show();
-            }
-        });
+        registerForContextMenu(listViewTasks);
 
-        //Add some items to the Arraylist
+        // Add some items to the Arraylist
         adapter.add(new Task("Project Setup"));
 
-        Task second = new Task("Wordpress Post", null, Color.WHITE, 300);
+        Task second = new Task("Wordpress Post", null, 0, 300);
         second.setDone(true);
         second.setTimeDone(120);
-        //Add some items to the Arraylist
         adapter.add(second);
     }
 
@@ -96,7 +87,42 @@ public class TaskList extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void editTask(View view) {
-        Toast.makeText(TaskList.this, "Pressed", Toast.LENGTH_SHORT).show();
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        // Get the clicked item
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+
+        // Inflate the context menu from the resource file
+        getMenuInflater().inflate(R.menu.menu_task_item, menu);
+
+        // Get the name of the clicked item
+        Task clickedItem = (Task) listViewTasks.getItemAtPosition(info.position);
+
+        super.onCreateContextMenu(menu, v, menuInfo);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo itemInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.context_menu_delete_item:
+
+                //Remove the item from the list
+                tasks.remove(itemInfo.position);
+
+                //Update the adapter to reflect the list change
+                adapter.notifyDataSetChanged();
+                return true;
+
+            case R.id.context_menu_set_done:
+                //Remove the item from the list
+                tasks.get(itemInfo.position).setDone(true);
+
+                //Update the adapter to reflect the list change
+                adapter.notifyDataSetChanged();
+                return true;
+        }
+
+        return super.onContextItemSelected(item);
     }
 }

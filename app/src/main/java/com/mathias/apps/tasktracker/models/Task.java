@@ -12,6 +12,15 @@ public class Task {
     private double timeEstaminated;
     private double timeDone;
     private boolean done;
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public Task() {
     }
