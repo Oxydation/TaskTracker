@@ -13,25 +13,28 @@ import android.widget.TextView;
 
 import com.mathias.apps.tasktracker.R;
 import com.mathias.apps.tasktracker.activities.NewTaskActivity;
-import com.mathias.apps.tasktracker.activities.TimerActivity;
 import com.mathias.apps.tasktracker.models.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Mathias on 06/02/2016.
  */
-public class TaskAdapter extends ArrayAdapter<Task> implements View.OnCreateContextMenuListener {
-    public TaskAdapter(Context context, ArrayList<Task> tasks) {
+public class TaskListAdapter extends ArrayAdapter<Task> implements View.OnCreateContextMenuListener {
+    private List<Task> tasks;
+
+    public TaskListAdapter(Context context, ArrayList<Task> tasks) {
         super(context, 0, tasks);
+        this.tasks = tasks;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
         // Get the data item for this position
-        final Task task = getItem(position);
+        final Task task = tasks.get(position);
 
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
@@ -46,7 +49,7 @@ public class TaskAdapter extends ArrayAdapter<Task> implements View.OnCreateCont
         RelativeLayout relativeLayout = (RelativeLayout) convertView.findViewById(R.id.taskItemLayout);
 
         // Set background color of task
-        relativeLayout.setBackgroundColor(task.getColor());
+        //relativeLayout.setBackgroundColor(task.getColor());
 
         // Populate the data into the template view using the data object
         tvName.setText(task.getName());
@@ -91,15 +94,15 @@ public class TaskAdapter extends ArrayAdapter<Task> implements View.OnCreateCont
             }
         });
 
-        // Handle click on task
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), TimerActivity.class);
-                intent.putExtra("selectedTask", task);
-                getContext().startActivity(intent);
-            }
-        });
+//        // Handle click on task
+//        convertView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getContext(), TimerActivity.class);
+//                intent.putExtra("selectedTask", task);
+//                getContext().startActivity(intent);
+//            }
+//        });
 
         // http://stackoverflow.com/questions/3972945/custom-listview-and-context-menu-how-to-get-it
         convertView.setOnCreateContextMenuListener(this);

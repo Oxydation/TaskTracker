@@ -10,31 +10,36 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginRight="5dp"
+        android:scaleType="fitStart"
         android:src="@drawable/ic_icon_task" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/editTask"
         android:orientation="vertical"
         android:layout_toRightOf="@+id/taskThumbnail"
-        android:layout_alignRight="@+id/tvTimeDone"
-        android:layout_alignEnd="@+id/tvTimeDone">
+        android:layout_toEndOf="@+id/taskThumbnail"
+        android:layout_toLeftOf="@+id/tvTimeDone"
+        android:layout_toStartOf="@id/tvTimeDone"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:padding="10dp">
 
         <TextView
             android:id="@+id/tvName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Name"
-            android:textSize="23sp" />
+            android:text="Loooooooooooooongggggggggggggggggg"
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/tvStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0/0 Subtasks done"
-            android:textSize="12sp" />
+            android:textSize="16sp" />
 
     </LinearLayout>
 
@@ -42,11 +47,11 @@
         android:id="@+id/tvTimeDone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_toLeftOf="@+id/editTask"
         android:text="0h 0m"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:layout_alignBottom="@+id/taskThumbnail"
+        android:layout_toLeftOf="@+id/editTask"
+        android:layout_toStartOf="@+id/editTask" />
 
     <ImageButton
         android:id="@+id/editTask"

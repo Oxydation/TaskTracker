@@ -12,14 +12,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.mathias.apps.tasktracker.R;
-import com.mathias.apps.tasktracker.adapters.TaskAdapter;
+import com.mathias.apps.tasktracker.adapters.TaskListAdapter;
 import com.mathias.apps.tasktracker.models.Task;
 
 import java.util.ArrayList;
 
-public class TaskList extends AppCompatActivity {
+public class TaskListActivity extends AppCompatActivity {
     private ArrayList<Task> tasks;
     private ListView listViewTasks;
     private ArrayAdapter<Task> adapter;
@@ -33,15 +34,26 @@ public class TaskList extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-
         // https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
         tasks = new ArrayList<>();
         listViewTasks = (ListView) findViewById(R.id.listViewTasks);
 
         // Create the adapter to convert the array to views
-        adapter = new TaskAdapter(this, tasks);
+        adapter = new TaskListAdapter(this, tasks);
         listViewTasks.setAdapter(adapter);
+
+        listViewTasks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(TaskListActivity.this, "bla", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(TaskListActivity.this, TimerActivity.class);
+                intent.putExtra("selectedTask", tasks.get(position));
+                startActivity(intent);
+            }
+        });
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
         registerForContextMenu(listViewTasks);
 
         // Add some items to the Arraylist
