@@ -2,7 +2,6 @@ package com.mathias.apps.tasktracker.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.mathias.apps.tasktracker.R;
 import com.mathias.apps.tasktracker.adapters.TaskListAdapter;
@@ -36,30 +34,35 @@ public class TaskListActivity extends AppCompatActivity {
 
         // https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
         tasks = new ArrayList<>();
-        listViewTasks = (ListView) findViewById(R.id.listViewTasks);
 
         // Create the adapter to convert the array to views
-        adapter = new TaskListAdapter(this, tasks);
+        adapter = new TaskListAdapter(this, R.layout.task_item, tasks);
+
+        listViewTasks = (ListView) findViewById(R.id.listViewTasks);
         listViewTasks.setAdapter(adapter);
 
-        listViewTasks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(TaskListActivity.this, "bla", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(TaskListActivity.this, TimerActivity.class);
-                intent.putExtra("selectedTask", tasks.get(position));
-                startActivity(intent);
-            }
-        });
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        listViewTasks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Toast.makeText(TaskListActivity.this, "bla", Toast.LENGTH_SHORT).show();
+//                Intent intent = new Intent(TaskListActivity.this, TimerActivity.class);
+//                intent.putExtra("selectedTask", tasks.get(position));
+//                startActivity(intent);
+//            }
+//        });
 
         registerForContextMenu(listViewTasks);
 
         // Add some items to the Arraylist
         adapter.add(new Task("Project Setup"));
-
-        Task second = new Task("Wordpress Post", null, 0, 300);
+        adapter.add(new Task("Project Setup"));
+        adapter.add(new Task("Project Setup"));
+        adapter.add(new Task("Project Setup"));
+        adapter.add(new Task("Project Setup"));
+        adapter.add(new Task("Project Setup"));
+        adapter.add(new Task("Project Setup"));
+        adapter.add(new Task("Project Setup"));
+        Task second = new Task("Wordpress Post", null, 0, 123);
         second.setDone(true);
         second.setTimeDone(120);
         adapter.add(second);

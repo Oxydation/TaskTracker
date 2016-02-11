@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.mathias.apps.tasktracker.R;
 import com.mathias.apps.tasktracker.activities.NewTaskActivity;
+import com.mathias.apps.tasktracker.activities.TimerActivity;
 import com.mathias.apps.tasktracker.models.Task;
 
 import java.util.ArrayList;
@@ -25,8 +26,8 @@ import java.util.concurrent.TimeUnit;
 public class TaskListAdapter extends ArrayAdapter<Task> implements View.OnCreateContextMenuListener {
     private List<Task> tasks;
 
-    public TaskListAdapter(Context context, ArrayList<Task> tasks) {
-        super(context, 0, tasks);
+    public TaskListAdapter(Context context, int resource, ArrayList<Task> tasks) {
+        super(context, resource, tasks);
         this.tasks = tasks;
     }
 
@@ -40,6 +41,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements View.OnCreate
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.task_item, parent, false);
             convertView.setClickable(true);
+            convertView.setFocusable(false);
         }
 
         // Lookup view for data population
@@ -94,15 +96,15 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements View.OnCreate
             }
         });
 
-//        // Handle click on task
-//        convertView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getContext(), TimerActivity.class);
-//                intent.putExtra("selectedTask", task);
-//                getContext().startActivity(intent);
-//            }
-//        });
+        // Handle click on task
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), TimerActivity.class);
+                intent.putExtra("selectedTask", task);
+                getContext().startActivity(intent);
+            }
+        });
 
         // http://stackoverflow.com/questions/3972945/custom-listview-and-context-menu-how-to-get-it
         convertView.setOnCreateContextMenuListener(this);
