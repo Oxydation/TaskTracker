@@ -6,8 +6,6 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.mathias.apps.tasktracker.SettingsActivityFragment"
+    tools:context=".activities.SettingsActivityFragment"
     tools:showIn="@layout/activity_settings">
-
-
 </RelativeLayout>

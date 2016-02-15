@@ -1,8 +1,10 @@
-package com.mathias.apps.tasktracker;
+package com.mathias.apps.tasktracker.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
+import com.mathias.apps.tasktracker.R;
 
 public class SettingsActivity extends AppCompatActivity {
 

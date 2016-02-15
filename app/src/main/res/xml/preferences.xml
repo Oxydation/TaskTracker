@@ -9,21 +9,39 @@
             android:summary="%s"
             android:title="Timer Mode" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="Pomodoro Timer">
 
+    <PreferenceCategory android:title="Pomodoro Timer">
         <EditTextPreference
             android:defaultValue="25"
             android:key="work_duration"
             android:numeric="integer"
-            android:title="Work Duration"
-
-            />
+            android:title="Work Duration" />
         <EditTextPreference
             android:defaultValue="5"
             android:key="break_duration"
             android:numeric="integer"
             android:title="Break Duration" />
+        <SeekBarPreference
+            android:defaultValue="22"
+            android:key="seekBar"
+            android:title="Set the default time">>
+
+        </SeekBarPreference>
+        <SwitchPreference
+            android:key="long_break_enabled"
+            android:title="Long Break Enabled" />
+        <EditTextPreference
+            android:defaultValue="4"
+            android:key="long_break_interval"
+            android:numeric="integer"
+            android:title="Long Break Interval" />
+        <EditTextPreference
+            android:defaultValue="20"
+            android:key="long_break_duration"
+            android:numeric="integer"
+            android:title="Long Break Duration" />
     </PreferenceCategory>
+
     <PreferenceCategory android:title="Notification">
         <SwitchPreference
             android:key="vibration"

@@ -1,7 +1,9 @@
-package com.mathias.apps.tasktracker;
+package com.mathias.apps.tasktracker.activities;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+
+import com.mathias.apps.tasktracker.R;
 
 /**
  * A placeholder fragment containing a simple view.

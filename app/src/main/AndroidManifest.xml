@@ -39,7 +39,7 @@
                 android:value=".activities.TaskListActivity" />
         </activity>
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".activities.TaskListActivity"
             android:theme="@style/AppTheme">

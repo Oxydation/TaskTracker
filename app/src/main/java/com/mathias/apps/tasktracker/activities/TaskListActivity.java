@@ -13,7 +13,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.mathias.apps.tasktracker.R;
-import com.mathias.apps.tasktracker.SettingsActivity;
 import com.mathias.apps.tasktracker.adapters.TaskListAdapter;
 import com.mathias.apps.tasktracker.models.Task;
 
