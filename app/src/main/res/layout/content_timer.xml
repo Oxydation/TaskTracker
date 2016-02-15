@@ -47,15 +47,26 @@
             android:layout_gravity="bottom|end"
             android:src="@android:drawable/ic_media_play" />
 
-        <Switch
-            android:id="@+id/switchPomodoro"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Enable Pomodoro"
-            android:textSize="18sp"
-            android:layout_alignParentTop="true"
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Taskname"
+                android:id="@+id/textView3"
+                android:textSize="40sp" />
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="98dp"
+                android:id="@+id/listView" />
+
+        </LinearLayout>
 
     </RelativeLayout>
 </RelativeLayout>

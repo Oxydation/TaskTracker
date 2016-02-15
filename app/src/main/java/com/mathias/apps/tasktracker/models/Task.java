@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class Task implements Serializable {
     private String name;
-    private List<Task> subTasks;
+    private List<SubTask> subTasks;
     private int color;
     private double timeEstaminated;
     private double timeDone;
@@ -30,7 +30,7 @@ public class Task implements Serializable {
         this.name = name;
     }
 
-    public Task(String name, List<Task> subTasks, int color, double timeEstaminated) {
+    public Task(String name, List<SubTask> subTasks, int color, double timeEstaminated) {
         this.name = name;
         this.subTasks = subTasks;
         this.color = color;
@@ -61,11 +61,11 @@ public class Task implements Serializable {
         this.timeEstaminated = timeEstaminated;
     }
 
-    public List<Task> getSubTasks() {
+    public List<SubTask> getSubTasks() {
         return subTasks;
     }
 
-    public void setSubTasks(List<Task> subTasks) {
+    public void setSubTasks(List<SubTask> subTasks) {
         this.subTasks = subTasks;
     }
 

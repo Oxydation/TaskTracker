@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.mathias.apps.tasktracker.R;
 import com.mathias.apps.tasktracker.activities.NewTaskActivity;
 import com.mathias.apps.tasktracker.activities.TimerActivity;
+import com.mathias.apps.tasktracker.models.SubTask;
 import com.mathias.apps.tasktracker.models.Task;
 
 import java.util.ArrayList;
@@ -69,7 +70,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements View.OnCreate
         if (task.getSubTasks() != null) {
             amountSubTasks = task.getSubTasks().size();
 
-            for (Task subTask : task.getSubTasks()) {
+            for (SubTask subTask : task.getSubTasks()) {
                 if (subTask.isDone()) {
                     amountFinishedSubtasks++;
                 }
