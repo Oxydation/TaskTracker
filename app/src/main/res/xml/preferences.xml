@@ -3,6 +3,7 @@
 
     <PreferenceCategory android:title="Timer">
         <ListPreference
+            android:defaultValue="ask"
             android:entries="@array/timer_modes"
             android:entryValues="@array/timer_mode_values"
             android:key="timer_mode"
@@ -11,47 +12,68 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Pomodoro Timer">
-        <EditTextPreference
+        <SeekBarPreference
             android:defaultValue="25"
             android:key="work_duration"
-            android:numeric="integer"
+            android:max="60"
             android:title="Work Duration" />
-        <EditTextPreference
-            android:defaultValue="5"
-            android:key="break_duration"
-            android:numeric="integer"
-            android:title="Break Duration" />
         <SeekBarPreference
-            android:defaultValue="22"
-            android:key="seekBar"
-            android:title="Set the default time">>
+            android:defaultValue="25"
+            android:key="break_duration"
+            android:max="10"
+            android:title="Break Duration" />
 
-        </SeekBarPreference>
+        <!--<EditTextPreference-->
+        <!--android:defaultValue="25"-->
+        <!--android:inputType="number"-->
+        <!--android:key="work_duration"-->
+        <!--android:maxLength="2"-->
+        <!--android:numeric="integer"-->
+        <!--android:title="Work Duration" />-->
+        <!--<EditTextPreference-->
+        <!--android:defaultValue="5"-->
+        <!--android:inputType="number"-->
+        <!--android:key="break_duration"-->
+        <!--android:maxLength="2"-->
+        <!--android:numeric="integer"-->
+        <!--android:title="Break Duration" />-->
+
         <SwitchPreference
             android:key="long_break_enabled"
             android:title="Long Break Enabled" />
-        <EditTextPreference
+        <!--<EditTextPreference-->
+        <!--android:defaultValue="4"-->
+        <!--android:key="long_break_interval"-->
+        <!--android:numeric="integer"-->
+        <!--android:title="Long Break Interval" />-->
+        <SeekBarPreference
             android:defaultValue="4"
             android:key="long_break_interval"
-            android:numeric="integer"
+            android:max="6"
             android:title="Long Break Interval" />
-        <EditTextPreference
-            android:defaultValue="20"
+        <SeekBarPreference
+            android:defaultValue="15"
             android:key="long_break_duration"
-            android:numeric="integer"
+            android:max="20"
             android:title="Long Break Duration" />
+        <!--<EditTextPreference-->
+        <!--android:defaultValue="15"-->
+        <!--android:key="long_break_duration"-->
+        <!--android:numeric="integer"-->
+        <!--android:title="Long Break Duration" />-->
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Notification">
         <SwitchPreference
-            android:key="vibration"
+            android:defaultValue="true"
+            android:key="vibration_enabled"
             android:title="Vibration" />
         <SwitchPreference
-            android:key="sound"
+            android:defaultValue="false"
+            android:key="notification_enabled"
             android:title="Sound" />
-
         <RingtonePreference
-            android:dependency="sound"
+            android:dependency="notification_enabled"
             android:key="sound_title"
             android:ringtoneType="notification"
             android:showDefault="true"

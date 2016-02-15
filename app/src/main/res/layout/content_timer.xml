@@ -30,7 +30,7 @@
             android:progressDrawable="@drawable/circular" />
 
         <TextView
-            android:id="@+id/tvTimeLeft"
+            android:id="@+id/tvTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -48,23 +48,24 @@
             android:src="@android:drawable/ic_media_play" />
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true">
+            android:layout_alignParentStart="true"
+            android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tvTaskName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Taskname"
-                android:id="@+id/textView3"
                 android:textSize="40sp" />
 
             <ListView
+                android:id="@+id/listView"
                 android:layout_width="match_parent"
                 android:layout_height="98dp"
-                android:id="@+id/listView" />
+                android:choiceMode="multipleChoice" />
 
         </LinearLayout>
 

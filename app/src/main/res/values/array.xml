@@ -6,8 +6,8 @@
         <item>General Timer</item>
     </string-array>
     <string-array name="timer_mode_values">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
+        <item>ask</item>
+        <item>pomodoro</item>
+        <item>general</item>
     </string-array>
 </resources>

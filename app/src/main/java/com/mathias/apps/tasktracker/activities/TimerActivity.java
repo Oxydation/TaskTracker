@@ -1,6 +1,7 @@
 package com.mathias.apps.tasktracker.activities;
 
 import android.animation.ObjectAnimator;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mathias.apps.tasktracker.R;
 import com.mathias.apps.tasktracker.models.Task;
@@ -18,6 +20,16 @@ import com.mathias.apps.tasktracker.models.Task;
 import java.util.concurrent.TimeUnit;
 
 public class TimerActivity extends AppCompatActivity {
+    private boolean timerRunning = false;
+
+    private int workDuration;
+    private int breakDuration;
+    private int longBreakDuration;
+    private int longBreakInterval;
+    private boolean longBreakEnabled;
+    private boolean vibrationEnabled;
+    private boolean notificationEnabled;
+    private String timerMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,59 +38,118 @@ public class TimerActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        SharedPreferences prefs = getSharedPreferences(SettingsActivityFragment.SETTINGS_SHARED_PREFERENCES_FILE_NAME, MODE_PRIVATE);
+        timerMode = prefs.getString("timer_mode", null);
+        workDuration = prefs.getInt("work_duration", 25);
+        breakDuration = prefs.getInt("break_duration", 5);
+        longBreakInterval = prefs.getInt("long_break_interval", 4);
+        longBreakDuration = prefs.getInt("long_break_duration", 15);
+        longBreakEnabled = prefs.getBoolean("long_break_enabled", false);
+        vibrationEnabled = prefs.getBoolean("vibration_enabled", true);
+        notificationEnabled = prefs.getBoolean("notification_enabled", false);
+
+        prefs.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                // react to break and work duration
+            }
+        });
+
         // Get the task to work with
         final Task task = (Task) getIntent().getExtras().get("selectedTask");
+        final TextView tvTaskName = (TextView) findViewById(R.id.tvTaskName);
+        tvTaskName.setText(task.getName());
+
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        final TextView timeLeft = (TextView) findViewById(R.id.tvTimeLeft);
+        final TextView tvTime = (TextView) findViewById(R.id.tvTime);
+
+        if (timerMode != null && timerMode.equals("pomodoro")) {
+            // Set time remaining
+            long millis = TimeUnit.MINUTES.toMillis(workDuration);
+            tvTime.setText(getTimeString(millis));
+        }
+
 
         final ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", 500, 0);
-        final CountDownTimer countDownWorkTimer = new CountDownTimer(1000 * 60 * 1, 1000) {
+        final CountDownTimer countDownBreakTimer = new CountDownTimer(1000 * 60 * breakDuration, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                String ms = String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millisUntilFinished)), TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)));
-
-                timeLeft.setText(ms);
+                tvTime.setText(getTimeString(millisUntilFinished));
             }
 
             @Override
             public void onFinish() {
-                timeLeft.setText("00:00");
+                tvTime.setText("00:00");
 
-                // Vibrate on countdown finished
-                Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-                vibrator.vibrate(500);
+                if (vibrationEnabled) {
+                    // Vibrate on countdown finished
+                    Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                    vibrator.vibrate(500);
+                }
+
+                timerRunning = false;
+
             }
         };
-
-        final CountDownTimer countDownBreakTimer = new CountDownTimer(1000 * 60 * 5, 1000) {
+        final CountDownTimer countDownWorkTimer = new CountDownTimer(1000 * 60 * workDuration, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                String ms = String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millisUntilFinished)), TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)));
-
-                timeLeft.setText(ms);
+                tvTime.setText(getTimeString(millisUntilFinished));
             }
 
             @Override
             public void onFinish() {
-                timeLeft.setText("00:00");
+                tvTime.setText("00:00");
 
-                // Vibrate on countdown finished
-                Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-                vibrator.vibrate(500);
+                if (vibrationEnabled) {
+                    // Vibrate on countdown finished
+                    Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                    vibrator.vibrate(500);
+                }
+                animation.setDuration(1000 * 60 * breakDuration); //in milliseconds
+                animation.setInterpolator(new LinearInterpolator());
+                animation.start();
+                countDownBreakTimer.start();
             }
         };
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                animation.setDuration(1000 * 60 * 25); //in milliseconds
-                animation.setInterpolator(new LinearInterpolator());
-                animation.start();
-
-                countDownWorkTimer.start();
+            public void onClick(View v) {
+                if (!timerRunning) {
+                    animation.setDuration(1000 * 60 * workDuration); //in milliseconds
+                    animation.setInterpolator(new LinearInterpolator());
+                    animation.start();
+                    countDownWorkTimer.start();
+                } else {
+                    Toast.makeText(TimerActivity.this, "Timer already running.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+//    private static String getTimeRemaining(long millisUntilFinished) {
+//        String ms = String.format("%02d:%02d",
+//                TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
+//                TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)));
+//        return ms;
+//    }
+
+    private static String getTimeString(long millis) {
+
+        String hms;
+        if (TimeUnit.MILLISECONDS.toHours(millis) >= 1) {
+            hms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
+                    TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
+                    TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1));
+        } else {
+            hms = String.format("%02d:%02d",
+                    TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
+                    TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1));
+        }
+
+        return hms;
     }
 }
