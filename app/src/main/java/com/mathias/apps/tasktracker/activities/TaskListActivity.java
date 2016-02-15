@@ -13,12 +13,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.mathias.apps.tasktracker.R;
+import com.mathias.apps.tasktracker.SettingsActivity;
 import com.mathias.apps.tasktracker.adapters.TaskListAdapter;
 import com.mathias.apps.tasktracker.models.Task;
 
 import java.util.ArrayList;
 
 public class TaskListActivity extends AppCompatActivity {
+    public static final int REQUEST_CODE_SETTINGS = 1002;
+    public static final int REQUEST_CODE_NEW_TASK = 100;
     private ArrayList<Task> tasks;
     private ListView listViewTasks;
     private ArrayAdapter<Task> adapter;
@@ -57,11 +60,6 @@ public class TaskListActivity extends AppCompatActivity {
         adapter.add(new Task("Project Setup"));
         adapter.add(new Task("Project Setup"));
         adapter.add(new Task("Project Setup"));
-        adapter.add(new Task("Project Setup"));
-        adapter.add(new Task("Project Setup"));
-        adapter.add(new Task("Project Setup"));
-        adapter.add(new Task("Project Setup"));
-        adapter.add(new Task("Project Setup"));
         Task second = new Task("Wordpress Post", null, 0, 123);
         second.setDone(true);
         second.setTimeDone(120);
@@ -85,7 +83,7 @@ public class TaskListActivity extends AppCompatActivity {
         switch (id) {
             case R.id.action_settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE_SETTINGS);
                 return true;
             case R.id.action_exit:
                 this.finish();
@@ -99,15 +97,17 @@ public class TaskListActivity extends AppCompatActivity {
     public void addNewTask(View view) {
         // Open new activity and add new task
         Intent intent = new Intent(this, NewTaskActivity.class);
-        startActivityForResult(intent, 100);
+        startActivityForResult(intent, REQUEST_CODE_NEW_TASK);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            Task result = (Task) data.getExtras().get("createdTask");
-            adapter.add(result);
+            if (requestCode == REQUEST_CODE_NEW_TASK) {
+                Task result = (Task) data.getExtras().get("createdTask");
+                adapter.add(result);
+            }
         }
     }
 

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Timer">
+        <ListPreference
+            android:entries="@array/timer_modes"
+            android:entryValues="@array/timer_mode_values"
+            android:key="timer_mode"
+            android:summary="%s"
+            android:title="Timer Mode" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Pomodoro Timer">
+
+        <EditTextPreference
+            android:defaultValue="25"
+            android:key="work_duration"
+            android:numeric="integer"
+            android:title="Work Duration"
+
+            />
+        <EditTextPreference
+            android:defaultValue="5"
+            android:key="break_duration"
+            android:numeric="integer"
+            android:title="Break Duration" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Notification">
+        <SwitchPreference
+            android:key="vibration"
+            android:title="Vibration" />
+        <SwitchPreference
+            android:key="sound"
+            android:title="Sound" />
+
+        <RingtonePreference
+            android:dependency="sound"
+            android:key="sound_title"
+            android:ringtoneType="notification"
+            android:showDefault="true"
+            android:title="Notification Sound" />
+    </PreferenceCategory>
+</PreferenceScreen>

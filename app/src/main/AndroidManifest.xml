@@ -2,13 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mathias.apps.tasktracker">
 
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".activities.TaskListActivity"
             android:label="@string/app_name"
@@ -18,14 +19,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".activities.SettingsActivity"
-            android:label="@string/title_activity_settings"
-            android:parentActivityName=".activities.TaskListActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.TaskListActivity" />
         </activity>
         <activity
             android:name=".activities.TimerActivity"
@@ -45,6 +38,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.TaskListActivity" />
         </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".activities.TaskListActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mathias.apps.tasktracker.activities.TaskListActivity" />
+        </activity>
     </application>
-    <uses-permission android:name="android.permission.VIBRATE" />
+
 </manifest>
