@@ -103,5 +103,38 @@ public class TasksDataSource {
         return tasks;
     }
 
+    public int updateTask(Task task) {
+        // New value for one column
+        ContentValues values = new ContentValues();
+        values.put(TaskEntry.COLUMN_NAME_NAME, task.getName());
+        values.put(TaskEntry.COLUMN_NAME_DESC, task.getDescription());
+        values.put(TaskEntry.COLUMN_NAME_COLOR, task.getColor());
+        values.put(TaskEntry.COLUMN_NAME_TIME_EST, task.getTimeEstaminated());
+        values.put(TaskEntry.COLUMN_NAME_TIME_DONE, task.getTimeDone());
+        values.put(TaskEntry.COLUMN_NAME_IS_DONE, task.isDone());
+
+        // Which row to update, based on the ID
+        String selection = TaskEntry.COLUMN_NAME_ENTRY_ID + " LIKE ?";
+        String[] selectionArgs = {String.valueOf(task.getId())};
+
+        int count = database.update(
+                TaskEntry.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
+
+        return count;
+    }
+
+    public int deleteTask(Task task) {
+        // Define 'where' part of query.
+        String selection = TaskEntry.COLUMN_NAME_ENTRY_ID + " LIKE ?";
+
+        // Specify arguments in placeholder order.
+        String[] selectionArgs = {String.valueOf(task.getId())};
+
+        // Issue SQL statement.
+        return database.delete(TaskEntry.TABLE_NAME, selection, selectionArgs);
+    }
     // Boolean flag = (cursor.getInt(cursor.getColumnIndex("flag")) == 1);
 }

@@ -34,9 +34,11 @@ public class TaskListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_list);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Open datas source and retrieve tasks
         dataSource = new TasksDataSource(this);
         dataSource.open();
 
@@ -61,15 +63,6 @@ public class TaskListActivity extends AppCompatActivity {
 //        });
 
         registerForContextMenu(listViewTasks);
-
-        // Add some items to the Arraylist
-        //adapter.add(new Task("Project Setup"));
-        //adapter.add(new Task("Project Setup"));
-        //adapter.add(new Task("Project Setup"));
-        //Task second = new Task("Wordpress Post", null, 0, 123);
-        //second.setDone(true);
-        //second.setTimeDone(120);
-        //adapter.add(second);
     }
 
     @Override
@@ -130,7 +123,7 @@ public class TaskListActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_task_item, menu);
 
         // Get the name of the clicked item
-        Task clickedItem = (Task) listViewTasks.getItemAtPosition(info.position);
+        //Task clickedItem = (Task) listViewTasks.getItemAtPosition(info.position);
 
         super.onCreateContextMenu(menu, v, menuInfo);
     }
@@ -142,15 +135,17 @@ public class TaskListActivity extends AppCompatActivity {
             case R.id.context_menu_delete_item:
 
                 //Remove the item from the list
-                tasks.remove(itemInfo.position);
+                Task removedTask = tasks.remove(itemInfo.position);
+                dataSource.deleteTask(removedTask);
 
                 //Update the adapter to reflect the list change
                 adapter.notifyDataSetChanged();
                 return true;
 
             case R.id.context_menu_set_done:
-                //Remove the item from the list
-                tasks.get(itemInfo.position).setDone(true);
+                Task changedTask = tasks.get(itemInfo.position);
+                changedTask.setDone(true);
+                dataSource.updateTask(changedTask);
 
                 //Update the adapter to reflect the list change
                 adapter.notifyDataSetChanged();

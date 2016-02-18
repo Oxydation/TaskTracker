@@ -7,7 +7,7 @@
     <string name="title_activity_timer">Timer</string>
     <string name="title_activity_new_task">New Task</string>
     <string name="new_task_name">Name:</string>
-    <string name="new_task_hint">Do homework</string>
+    <string name="new_task_hint">Task Name</string>
     <string name="action_statistic">Statistic</string>
 
     <!-- TODO: Remove or change this placeholder text -->

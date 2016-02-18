@@ -3,7 +3,9 @@
     android:id="@+id/taskItemLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="20dp">
+    android:layout_marginBottom="20dp"
+    android:clickable="true"
+    android:background="#8a1234dc">
 
     <LinearLayout
         android:id="@+id/linearLayoutLeft"

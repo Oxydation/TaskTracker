@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ListView;
 
 import com.mathias.apps.tasktracker.R;
 import com.mathias.apps.tasktracker.models.SubTask;
@@ -32,22 +30,22 @@ public class NewTaskActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, subTasks);
-        final ListView listViewSubtasks = (ListView) findViewById(R.id.listViewSubtasks);
+       /* final ListView listViewSubtasks = (ListView) findViewById(R.id.listViewSubtasks);
         listViewSubtasks.setAdapter(adapter);
-
+*/
         final EditText taskName = (EditText) findViewById(R.id.editTextTaskName);
         final EditText description = (EditText) findViewById(R.id.editTextDescription);
         final EditText estTime = (EditText) findViewById(R.id.editTextEstTime);
-        final EditText subTaskName = (EditText) findViewById(R.id.subtaskName);
+        //final EditText subTaskName = (EditText) findViewById(R.id.subtaskName);
 
-        ImageButton btnAddSubtask = (ImageButton) findViewById(R.id.buttonAddSubTask);
+        /*ImageButton btnAddSubtask = (ImageButton) findViewById(R.id.buttonAddSubTask);
         btnAddSubtask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 adapter.add(subTaskName.getText().toString());
                 subTaskName.setText("");
             }
-        });
+        });*/
 
         Button btnSave = (Button) findViewById(R.id.buttonSave);
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -59,9 +57,9 @@ public class NewTaskActivity extends AppCompatActivity {
                 task.setDescription(description.getText().toString());
 
                 task.setSubTasks(new ArrayList<SubTask>());
-                for (String subtask : subTasks) {
+                /*for (String subtask : subTasks) {
                     task.getSubTasks().add(new SubTask(subtask));
-                }
+                }*/
                 if (!estTime.getText().toString().isEmpty()) {
                     task.setTimeEstaminated(Double.valueOf(estTime.getText().toString()));
                 }
