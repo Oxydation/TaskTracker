@@ -7,6 +7,7 @@ import java.util.List;
  * Created by Mathias on 06/02/2016.
  */
 public class Task implements Serializable {
+    private long id;
     private String name;
     private List<SubTask> subTasks;
     private int color;
@@ -14,6 +15,8 @@ public class Task implements Serializable {
     private double timeDone;
     private boolean done;
     private String description;
+
+    //TODO: add created and modified datetime
 
     public String getDescription() {
         return description;
@@ -35,6 +38,15 @@ public class Task implements Serializable {
         this.subTasks = subTasks;
         this.color = color;
         this.timeEstaminated = timeEstaminated;
+    }
+
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {

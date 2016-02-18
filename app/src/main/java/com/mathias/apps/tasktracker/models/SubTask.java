@@ -6,10 +6,17 @@ import java.io.Serializable;
  * Created by Mathias on 11/02/2016.
  */
 public class SubTask implements Serializable {
+    private long id;
     private String name;
     private boolean done;
+    private Task parent;
 
     public SubTask(String name) {
+        this.name = name;
+    }
+
+    public SubTask(Task parent, String name) {
+        this.parent = parent;
         this.name = name;
     }
 
@@ -32,5 +39,21 @@ public class SubTask implements Serializable {
 
     public void setDone(boolean done) {
         this.done = done;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Task getParent() {
+        return parent;
+    }
+
+    public void setParent(Task parent) {
+        this.parent = parent;
     }
 }

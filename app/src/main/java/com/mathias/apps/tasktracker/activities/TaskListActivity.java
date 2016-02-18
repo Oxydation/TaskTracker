@@ -14,16 +14,19 @@ import android.widget.ListView;
 
 import com.mathias.apps.tasktracker.R;
 import com.mathias.apps.tasktracker.adapters.TaskListAdapter;
+import com.mathias.apps.tasktracker.database.TasksDataSource;
 import com.mathias.apps.tasktracker.models.Task;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class TaskListActivity extends AppCompatActivity {
     public static final int REQUEST_CODE_SETTINGS = 1002;
     public static final int REQUEST_CODE_NEW_TASK = 100;
-    private ArrayList<Task> tasks;
+    private List<Task> tasks;
     private ListView listViewTasks;
     private ArrayAdapter<Task> adapter;
+
+    private TasksDataSource dataSource;
 
     // Think about using recycling view: http://developer.android.com/training/material/lists-cards.html
 
@@ -34,8 +37,12 @@ public class TaskListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        dataSource = new TasksDataSource(this);
+        dataSource.open();
+
         // https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
-        tasks = new ArrayList<>();
+        // tasks = new ArrayList<>();
+        tasks = dataSource.findAllTasks();
 
         // Create the adapter to convert the array to views
         adapter = new TaskListAdapter(this, R.layout.task_item, tasks);
@@ -56,13 +63,13 @@ public class TaskListActivity extends AppCompatActivity {
         registerForContextMenu(listViewTasks);
 
         // Add some items to the Arraylist
-        adapter.add(new Task("Project Setup"));
-        adapter.add(new Task("Project Setup"));
-        adapter.add(new Task("Project Setup"));
-        Task second = new Task("Wordpress Post", null, 0, 123);
-        second.setDone(true);
-        second.setTimeDone(120);
-        adapter.add(second);
+        //adapter.add(new Task("Project Setup"));
+        //adapter.add(new Task("Project Setup"));
+        //adapter.add(new Task("Project Setup"));
+        //Task second = new Task("Wordpress Post", null, 0, 123);
+        //second.setDone(true);
+        //second.setTimeDone(120);
+        //adapter.add(second);
     }
 
     @Override
@@ -104,7 +111,11 @@ public class TaskListActivity extends AppCompatActivity {
         //super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_NEW_TASK) {
+
+                //TODO: Is that a good way to retrieve new created objects?
                 Task result = (Task) data.getExtras().get("createdTask");
+                dataSource.open();
+                result = dataSource.createTask(result);
                 adapter.add(result);
             }
         }
@@ -147,5 +158,17 @@ public class TaskListActivity extends AppCompatActivity {
         }
 
         return super.onContextItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        dataSource.open();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        dataSource.close();
     }
 }

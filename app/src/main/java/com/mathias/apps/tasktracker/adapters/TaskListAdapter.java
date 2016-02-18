@@ -17,7 +17,6 @@ import com.mathias.apps.tasktracker.activities.TimerActivity;
 import com.mathias.apps.tasktracker.models.SubTask;
 import com.mathias.apps.tasktracker.models.Task;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -27,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class TaskListAdapter extends ArrayAdapter<Task> implements View.OnCreateContextMenuListener {
     private List<Task> tasks;
 
-    public TaskListAdapter(Context context, int resource, ArrayList<Task> tasks) {
+    public TaskListAdapter(Context context, int resource, List<Task> tasks) {
         super(context, resource, tasks);
         this.tasks = tasks;
     }

@@ -88,6 +88,7 @@ public class TimerActivity extends AppCompatActivity {
                 }
 
                 timerRunning = false;
+                // Restart working timer as we are finished with break
 
             }
         };
@@ -106,6 +107,8 @@ public class TimerActivity extends AppCompatActivity {
                     Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
                     vibrator.vibrate(500);
                 }
+
+                // Do not start break timer automatically, blink with circle
                 animation.setDuration(1000 * 60 * breakDuration); //in milliseconds
                 animation.setInterpolator(new LinearInterpolator());
                 animation.start();
