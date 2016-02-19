@@ -15,7 +15,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String LOGTAG = "TASKTRACKER";
 
     private static final String DATABASE_NAME = "tasktracker.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private static final String SQL_CREATE_ENTRIES = "CREATE TABLE " + TaskEntry.TABLE_NAME +
             "("
@@ -43,8 +43,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.w(DBHelper.class.getName(), "Upgrading database from version " + oldVersion + " to " + newVersion + ", which will destroy all old data");
+
+
+        // Create a way to update instead of delete database
         db.execSQL(SQL_DELETE_ENTRIES);
-        Log.i(LOGTAG, "Deleted and recreated database.");
         onCreate(db);
     }
 }

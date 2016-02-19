@@ -9,8 +9,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.mathias.apps.tasktracker.R;
 import com.mathias.apps.tasktracker.adapters.TaskListAdapter;
@@ -19,17 +19,19 @@ import com.mathias.apps.tasktracker.models.Task;
 
 import java.util.List;
 
-public class TaskListActivity extends AppCompatActivity {
+public class TaskListActivity extends AppCompatActivity implements TaskListAdapter.Callback {
     public static final int REQUEST_CODE_SETTINGS = 1002;
     public static final int REQUEST_CODE_NEW_TASK = 100;
+    private static final int REQUEST_CODE_UDPATE_TASK = 1003;
+
     private List<Task> tasks;
     private ListView listViewTasks;
-    private ArrayAdapter<Task> adapter;
+    private TaskListAdapter adapter;
 
     private TasksDataSource dataSource;
 
     // Think about using recycling view: http://developer.android.com/training/material/lists-cards.html
-
+    // https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,18 +40,22 @@ public class TaskListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Get list and set empty view
+        listViewTasks = (ListView) findViewById(R.id.listViewTasks);
+        TextView emptyView = (TextView) findViewById(R.id.main_list_empty);
+        listViewTasks.setEmptyView(emptyView);
+
         // Open datas source and retrieve tasks
         dataSource = new TasksDataSource(this);
         dataSource.open();
 
-        // https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
         // tasks = new ArrayList<>();
         tasks = dataSource.findAllTasks();
 
         // Create the adapter to convert the array to views
         adapter = new TaskListAdapter(this, R.layout.task_item, tasks);
+        adapter.setCallback(this);
 
-        listViewTasks = (ListView) findViewById(R.id.listViewTasks);
         listViewTasks.setAdapter(adapter);
 
 //        listViewTasks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -101,7 +107,6 @@ public class TaskListActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_NEW_TASK) {
 
@@ -110,6 +115,13 @@ public class TaskListActivity extends AppCompatActivity {
                 dataSource.open();
                 result = dataSource.createTask(result);
                 adapter.add(result);
+            } else if (requestCode == REQUEST_CODE_UDPATE_TASK) {
+                Task result = (Task) data.getExtras().get("updatedTask");
+                int position = data.getIntExtra("position", 0);
+                tasks.set(position, result);
+                dataSource.open();
+                dataSource.updateTask(result);
+                adapter.notifyDataSetChanged();
             }
         }
     }
@@ -123,7 +135,16 @@ public class TaskListActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_task_item, menu);
 
         // Get the name of the clicked item
-        //Task clickedItem = (Task) listViewTasks.getItemAtPosition(info.position);
+        Task clickedItem = (Task) listViewTasks.getItemAtPosition(info.position);
+
+//        item.setVisible(false);
+//        if (clickedItem.isDone()) {
+//            v.findViewById(R.id.context_menu_set_done).setVisibility(View.INVISIBLE);
+//            v.findViewById(R.id.context_menu_set_undone).setVisibility(View.VISIBLE);
+//        } else {
+//            v.findViewById(R.id.context_menu_set_done).setVisibility(View.VISIBLE);
+//            v.findViewById(R.id.context_menu_set_undone).setVisibility(View.INVISIBLE);
+//        }
 
         super.onCreateContextMenu(menu, v, menuInfo);
     }
@@ -150,6 +171,15 @@ public class TaskListActivity extends AppCompatActivity {
                 //Update the adapter to reflect the list change
                 adapter.notifyDataSetChanged();
                 return true;
+
+            case R.id.context_menu_set_undone:
+                Task changedTask1 = tasks.get(itemInfo.position);
+                changedTask1.setDone(false);
+                dataSource.updateTask(changedTask1);
+
+                //Update the adapter to reflect the list change
+                adapter.notifyDataSetChanged();
+                return true;
         }
 
         return super.onContextItemSelected(item);
@@ -165,5 +195,13 @@ public class TaskListActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         dataSource.close();
+    }
+
+    @Override
+    public void onEditButtonClick(int position) {
+        Intent intent = new Intent(this, EditTaskActivity.class);
+        intent.putExtra("editTask", tasks.get(position));
+        intent.putExtra("position", position);
+        startActivityForResult(intent, REQUEST_CODE_UDPATE_TASK);
     }
 }

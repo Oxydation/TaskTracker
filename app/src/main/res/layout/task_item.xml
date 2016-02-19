@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginBottom="20dp"
-    android:clickable="true"
-    android:background="#8a1234dc">
+    android:background="@color/bg1_task_orange"
+    android:clickable="true">
 
     <LinearLayout
         android:id="@+id/linearLayoutLeft"
@@ -74,6 +74,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="10dp"
         android:background="@null"
+        android:focusable="false"
         android:src="@drawable/ic_action_edit" />
 
 

@@ -1,5 +1,6 @@
 package com.mathias.apps.tasktracker.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.ContextMenu;
@@ -12,7 +13,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mathias.apps.tasktracker.R;
-import com.mathias.apps.tasktracker.activities.NewTaskActivity;
 import com.mathias.apps.tasktracker.activities.TimerActivity;
 import com.mathias.apps.tasktracker.models.SubTask;
 import com.mathias.apps.tasktracker.models.Task;
@@ -25,43 +25,56 @@ import java.util.concurrent.TimeUnit;
  */
 public class TaskListAdapter extends ArrayAdapter<Task> implements View.OnCreateContextMenuListener {
     private List<Task> tasks;
+    private LayoutInflater inflater;
+    private Context context;
+    private int layoutResourceId;
+    private Callback callback;
 
     public TaskListAdapter(Context context, int resource, List<Task> tasks) {
         super(context, resource, tasks);
         this.tasks = tasks;
+        this.context = context;
+        this.layoutResourceId = resource;
+
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        View row = convertView;
+        Holder holder = new Holder();
+
+        // Check if an existing view is being reused, otherwise inflate the view
+        if (row == null) {
+            inflater = ((Activity) context).getLayoutInflater();
+            row = inflater.inflate(layoutResourceId, parent, false);
+            // Lookup view for data population
+            holder.name = (TextView) row.findViewById(R.id.tvName);
+            holder.timeDone = (TextView) row.findViewById(R.id.tvTimeDone);
+            holder.status = (TextView) row.findViewById(R.id.tvStatus);
+            holder.layout = (RelativeLayout) row.findViewById(R.id.taskItemLayout);
+            holder.editButton = (ImageButton) row.findViewById(R.id.editTask);
+            holder.position = position;
+            row.setTag(holder);
+
+        } else {
+            holder = (Holder) row.getTag();
+        }
 
         // Get the data item for this position
         final Task task = tasks.get(position);
-
-        // Check if an existing view is being reused, otherwise inflate the view
-        if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.task_item, parent, false);
-            convertView.setClickable(true);
-            convertView.setFocusable(false);
-        }
-
-        // Lookup view for data population
-        final TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
-        final TextView tvTimeDone = (TextView) convertView.findViewById(R.id.tvTimeDone);
-        final TextView tvStatus = (TextView) convertView.findViewById(R.id.tvStatus);
-        RelativeLayout relativeLayout = (RelativeLayout) convertView.findViewById(R.id.taskItemLayout);
 
         // Set background color of task
         //relativeLayout.setBackgroundColor(task.getColor());
 
         // Populate the data into the template view using the data object
-        tvName.setText(task.getName());
+        holder.name.setText(task.getName());
 
         // Get time done in hours and minutes
         long hours = TimeUnit.MINUTES.toHours((long) task.getTimeDone());
         long remainMinute = (long) (task.getTimeDone() - TimeUnit.HOURS.toMinutes(hours));
         String result = String.format("%02d", hours) + ":"
                 + String.format("%02d", remainMinute) + "h";
-        tvTimeDone.setText(result);
+        holder.timeDone.setText(result);
 
         // Get subtask status
         int amountSubTasks = 0;
@@ -76,28 +89,17 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements View.OnCreate
             }
         }
 
-        tvStatus.setText(String.format("%d/%d Subtasks done", amountFinishedSubtasks, amountSubTasks));
+        holder.status.setText(String.format("%d/%d Subtasks done", amountFinishedSubtasks, amountSubTasks));
 
         // Set opacity of task
         if (task.isDone()) {
-            relativeLayout.setAlpha((float) 0.5);
+            holder.layout.setAlpha((float) 0.5);
         } else {
-            relativeLayout.setAlpha((float) 1);
+            holder.layout.setAlpha((float) 1);
         }
 
-        // Handle click on edit button
-        ImageButton editImageButton = (ImageButton) convertView.findViewById(R.id.editTask);
-        editImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), NewTaskActivity.class);
-                intent.putExtra("selectedTask", task);
-                getContext().startActivity(intent);
-            }
-        });
-
         // Handle click on task
-        convertView.setOnClickListener(new View.OnClickListener() {
+        row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), TimerActivity.class);
@@ -106,15 +108,45 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements View.OnCreate
             }
         });
 
+        holder.editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (callback != null) {
+                    callback.onEditButtonClick(position);
+                }
+            }
+        });
+
         // http://stackoverflow.com/questions/3972945/custom-listview-and-context-menu-how-to-get-it
-        convertView.setOnCreateContextMenuListener(this);
+        row.setOnCreateContextMenuListener(this);
 
         // Return the completed view to render on screen
-        return convertView;
+        return row;
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
 
+    }
+
+    public Callback getCallback() {
+        return callback;
+    }
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
+
+    static class Holder {
+        TextView name;
+        TextView timeDone;
+        TextView status;
+        RelativeLayout layout;
+        ImageButton editButton;
+        int position;
+    }
+
+    public interface Callback {
+        void onEditButtonClick(int position);
     }
 }

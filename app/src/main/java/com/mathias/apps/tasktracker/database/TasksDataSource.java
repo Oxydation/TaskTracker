@@ -92,7 +92,7 @@ public class TasksDataSource {
                 task.setId(cursor.getLong(cursor.getColumnIndex(TaskEntry.COLUMN_NAME_ENTRY_ID)));
                 task.setName(cursor.getString(cursor.getColumnIndex(TaskEntry.COLUMN_NAME_NAME)));
                 task.setDescription(cursor.getString(cursor.getColumnIndex(TaskEntry.COLUMN_NAME_DESC)));
-                task.setTimeEstaminated(cursor.getDouble(cursor.getColumnIndex(TaskEntry.COLUMN_NAME_TIME_EST)));
+                task.setTimeEstaminated(cursor.getLong(cursor.getColumnIndex(TaskEntry.COLUMN_NAME_TIME_EST)));
                 task.setTimeDone(cursor.getDouble(cursor.getColumnIndex(TaskEntry.COLUMN_NAME_TIME_DONE)));
                 task.setColor(cursor.getInt(cursor.getColumnIndex(TaskEntry.COLUMN_NAME_COLOR)));
                 task.setDone(cursor.getInt(cursor.getColumnIndex(TaskEntry.COLUMN_NAME_IS_DONE)) == 1);

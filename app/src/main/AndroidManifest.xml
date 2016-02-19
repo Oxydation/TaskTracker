@@ -47,6 +47,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mathias.apps.tasktracker.activities.TaskListActivity" />
         </activity>
+        <activity
+            android:name=".activities.EditTaskActivity"
+            android:label="@string/title_activity_edit_task"
+            android:parentActivityName=".activities.TaskListActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mathias.apps.tasktracker.activities.TaskListActivity" />
+        </activity>
     </application>
 
 </manifest>

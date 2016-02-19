@@ -4,6 +4,9 @@
         android:id="@+id/context_menu_set_done"
         android:title="Done" />
     <item
+        android:id="@+id/context_menu_set_undone"
+        android:title="Undone" />
+    <item
         android:id="@+id/context_menu_delete_item"
         android:title="Delete" />
 </menu>

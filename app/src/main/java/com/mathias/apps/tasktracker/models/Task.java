@@ -11,7 +11,7 @@ public class Task implements Serializable {
     private String name;
     private List<SubTask> subTasks;
     private int color;
-    private double timeEstaminated;
+    private long timeEstaminated;
     private double timeDone;
     private boolean done;
     private String description;
@@ -33,7 +33,7 @@ public class Task implements Serializable {
         this.name = name;
     }
 
-    public Task(String name, List<SubTask> subTasks, int color, double timeEstaminated) {
+    public Task(String name, List<SubTask> subTasks, int color, long timeEstaminated) {
         this.name = name;
         this.subTasks = subTasks;
         this.color = color;
@@ -65,11 +65,11 @@ public class Task implements Serializable {
         this.color = color;
     }
 
-    public double getTimeEstaminated() {
+    public long getTimeEstaminated() {
         return timeEstaminated;
     }
 
-    public void setTimeEstaminated(double timeEstaminated) {
+    public void setTimeEstaminated(long timeEstaminated) {
         this.timeEstaminated = timeEstaminated;
     }
 

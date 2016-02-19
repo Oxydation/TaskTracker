@@ -22,4 +22,13 @@
         android:layout_alignParentTop="true"
         android:divider="@color/divider"
         android:dividerHeight="1dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/main_list_empty"
+        android:layout_margin="16dp"
+        android:text="@string/main_list_empty"
+        android:gravity="center_horizontal"
+        android:visibility="gone" />
 </RelativeLayout>

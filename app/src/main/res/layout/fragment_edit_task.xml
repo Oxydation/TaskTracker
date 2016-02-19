@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,10 +6,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.mathias.apps.tasktracker.activities.NewTaskActivity"
-    tools:showIn="@layout/activity_new_task">
-
+    tools:context=".activities.EditTaskActivityFragment"
+    tools:showIn="@layout/activity_edit_task">
 
     <EditText
         android:id="@+id/editTextTaskName"
@@ -70,12 +66,14 @@
         android:id="@+id/buttonSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add and Save"
+        android:text="Save"
         android:layout_below="@+id/spinnerColor"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+
+        />
 
     <EditText
         android:id="@+id/editTextEstTimeHours"
@@ -118,5 +116,4 @@
         android:layout_below="@+id/editTextEstTime"
         android:layout_marginTop="51dp"
         android:spinnerMode="dropdown" />
-
 </RelativeLayout>
