@@ -109,7 +109,6 @@ public class TaskListActivity extends AppCompatActivity implements TaskListAdapt
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_NEW_TASK) {
-
                 //TODO: Is that a good way to retrieve new created objects?
                 Task result = (Task) data.getExtras().get("createdTask");
                 dataSource.open();
@@ -133,6 +132,9 @@ public class TaskListActivity extends AppCompatActivity implements TaskListAdapt
 
         // Inflate the context menu from the resource file
         getMenuInflater().inflate(R.menu.menu_task_item, menu);
+
+        menu.setHeaderTitle("Select action");
+        menu.setHeaderIcon(R.drawable.ic_icon_task);
 
         // Get the name of the clicked item
         Task clickedItem = (Task) listViewTasks.getItemAtPosition(info.position);
