@@ -11,24 +11,24 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mathias.apps.tasktracker.R;
-import com.mathias.apps.tasktracker.adapters.TaskListAdapter;
+import com.mathias.apps.tasktracker.adapters.TaskListCursorAdapter;
 import com.mathias.apps.tasktracker.database.TasksDataSource;
 import com.mathias.apps.tasktracker.models.Task;
 
-import java.util.List;
-
-public class TaskListActivity extends AppCompatActivity implements TaskListAdapter.Callback {
+public class TaskListActivity extends AppCompatActivity implements TaskListCursorAdapter.Callback {
     public static final int REQUEST_CODE_SETTINGS = 1002;
     public static final int REQUEST_CODE_NEW_TASK = 100;
     private static final int REQUEST_CODE_UDPATE_TASK = 1003;
 
-    private List<Task> tasks;
+    //private List<Task> tasks;
     private ListView listViewTasks;
-    private TaskListAdapter adapter;
+    //private TaskListAdapter adapter;
 
     private TasksDataSource dataSource;
+    private TaskListCursorAdapter cursorAdapter;
 
     // Think about using recycling view: http://developer.android.com/training/material/lists-cards.html
     // https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
@@ -45,19 +45,18 @@ public class TaskListActivity extends AppCompatActivity implements TaskListAdapt
         TextView emptyView = (TextView) findViewById(R.id.main_list_empty);
         listViewTasks.setEmptyView(emptyView);
 
-        // Open datas source and retrieve tasks
+        registerForContextMenu(listViewTasks);
+
         dataSource = new TasksDataSource(this);
-        dataSource.open();
-
-        // tasks = new ArrayList<>();
-        tasks = dataSource.findAllTasks();
-
-        // Create the adapter to convert the array to views
-        adapter = new TaskListAdapter(this, R.layout.task_item, tasks);
-        adapter.setCallback(this);
-
-        listViewTasks.setAdapter(adapter);
-
+        cursorAdapter = new TaskListCursorAdapter(this, dataSource.getAllTasksCursor(), 0);
+        listViewTasks.setAdapter(cursorAdapter);
+        cursorAdapter.setCallback(this);
+        listViewTasks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(TaskListActivity.this, "bla", Toast.LENGTH_SHORT).show();
+            }
+        });
 //        listViewTasks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
 //            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -67,8 +66,11 @@ public class TaskListActivity extends AppCompatActivity implements TaskListAdapt
 //                startActivity(intent);
 //            }
 //        });
+        ;
+    }
 
-        registerForContextMenu(listViewTasks);
+    private void updateTaskListView() {
+        cursorAdapter.changeCursor(dataSource.getAllTasksCursor());
     }
 
     @Override
@@ -109,18 +111,11 @@ public class TaskListActivity extends AppCompatActivity implements TaskListAdapt
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_NEW_TASK) {
-                //TODO: Is that a good way to retrieve new created objects?
-                Task result = (Task) data.getExtras().get("createdTask");
-                dataSource.open();
-                result = dataSource.createTask(result);
-                adapter.add(result);
+                int taskId = data.getExtras().getInt("taskId");
+                updateTaskListView();
             } else if (requestCode == REQUEST_CODE_UDPATE_TASK) {
-                Task result = (Task) data.getExtras().get("updatedTask");
-                int position = data.getIntExtra("position", 0);
-                tasks.set(position, result);
-                dataSource.open();
-                dataSource.updateTask(result);
-                adapter.notifyDataSetChanged();
+                int taskId = data.getExtras().getInt("taskId");
+                updateTaskListView();
             }
         }
     }
@@ -156,31 +151,22 @@ public class TaskListActivity extends AppCompatActivity implements TaskListAdapt
         AdapterView.AdapterContextMenuInfo itemInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.context_menu_delete_item:
-
-                //Remove the item from the list
-                Task removedTask = tasks.remove(itemInfo.position);
-                dataSource.deleteTask(removedTask);
-
-                //Update the adapter to reflect the list change
-                adapter.notifyDataSetChanged();
+                dataSource.deleteTask(cursorAdapter.getItemId(itemInfo.position));
+                updateTaskListView();
                 return true;
 
             case R.id.context_menu_set_done:
-                Task changedTask = tasks.get(itemInfo.position);
+                Task changedTask = (Task) cursorAdapter.getItem(itemInfo.position);
                 changedTask.setDone(true);
                 dataSource.updateTask(changedTask);
-
-                //Update the adapter to reflect the list change
-                adapter.notifyDataSetChanged();
+                updateTaskListView();
                 return true;
 
             case R.id.context_menu_set_undone:
-                Task changedTask1 = tasks.get(itemInfo.position);
+                Task changedTask1 = (Task) cursorAdapter.getItem(itemInfo.position);
                 changedTask1.setDone(false);
                 dataSource.updateTask(changedTask1);
-
-                //Update the adapter to reflect the list change
-                adapter.notifyDataSetChanged();
+                updateTaskListView();
                 return true;
         }
 
@@ -200,10 +186,9 @@ public class TaskListActivity extends AppCompatActivity implements TaskListAdapt
     }
 
     @Override
-    public void onEditButtonClick(int position) {
+    public void onEditButtonClick(long id) {
         Intent intent = new Intent(this, EditTaskActivity.class);
-        intent.putExtra("editTask", tasks.get(position));
-        intent.putExtra("position", position);
+        intent.putExtra("taskId", id);
         startActivityForResult(intent, REQUEST_CODE_UDPATE_TASK);
     }
 }

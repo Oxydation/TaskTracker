@@ -34,7 +34,6 @@ public class TasksDataSource {
     public void open() {
         Log.i(LOGTAG, "Database opened");
         db = helper.getWritableDatabase();
-        close();
     }
 
     public void close() {
@@ -101,10 +100,10 @@ public class TasksDataSource {
         return tasks;
     }
 
-    private Task cursorToTask(Cursor cursor) {
+    public static Task cursorToTask(Cursor cursor) {
         try {
             Task task = new Task();
-            task.setId(cursor.getLong(cursor.getColumnIndexOrThrow(TaskEntry.COLUMN_NAME_ENTRY_ID)));
+            task.setId(cursor.getLong(cursor.getColumnIndexOrThrow(TaskEntry._ID)));
             task.setName(cursor.getString(cursor.getColumnIndexOrThrow(TaskEntry.COLUMN_NAME_NAME)));
             task.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(TaskEntry.COLUMN_NAME_DESC)));
             task.setTimeEstaminated(cursor.getLong(cursor.getColumnIndexOrThrow(TaskEntry.COLUMN_NAME_TIME_EST)));
@@ -130,9 +129,19 @@ public class TasksDataSource {
         return values;
     }
 
-    private Cursor getAllTasksCursor() {
+    public Cursor getAllTasksCursor() {
         open();
-        Cursor cursor = db.query(TaskEntry.TABLE_NAME, TaskEntry.ALL_COLUMNS, null, null, null, null, null);
+        //Cursor cursor = db.query(TaskEntry.TABLE_NAME, TaskEntry.ALL_COLUMNS, null, null, null, null, null);
+        Cursor cursor = db.rawQuery(
+                "SELECT " +
+                        TaskEntry._ID + " AS _id," +
+                        TaskEntry.COLUMN_NAME_DESC + ", " +
+                        TaskEntry.COLUMN_NAME_TIME_EST + ", " +
+                        TaskEntry.COLUMN_NAME_TIME_DONE + ", " +
+                        TaskEntry.COLUMN_NAME_COLOR + ", " +
+                        TaskEntry.COLUMN_NAME_IS_DONE + ", " +
+                        TaskEntry.COLUMN_NAME_NAME +
+                        " FROM " + TaskEntry.TABLE_NAME, null);
 
         if (cursor != null) {
             cursor.moveToFirst();
@@ -145,7 +154,7 @@ public class TasksDataSource {
     public Task getTask(long id) {
         open();
 
-        String where = TaskEntry.COLUMN_NAME_ENTRY_ID + "=?";
+        String where = TaskEntry._ID + "=?";
         String[] args = new String[]{Long.toString(id)};
         Cursor cursor = db.query(TaskEntry.TABLE_NAME, TaskEntry.ALL_COLUMNS, where, args, null, null, null);
 
@@ -163,7 +172,7 @@ public class TasksDataSource {
         ContentValues values = taskToContentValues(task);
 
         // Which row to update, based on the ID
-        String selection = TaskEntry.COLUMN_NAME_ENTRY_ID + " LIKE ?";
+        String selection = TaskEntry._ID + " LIKE ?";
         String[] selectionArgs = {String.valueOf(task.getId())};
 
         int count = db.update(
@@ -182,7 +191,7 @@ public class TasksDataSource {
         open();
 
         // Define 'where' part of query.
-        String selection = TaskEntry.COLUMN_NAME_ENTRY_ID + " = ?";
+        String selection = TaskEntry._ID + " = ?";
 
         // Specify arguments in placeholder order.
         String[] selectionArgs = {String.valueOf(task.getId())};
@@ -197,7 +206,7 @@ public class TasksDataSource {
 
     public int deleteTask(long id) {
         open();
-        int result = db.delete(TaskEntry.TABLE_NAME, TaskEntry.COLUMN_NAME_ENTRY_ID + " =?", new String[]{Long.toString(id)});
+        int result = db.delete(TaskEntry.TABLE_NAME, TaskEntry._ID + " =?", new String[]{Long.toString(id)});
         close();
         return result;
     }

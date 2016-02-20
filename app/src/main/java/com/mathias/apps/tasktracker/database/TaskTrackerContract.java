@@ -14,7 +14,7 @@ public final class TaskTrackerContract {
     /* Inner class that defines the table contents */
     public static abstract class TaskEntry implements BaseColumns {
         public static final String TABLE_NAME = "task";
-        public static final String COLUMN_NAME_ENTRY_ID = "taskId";
+        // public static final String COLUMN_NAME_ENTRY_ID = "taskId";
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_DESC = "description";
         public static final String COLUMN_NAME_COLOR = "color";
@@ -23,7 +23,7 @@ public final class TaskTrackerContract {
         public static final String COLUMN_NAME_IS_DONE = "isDone";
 
         public static final String[] ALL_COLUMNS = {
-                COLUMN_NAME_ENTRY_ID,
+                _ID,
                 COLUMN_NAME_NAME,
                 COLUMN_NAME_DESC,
                 COLUMN_NAME_COLOR,

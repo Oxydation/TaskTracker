@@ -9,12 +9,14 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.mathias.apps.tasktracker.R;
+import com.mathias.apps.tasktracker.database.TasksDataSource;
 import com.mathias.apps.tasktracker.models.SubTask;
 import com.mathias.apps.tasktracker.models.Task;
 
 import java.util.ArrayList;
 
 public class EditTaskActivity extends AppCompatActivity {
+    private TasksDataSource dataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,8 +25,9 @@ public class EditTaskActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final Task editTask = (Task) getIntent().getExtras().get("editTask");
-        final int position = getIntent().getIntExtra("position", 0);
+        dataSource = new TasksDataSource(this);
+
+        final Task editTask = dataSource.getTask(getIntent().getExtras().getLong("taskId"));
 
         final EditText taskName = (EditText) findViewById(R.id.editTextTaskName);
         final EditText description = (EditText) findViewById(R.id.editTextDescription);
@@ -68,10 +71,13 @@ public class EditTaskActivity extends AppCompatActivity {
                     taskName.setError("No name set!");
                     return;
                 }
+
+                // Update task
+                dataSource.updateTask(task);
+
                 // Create intent and set result
                 Intent data = new Intent();
-                data.putExtra("updatedTask", task);
-                data.putExtra("position", position);
+                data.putExtra("taskId", task.getId());
                 setResult(RESULT_OK, data);
                 finish();
             }

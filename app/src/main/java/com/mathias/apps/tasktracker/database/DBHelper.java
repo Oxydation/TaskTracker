@@ -15,11 +15,11 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String LOGTAG = "TASKTRACKER";
 
     private static final String DATABASE_NAME = "tasktracker.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
-    private static final String SQL_CREATE_ENTRIES = "CREATE TABLE " + TaskEntry.TABLE_NAME +
+    private static final String DATABASE_CREATE_TASKS = "CREATE TABLE " + TaskEntry.TABLE_NAME +
             "("
-            + TaskEntry.COLUMN_NAME_ENTRY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT " + ","
+            + TaskEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT " + ","
             + TaskEntry.COLUMN_NAME_NAME + " TEXT " + ","
             + TaskEntry.COLUMN_NAME_COLOR + " INTEGER " + ","
             + TaskEntry.COLUMN_NAME_DESC + " TEXT " + ","
@@ -28,7 +28,7 @@ public class DBHelper extends SQLiteOpenHelper {
             + TaskEntry.COLUMN_NAME_IS_DONE + " INTEGER DEFAULT 0"
             + ");";
 
-    private static final String SQL_DELETE_ENTRIES =
+    private static final String DATABASE_DELETE_TASKS =
             "DROP TABLE IF EXISTS " + TaskEntry.TABLE_NAME;
 
     public DBHelper(Context context) {
@@ -37,7 +37,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(SQL_CREATE_ENTRIES);
+        db.execSQL(DATABASE_CREATE_TASKS);
         Log.i(LOGTAG, "Created database.");
     }
 
@@ -47,7 +47,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
         // Create a way to update instead of delete database
-        db.execSQL(SQL_DELETE_ENTRIES);
+        db.execSQL(DATABASE_DELETE_TASKS);
         onCreate(db);
     }
 }

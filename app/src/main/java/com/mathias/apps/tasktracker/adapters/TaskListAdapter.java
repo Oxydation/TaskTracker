@@ -28,7 +28,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements View.OnCreate
     private LayoutInflater inflater;
     private Context context;
     private int layoutResourceId;
-    private Callback callback;
+    //private Callback callback;
 
     public TaskListAdapter(Context context, int resource, List<Task> tasks) {
         super(context, resource, tasks);
@@ -108,14 +108,14 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements View.OnCreate
             }
         });
 
-        holder.editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (callback != null) {
-                    callback.onEditButtonClick(position);
-                }
-            }
-        });
+//        holder.editButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (callback != null) {
+//                    callback.onEditButtonClick(position);
+//                }
+//            }
+//        });
 
         // http://stackoverflow.com/questions/3972945/custom-listview-and-context-menu-how-to-get-it
         row.setOnCreateContextMenuListener(this);
@@ -129,13 +129,13 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements View.OnCreate
 
     }
 
-    public Callback getCallback() {
-        return callback;
-    }
-
-    public void setCallback(Callback callback) {
-        this.callback = callback;
-    }
+//    public Callback getCallback() {
+//        return callback;
+//    }
+//
+//    public void setCallback(Callback callback) {
+//        this.callback = callback;
+//    }
 
     static class Holder {
         TextView name;
@@ -146,7 +146,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements View.OnCreate
         int position;
     }
 
-    public interface Callback {
-        void onEditButtonClick(int position);
-    }
+//    public interface Callback {
+//        void onEditButtonClick(int position);
+//    }
 }
