@@ -44,11 +44,10 @@ public class EditTaskActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Get data
-                Task task = editTask;
-                task.setName(taskName.getText().toString());
-                task.setDescription(description.getText().toString());
+                editTask.setName(taskName.getText().toString());
+                editTask.setDescription(description.getText().toString());
 
-                task.setSubTasks(new ArrayList<SubTask>());
+                editTask.setSubTasks(new ArrayList<SubTask>());
                 /*for (String subtask : subTasks) {
                     task.getSubTasks().add(new SubTask(subtask));
                 }*/
@@ -62,22 +61,22 @@ public class EditTaskActivity extends AppCompatActivity {
                     if (!estTime.getText().toString().isEmpty()) {
                         hours = Integer.valueOf(estTimeHours.getText().toString());
                     }
-                    task.setTimeEstaminated(hours * 60 + minutes);
+                    editTask.setTimeEstaminated(hours * 60 + minutes);
                 } else {
-                    task.setTimeEstaminated(0);
+                    editTask.setTimeEstaminated(0);
                 }
 
-                if (task.getName().equals("")) {
+                if (editTask.getName().equals("")) {
                     taskName.setError("No name set!");
                     return;
                 }
 
                 // Update task
-                dataSource.updateTask(task);
+                dataSource.updateTask(editTask);
 
                 // Create intent and set result
                 Intent data = new Intent();
-                data.putExtra("taskId", task.getId());
+                data.putExtra("taskId", editTask.getId());
                 setResult(RESULT_OK, data);
                 finish();
             }

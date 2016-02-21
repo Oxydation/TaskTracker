@@ -24,7 +24,7 @@ public class TasksDataSource {
     private static final String LOGTAG = "TASKTRACKER";
 
     private SQLiteDatabase db;
-    private SQLiteOpenHelper helper;
+    private final SQLiteOpenHelper helper;
 
     public TasksDataSource(Context context) {
         // Create or access db

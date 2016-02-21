@@ -11,7 +11,6 @@ import com.mathias.apps.tasktracker.R;
 public class SettingsActivityFragment extends PreferenceFragment {
 
     public static final String SETTINGS_SHARED_PREFERENCES_FILE_NAME = SettingsActivityFragment.class.getName() + ".SETTINGS_SHARED_PREFERENCES_FILE_NAME";
-    ;
 
     public SettingsActivityFragment() {
     }

@@ -69,7 +69,9 @@ public class TimerActivity extends AppCompatActivity {
         // Get the task to work with
         final Task task = (Task) getIntent().getExtras().get("selectedTask");
         final TextView tvTaskName = (TextView) findViewById(R.id.tvTaskName);
-        tvTaskName.setText(task.getName());
+        if (task != null) {
+            tvTaskName.setText(task.getName());
+        }
 
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
         final TextView tvTime = (TextView) findViewById(R.id.tvTime);
@@ -89,7 +91,7 @@ public class TimerActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                tvTime.setText("00:00");
+                tvTime.setText(R.string.timer_finished_text);
 
                 if (vibrationEnabled) {
                     // Vibrate on countdown finished
@@ -110,7 +112,7 @@ public class TimerActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                tvTime.setText("00:00");
+                tvTime.setText(R.string.timer_finished_text);
 
                 if (vibrationEnabled) {
                     // Vibrate on countdown finished

@@ -14,4 +14,24 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_edit_task">Edit Task</string>
     <string name="main_list_empty">No tasks added. Click the plus button to add a new task.</string>
+    <string name="timer_finished_text">00:00</string>
+    <string name="context_menu_done">Done</string>
+    <string name="context_menu_undone">Undone</string>
+    <string name="context_menu_delete">Delete</string>
+    <string name="time_done_default">00h 00m</string>
+    <string name="activity_edit_task_minutes">m</string>
+    <string name="activity_edit_task_description">Description</string>
+    <string name="activity_edit_task_save">Save</string>
+    <string name="list_item_name">Task Name</string>
+    <string name="list_item_status">0/0 Subtasks done</string>
+    <string name="activity_timer_taskname">Taskname</string>
+    <string name="activity_new_task_description">Description</string>
+    <string name="activity_new_task_save">Add and Save</string>
+    <string name="activity_edit_task_hour">h</string>
+    <string name="activity_edit_task_time_est">Time Estimate</string>
+    <string name="activity_new_task_hour">h</string>
+    <string name="activity_new_task_time_est">Time Estimate</string>
+    <string name="task_item_description">Task Image</string>
+    <string name="activity_timer_default">00:00</string>
+    <string name="activity_new_task_minute">m</string>
 </resources>

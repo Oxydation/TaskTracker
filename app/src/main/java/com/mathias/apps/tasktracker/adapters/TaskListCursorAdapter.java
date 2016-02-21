@@ -2,6 +2,7 @@ package com.mathias.apps.tasktracker.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +22,14 @@ import java.util.concurrent.TimeUnit;
  * Created by Mathias on 20/02/2016.
  */
 public class TaskListCursorAdapter extends CursorAdapter {
+    private static final String LOGTAG = "TASKTRACKER";
     private LayoutInflater cursorInflater;
-
     private Callback callback;
 
     public TaskListCursorAdapter(Context context, Cursor c, boolean autoRequery) {
         super(context, c, autoRequery);
+        cursorInflater = (LayoutInflater) context.getSystemService(
+                Context.LAYOUT_INFLATER_SERVICE);
     }
 
     public TaskListCursorAdapter(Context context, Cursor c, int flags) {
@@ -44,7 +47,15 @@ public class TaskListCursorAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         ViewHolder holder = new ViewHolder();
         Task task = TasksDataSource.cursorToTask(cursor);
-        final long id = task.getId();
+
+
+        final long id;
+        if (task != null) {
+            id = task.getId();
+        } else {
+            Log.e(LOGTAG, "Not able to show task because task is null.");
+            return;
+        }
 
         if (view.getTag() == null) {
             // Lookup view for data population

@@ -66,7 +66,7 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
 //                startActivity(intent);
 //            }
 //        });
-        ;
+
     }
 
     private void updateTaskListView() {
@@ -101,12 +101,6 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
         return super.onOptionsItemSelected(item);
     }
 
-    public void addNewTask(View view) {
-        // Open new activity and add new task
-        Intent intent = new Intent(this, NewTaskActivity.class);
-        startActivityForResult(intent, REQUEST_CODE_NEW_TASK);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
@@ -122,17 +116,17 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        // Get the clicked item
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-
         // Inflate the context menu from the resource file
         getMenuInflater().inflate(R.menu.menu_task_item, menu);
 
         menu.setHeaderTitle("Select action");
         menu.setHeaderIcon(R.drawable.ic_icon_task);
 
+        // Get the clicked item
+        // AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+
         // Get the name of the clicked item
-        Task clickedItem = (Task) listViewTasks.getItemAtPosition(info.position);
+        // Task clickedItem = (Task) listViewTasks.getItemAtPosition(info.position);
 
 //        item.setVisible(false);
 //        if (clickedItem.isDone()) {
@@ -184,6 +178,12 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
     protected void onPause() {
         super.onPause();
         dataSource.close();
+    }
+
+    public void addNewTask(View view) {
+        // Open new activity and add new task
+        Intent intent = new Intent(this, NewTaskActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_NEW_TASK);
     }
 
     @Override
