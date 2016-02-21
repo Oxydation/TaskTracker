@@ -1,6 +1,7 @@
 package com.mathias.apps.tasktracker.activities;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -151,14 +152,14 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
                 return true;
 
             case R.id.context_menu_set_done:
-                Task changedTask = (Task) cursorAdapter.getItem(itemInfo.position);
+                Task changedTask = TasksDataSource.cursorToTask((Cursor) cursorAdapter.getItem(itemInfo.position));
                 changedTask.setDone(true);
                 dataSource.updateTask(changedTask);
                 updateTaskListView();
                 return true;
 
             case R.id.context_menu_set_undone:
-                Task changedTask1 = (Task) cursorAdapter.getItem(itemInfo.position);
+                Task changedTask1 = TasksDataSource.cursorToTask((Cursor) cursorAdapter.getItem(itemInfo.position));
                 changedTask1.setDone(false);
                 dataSource.updateTask(changedTask1);
                 updateTaskListView();

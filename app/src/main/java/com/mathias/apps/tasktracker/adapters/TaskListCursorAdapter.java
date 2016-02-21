@@ -3,6 +3,7 @@ package com.mathias.apps.tasktracker.adapters;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Mathias on 20/02/2016.
  */
-public class TaskListCursorAdapter extends CursorAdapter {
+public class TaskListCursorAdapter extends CursorAdapter implements View.OnCreateContextMenuListener {
     private static final String LOGTAG = "TASKTRACKER";
     private LayoutInflater cursorInflater;
     private Callback callback;
@@ -45,9 +46,8 @@ public class TaskListCursorAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        ViewHolder holder = new ViewHolder();
+        ViewHolder holder;
         Task task = TasksDataSource.cursorToTask(cursor);
-
 
         final long id;
         if (task != null) {
@@ -59,11 +59,7 @@ public class TaskListCursorAdapter extends CursorAdapter {
 
         if (view.getTag() == null) {
             // Lookup view for data population
-            holder.name = (TextView) view.findViewById(R.id.tvName);
-            holder.timeDone = (TextView) view.findViewById(R.id.tvTimeDone);
-            holder.status = (TextView) view.findViewById(R.id.tvStatus);
-            holder.layout = (RelativeLayout) view.findViewById(R.id.taskItemLayout);
-            holder.editButton = (ImageButton) view.findViewById(R.id.editTask);
+            holder = new ViewHolder(view);
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
@@ -71,38 +67,7 @@ public class TaskListCursorAdapter extends CursorAdapter {
 
         // Set background color of task
         //relativeLayout.setBackgroundColor(task.getColor());
-
-        // Populate the data into the template view using the data object
-        holder.name.setText(task.getName());
-
-        // Get time done in hours and minutes
-        long hours = TimeUnit.MINUTES.toHours((long) task.getTimeDone());
-        long remainMinute = (long) (task.getTimeDone() - TimeUnit.HOURS.toMinutes(hours));
-        String result = String.format("%02d", hours) + ":"
-                + String.format("%02d", remainMinute) + "h";
-        holder.timeDone.setText(result);
-
-        // Get subtask status
-        int amountSubTasks = 0;
-        int amountFinishedSubtasks = 0;
-        if (task.getSubTasks() != null) {
-            amountSubTasks = task.getSubTasks().size();
-
-            for (SubTask subTask : task.getSubTasks()) {
-                if (subTask.isDone()) {
-                    amountFinishedSubtasks++;
-                }
-            }
-        }
-
-        holder.status.setText(String.format("%d/%d Subtasks done", amountFinishedSubtasks, amountSubTasks));
-
-        // Set opacity of task
-        if (task.isDone()) {
-            holder.layout.setAlpha((float) 0.5);
-        } else {
-            holder.layout.setAlpha((float) 1);
-        }
+        holder.populateRow(task);
 
         holder.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,6 +77,8 @@ public class TaskListCursorAdapter extends CursorAdapter {
                 }
             }
         });
+
+        view.setOnCreateContextMenuListener(this);
     }
 
     public Callback getCallback() {
@@ -122,12 +89,66 @@ public class TaskListCursorAdapter extends CursorAdapter {
         this.callback = callback;
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+
+    }
+
     static class ViewHolder {
         TextView name;
         TextView timeDone;
         TextView status;
         RelativeLayout layout;
         ImageButton editButton;
+
+        /**
+         * Initialize the holder.
+         *
+         * @param view
+         */
+        public ViewHolder(View view) {
+            name = (TextView) view.findViewById(R.id.tvName);
+            timeDone = (TextView) view.findViewById(R.id.tvTimeDone);
+            status = (TextView) view.findViewById(R.id.tvStatus);
+            layout = (RelativeLayout) view.findViewById(R.id.taskItemLayout);
+            editButton = (ImageButton) view.findViewById(R.id.editTask);
+        }
+
+        public void populateRow(Task task) {
+            // Populate the data into the template view using the data object
+            name.setText(task.getName());
+
+            // Get time done in hours and minutes
+            long hours = TimeUnit.MINUTES.toHours((long) task.getTimeDone());
+            long remainMinute = (long) (task.getTimeDone() - TimeUnit.HOURS.toMinutes(hours));
+            String result = String.format("%02d", hours) + ":"
+                    + String.format("%02d", remainMinute) + "h";
+            timeDone.setText(result);
+
+            // Get subtask status
+            int amountSubTasks = 0;
+            int amountFinishedSubtasks = 0;
+            if (task.getSubTasks() != null) {
+                amountSubTasks = task.getSubTasks().size();
+
+                for (SubTask subTask : task.getSubTasks()) {
+                    if (subTask.isDone()) {
+                        amountFinishedSubtasks++;
+                    }
+                }
+            }
+
+            status.setText(String.format("%d/%d Subtasks done", amountFinishedSubtasks, amountSubTasks));
+
+            // Set opacity of task
+            if (task.isDone()) {
+                layout.setAlpha((float) 0.5);
+                layout.setBackgroundColor(0);
+            } else {
+                layout.setAlpha((float) 1);
+                layout.setBackgroundResource(R.color.bg1_task_grey);
+            }
+        }
     }
 
     //http://www.c-sharpcorner.com/UploadFile/9e8439/create-custom-listener-on-button-in-listitem-listview-in-a/
