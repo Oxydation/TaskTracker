@@ -5,7 +5,7 @@ import android.preference.PreferenceFragment;
 import android.util.Log;
 
 import com.mathias.apps.tasktracker.R;
-import com.mathias.apps.tasktracker.SeekBarPreferenceAutoSummary;
+import com.mathias.apps.tasktracker.preferences.SeekBarPreferenceAutoSummary;
 
 /**
  * A placeholder fragment containing a simple view.

@@ -41,7 +41,7 @@
         android:layout_below="@+id/progressBar"
         android:layout_centerHorizontal="true"
         android:layout_gravity="bottom|end"
-        android:src="@android:drawable/ic_media_play" />
+        android:src="@drawable/ic_play_arrow_white_48dp" />
 
     <LinearLayout
         android:layout_width="match_parent"

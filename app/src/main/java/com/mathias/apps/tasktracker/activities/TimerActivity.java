@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mathias.apps.tasktracker.R;
+import com.mathias.apps.tasktracker.database.TasksDataSource;
 import com.mathias.apps.tasktracker.models.Task;
 
 import java.util.concurrent.TimeUnit;
@@ -34,12 +35,16 @@ public class TimerActivity extends AppCompatActivity {
     private boolean notificationEnabled;
     private String timerMode;
 
+    private TasksDataSource dataSource;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        dataSource = new TasksDataSource(this);
 
         SharedPreferences prefs = getSharedPreferences(SettingsActivityFragment.SETTINGS_SHARED_PREFERENCES_FILE_NAME, MODE_PRIVATE);
         timerMode = prefs.getString("timer_mode", null);
@@ -67,7 +72,7 @@ public class TimerActivity extends AppCompatActivity {
         });
 
         // Get the task to work with
-        final Task task = (Task) getIntent().getExtras().get("selectedTask");
+        final Task task = dataSource.getTask(getIntent().getExtras().getLong("taskId"));
         final TextView tvTaskName = (TextView) findViewById(R.id.tvTaskName);
         if (task != null) {
             tvTaskName.setText(task.getName());

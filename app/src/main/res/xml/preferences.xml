@@ -12,13 +12,13 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Pomodoro Timer">
-        <com.mathias.apps.tasktracker.SeekBarPreferenceAutoSummary
+        <com.mathias.apps.tasktracker.preferences.SeekBarPreferenceAutoSummary
             android:defaultValue="25"
             android:key="work_duration"
             android:max="60"
             android:summary="%s minutes of work"
             android:title="Work Duration" />
-        <com.mathias.apps.tasktracker.SeekBarPreferenceAutoSummary
+        <com.mathias.apps.tasktracker.preferences.SeekBarPreferenceAutoSummary
             android:defaultValue="5"
             android:key="break_duration"
             android:max="10"
@@ -48,14 +48,14 @@
         <!--android:key="long_break_interval"-->
         <!--android:numeric="integer"-->
         <!--android:title="Long Break Interval" />-->
-        <com.mathias.apps.tasktracker.SeekBarPreferenceAutoSummary
+        <com.mathias.apps.tasktracker.preferences.SeekBarPreferenceAutoSummary
             android:defaultValue="4"
             android:dependency="long_break_enabled"
             android:key="long_break_interval"
             android:max="6"
             android:summary="%s Cycles before long break"
             android:title="Long Break Interval" />
-        <com.mathias.apps.tasktracker.SeekBarPreferenceAutoSummary
+        <com.mathias.apps.tasktracker.preferences.SeekBarPreferenceAutoSummary
             android:defaultValue="15"
             android:dependency="long_break_enabled"
             android:key="long_break_duration"

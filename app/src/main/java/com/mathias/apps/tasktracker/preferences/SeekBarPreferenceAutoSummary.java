@@ -1,4 +1,4 @@
-package com.mathias.apps.tasktracker;
+package com.mathias.apps.tasktracker.preferences;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -6,6 +6,10 @@ import android.widget.SeekBar;
 
 import com.sileria.android.view.SeekBarPreference;
 
+// Would also work:
+// http://www.codeproject.com/Articles/163541/SeekBar-Preference
+// http://no-magic.info/development-for-android-os/seekbar-in-preferences.html
+// http://stackoverflow.com/questions/5050272/android-seekbarpreference
 /**
  * Created by Mathias on 21/02/2016.
  */

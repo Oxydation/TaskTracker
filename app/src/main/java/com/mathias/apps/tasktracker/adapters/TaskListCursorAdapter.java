@@ -1,6 +1,7 @@
 package com.mathias.apps.tasktracker.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -13,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mathias.apps.tasktracker.R;
+import com.mathias.apps.tasktracker.activities.TimerActivity;
 import com.mathias.apps.tasktracker.database.TasksDataSource;
 import com.mathias.apps.tasktracker.models.SubTask;
 import com.mathias.apps.tasktracker.models.Task;
@@ -45,7 +47,7 @@ public class TaskListCursorAdapter extends CursorAdapter implements View.OnCreat
     }
 
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public void bindView(View view, final Context context, Cursor cursor) {
         ViewHolder holder;
         Task task = TasksDataSource.cursorToTask(cursor);
 
@@ -75,6 +77,15 @@ public class TaskListCursorAdapter extends CursorAdapter implements View.OnCreat
                 if (callback != null) {
                     callback.onEditButtonClick(id);
                 }
+            }
+        });
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, TimerActivity.class);
+                intent.putExtra("taskId", id);
+                context.startActivity(intent);
             }
         });
 
