@@ -24,6 +24,10 @@ import com.mathias.apps.tasktracker.models.Task;
 import java.util.concurrent.TimeUnit;
 
 public class TimerActivity extends AppCompatActivity {
+    public enum TimerStatus {
+        WORK, BREAK, WAIT_FOR_WORK, WAIT_FOR_BREAK
+    }
+
     private boolean timerRunning = false;
 
     private int workDuration;
@@ -34,7 +38,7 @@ public class TimerActivity extends AppCompatActivity {
     private boolean vibrationEnabled;
     private boolean notificationEnabled;
     private String timerMode;
-
+    private TimerStatus status = TimerStatus.WAIT_FOR_WORK;
     private TasksDataSource dataSource;
 
     @Override
@@ -45,6 +49,8 @@ public class TimerActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         dataSource = new TasksDataSource(this);
+        final FloatingActionButton fabStartPause = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fabStopBreak = (FloatingActionButton) findViewById(R.id.fab2);
 
         SharedPreferences prefs = getSharedPreferences(SettingsActivityFragment.SETTINGS_SHARED_PREFERENCES_FILE_NAME, MODE_PRIVATE);
         timerMode = prefs.getString("timer_mode", null);
@@ -74,12 +80,15 @@ public class TimerActivity extends AppCompatActivity {
         // Get the task to work with
         final Task task = dataSource.getTask(getIntent().getExtras().getLong("taskId"));
         final TextView tvTaskName = (TextView) findViewById(R.id.tvTaskName);
+        final TextView tvTaskDescription = (TextView) findViewById(R.id.tvTaskDescription);
         if (task != null) {
             tvTaskName.setText(task.getName());
+            tvTaskDescription.setText(task.getDescription());
         }
 
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
         final TextView tvTime = (TextView) findViewById(R.id.tvTime);
+        final TextView tvTimeSubtitle = (TextView) findViewById(R.id.tvTimeSubtitle);
 
         if (timerMode != null && timerMode.equals("pomodoro")) {
             // Set time remaining
@@ -118,6 +127,8 @@ public class TimerActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 tvTime.setText(R.string.timer_finished_text);
+                tvTimeSubtitle.setText("Worktime is up.");
+                fabStartPause.setBackgroundResource(R.drawable.ic_free_breakfast_white_48dp);
 
                 if (vibrationEnabled) {
                     // Vibrate on countdown finished
@@ -133,11 +144,13 @@ public class TimerActivity extends AppCompatActivity {
             }
         };
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+
+        fabStartPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!timerRunning) {
+                    timerRunning = true;
+                    fabStartPause.setBackgroundResource(R.drawable.ic_pause_white_48dp);
                     animation.setDuration(1000 * 60 * workDuration); //in milliseconds
                     animation.setInterpolator(new LinearInterpolator());
                     animation.start();
@@ -147,9 +160,27 @@ public class TimerActivity extends AppCompatActivity {
                 }
             }
         });
+
+        fabStopBreak.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    private void startTimer(String timerMode) {
+
+    }
+
+    private void pauseTimer() {
+
+    }
+
+    private void stopTimer() {
+
+    }
 //    private static String getTimeRemaining(long millisUntilFinished) {
 //        String ms = String.format("%02d:%02d",
 //                TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),

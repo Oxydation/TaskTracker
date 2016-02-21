@@ -22,8 +22,9 @@
         android:layout_centerVertical="true"
         android:indeterminate="false"
         android:max="500"
-        android:progress="500"
-        android:progressDrawable="@drawable/circular" />
+        android:progress="10"
+        android:progressDrawable="@drawable/circular"
+        android:rotation="-90" />
 
     <TextView
         android:id="@+id/tvTime"
@@ -34,14 +35,38 @@
         android:text="@string/activity_timer_default"
         android:textSize="60sp" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+    <TextView
+        android:id="@+id/tvTimeSubtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/progressBar"
+        android:layout_below="@id/tvTime"
         android:layout_centerHorizontal="true"
-        android:layout_gravity="bottom|end"
-        android:src="@drawable/ic_play_arrow_white_48dp" />
+        android:layout_gravity="center_horizontal"
+        android:text="Time until break" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/progressBar"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:src="@drawable/ic_play_arrow_white_48dp" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/ic_stop_white_48dp" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -56,6 +81,12 @@
             android:layout_height="wrap_content"
             android:text="@string/activity_timer_taskname"
             android:textSize="40sp" />
+
+        <TextView
+            android:id="@+id/tvTaskDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Description" />
 
         <ListView
             android:id="@+id/listView"
