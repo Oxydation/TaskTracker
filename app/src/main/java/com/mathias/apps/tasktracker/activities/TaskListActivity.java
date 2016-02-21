@@ -2,6 +2,7 @@ package com.mathias.apps.tasktracker.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
@@ -23,9 +24,7 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
     public static final int REQUEST_CODE_NEW_TASK = 100;
     private static final int REQUEST_CODE_UDPATE_TASK = 1003;
 
-    //private List<Task> tasks;
     private ListView listViewTasks;
-    //private TaskListAdapter adapter;
 
     private TasksDataSource dataSource;
     private TaskListCursorAdapter cursorAdapter;
@@ -49,8 +48,9 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
 
         dataSource = new TasksDataSource(this);
         cursorAdapter = new TaskListCursorAdapter(this, dataSource.getAllTasksCursor(), 0);
-        listViewTasks.setAdapter(cursorAdapter);
         cursorAdapter.setCallback(this);
+
+        listViewTasks.setAdapter(cursorAdapter);
         listViewTasks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -111,10 +111,10 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_NEW_TASK) {
-                int taskId = data.getExtras().getInt("taskId");
+                // int taskId = data.getExtras().getInt("taskId");
                 updateTaskListView();
             } else if (requestCode == REQUEST_CODE_UDPATE_TASK) {
-                int taskId = data.getExtras().getInt("taskId");
+                // int taskId = data.getExtras().getInt("taskId");
                 updateTaskListView();
             }
         }
@@ -152,6 +152,7 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
         switch (item.getItemId()) {
             case R.id.context_menu_delete_item:
                 dataSource.deleteTask(cursorAdapter.getItemId(itemInfo.position));
+                Snackbar.make(listViewTasks, "Task has been deleted.", Snackbar.LENGTH_LONG);
                 updateTaskListView();
                 return true;
 

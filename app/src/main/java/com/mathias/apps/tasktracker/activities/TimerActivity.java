@@ -55,6 +55,14 @@ public class TimerActivity extends AppCompatActivity {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
                 // react to break and work duration
+                switch (key) {
+                    case "work_duration":
+                        workDuration = sharedPreferences.getInt("work_duration", 25);
+                        break;
+                    case "break_duration":
+                        breakDuration = sharedPreferences.getInt("break_duration", 5);
+                        break;
+                }
             }
         });
 
@@ -71,7 +79,6 @@ public class TimerActivity extends AppCompatActivity {
             long millis = TimeUnit.MINUTES.toMillis(workDuration);
             tvTime.setText(getTimeString(millis));
         }
-
 
         final ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", 500, 0);
         final CountDownTimer countDownBreakTimer = new CountDownTimer(1000 * 60 * breakDuration, 1000) {

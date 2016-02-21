@@ -23,6 +23,14 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Mathias on 06/02/2016.
  */
+
+/**
+ * This class was used for a listview to act as an array adapter.
+ * Instead, the new cursor adapter is being used now.
+ *
+ * @deprecated use {@link TaskListCursorAdapter} ()} instead.
+        */
+@Deprecated
 public class TaskListAdapter extends ArrayAdapter<Task> implements View.OnCreateContextMenuListener {
     private List<Task> tasks;
     private LayoutInflater inflater;
@@ -35,7 +43,6 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements View.OnCreate
         this.tasks = tasks;
         this.context = context;
         this.layoutResourceId = resource;
-
     }
 
     @Override
