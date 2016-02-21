@@ -28,7 +28,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:gravity="center_horizontal"
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        android:textSize="16sp"
         android:text="@string/main_list_empty"
         android:visibility="gone" />
 </RelativeLayout>
