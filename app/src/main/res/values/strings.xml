@@ -34,4 +34,5 @@
     <string name="task_item_description">Task Image</string>
     <string name="activity_timer_default">00:00</string>
     <string name="activity_new_task_minute">m</string>
+    <string name="activity_timer_subtitle_work">Time until break</string>
 </resources>

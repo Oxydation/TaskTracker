@@ -36,7 +36,7 @@ public class SettingsActivityFragment extends PreferenceFragment {
         SeekBarPreferenceAutoSummary longBreakInterval = (SeekBarPreferenceAutoSummary) findPreference("long_break_interval");
 
         Log.i(LOGTAG, String.valueOf(workDuration.getMax()));
-        workDuration.setMax(60);
+        workDuration.setMax(40);
         breakDuration.setMax(10);
         longBreakDuration.setMax(20);
         longBreakInterval.setMax(5);

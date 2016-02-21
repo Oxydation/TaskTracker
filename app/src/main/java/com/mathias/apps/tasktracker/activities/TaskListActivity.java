@@ -52,21 +52,13 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
         cursorAdapter.setCallback(this);
 
         listViewTasks.setAdapter(cursorAdapter);
+        // Not working
         listViewTasks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(TaskListActivity.this, "bla", Toast.LENGTH_SHORT).show();
             }
         });
-//        listViewTasks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Toast.makeText(TaskListActivity.this, "bla", Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(TaskListActivity.this, TimerActivity.class);
-//                intent.putExtra("selectedTask", tasks.get(position));
-//                startActivity(intent);
-//            }
-//        });
 
     }
 
