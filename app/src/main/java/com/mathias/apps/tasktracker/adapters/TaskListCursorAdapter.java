@@ -132,8 +132,7 @@ public class TaskListCursorAdapter extends CursorAdapter implements View.OnCreat
             // Get time done in hours and minutes
             long hours = TimeUnit.MINUTES.toHours((long) task.getTimeDone());
             long remainMinute = (long) (task.getTimeDone() - TimeUnit.HOURS.toMinutes(hours));
-            String result = String.format("%02d", hours) + ":"
-                    + String.format("%02d", remainMinute) + "h";
+            String result = String.format("%01d", hours) + "h " + String.format("%01d", remainMinute) + "m";
             timeDone.setText(result);
 
             // Get subtask status

@@ -1,6 +1,10 @@
 package com.mathias.apps.tasktracker.activities;
 
 import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,8 +13,10 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +36,9 @@ import java.util.concurrent.TimeUnit;
 
 public class TimerActivity extends AppCompatActivity {
     private static final long BLINK_DURATION = 600;
+    private static final long TIMER_INTERVAL = 1000;
+    private static final long VIBRATE_DURATION = 500;
+    private static final String LOGTAG = "TimerActivity";
 
     private int workDuration;
     private int breakDuration;
@@ -50,6 +59,7 @@ public class TimerActivity extends AppCompatActivity {
 
     private TextView tvTime;
     private TextView tvTimeSubtitle;
+    private TextView tvTaskStatus;
     private FloatingActionButton fabStartPause;
     private FloatingActionButton fabStop;
 
@@ -75,11 +85,13 @@ public class TimerActivity extends AppCompatActivity {
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
         tvTime = (TextView) findViewById(R.id.tvTime);
         tvTimeSubtitle = (TextView) findViewById(R.id.tvTimeSubtitle);
+        tvTaskStatus = (TextView) findViewById(R.id.tvTaskStatus);
         final TextView tvTaskName = (TextView) findViewById(R.id.tvTaskName);
         final TextView tvTaskDescription = (TextView) findViewById(R.id.tvTaskDescription);
         if (task != null) {
             tvTaskName.setText(task.getName());
             tvTaskDescription.setText(task.getDescription());
+            tvTaskStatus.setText(getStatusText(task));
         }
 
         if (timerMode != null && timerMode.equals("pomodoro")) {
@@ -97,14 +109,16 @@ public class TimerActivity extends AppCompatActivity {
         fabStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (status == TimerStatus.BREAK || status == TimerStatus.WORK || status == TimerStatus.WAIT_FOR_BREAK) {
+                if (status == TimerStatus.BREAK || status == TimerStatus.WORK || status == TimerStatus.WAIT_FOR_BREAK || status == TimerStatus.WAIT_FOR_WORK) {
                     status = TimerStatus.WAIT_FOR_WORK;
                     tvTime.setText(R.string.timer_finished_text);
+                    tvTimeSubtitle.setText(R.string.activity_timer_subtitle_work);
                     countDownWorkTimer.cancel();
                     countDownBreakTimer.cancel();
                     progressBarAnimation.end();
                     setFABIcon(fabStartPause, R.drawable.ic_play_arrow_white_48dp);
                     tvTime.setAnimation(null);
+                    updateTask(task);
                 } else {
                     Toast.makeText(TimerActivity.this, "No timer running.", Toast.LENGTH_SHORT).show();
                 }
@@ -150,6 +164,7 @@ public class TimerActivity extends AppCompatActivity {
                     countDownWorkTimer.start();
                 } else if (status == TimerStatus.WORK) {
                     status = TimerStatus.PAUSED_WORK;
+                    dataSource.updateTask(task);
                     setFABIcon(fabStartPause, R.drawable.ic_play_arrow_white_48dp);
                     countDownWorkTimer.cancel();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -175,6 +190,10 @@ public class TimerActivity extends AppCompatActivity {
         });
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    public static String getStatusText(Task task) {
+        return String.format("%s spent", getFriendlyTimeString(TimeUnit.SECONDS.toMillis((long) (task.getTimeDone() * 60)), false, true));
     }
 
     private void loadSharedPreferences() {
@@ -205,7 +224,7 @@ public class TimerActivity extends AppCompatActivity {
     }
 
     private CountDownTimer getCountDownBreakTimer(long duration) {
-        return new CountDownTimer(duration, 1000) {
+        return new CountDownTimer(duration, TIMER_INTERVAL) {
             @Override
             public void onTick(long millisUntilFinished) {
                 tvTime.setText(getTimeString(millisUntilFinished));
@@ -220,7 +239,7 @@ public class TimerActivity extends AppCompatActivity {
                 if (vibrationEnabled) {
                     // Vibrate on countdown finished
                     Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-                    vibrator.vibrate(500);
+                    vibrator.vibrate(VIBRATE_DURATION);
                 }
                 tvTime.setAnimation(getBlinkAnimation());
                 status = TimerStatus.WAIT_FOR_WORK;
@@ -229,32 +248,73 @@ public class TimerActivity extends AppCompatActivity {
     }
 
     private CountDownTimer getCountdownWorkTimer(long duration) {
-        return new CountDownTimer(duration, 1000) {
+        return new CountDownTimer(duration, TIMER_INTERVAL) {
+
             @Override
             public void onTick(long millisUntilFinished) {
                 lastTimerValue = millisUntilFinished;
                 tvTime.setText(getTimeString(millisUntilFinished));
 
-                // set every 15 seconds a new value, via modulo
-                task.setTimeDone(TimeUnit.SECONDS.toMinutes(TimeUnit.MINUTES.toSeconds((long) task.getTimeDone()) + 1));
-                dataSource.updateTask(task);
+                task.setTimeDone(task.getTimeDone() + 0.016666666666666666);
+                updateTask(task);
             }
 
             @Override
             public void onFinish() {
+                updateTask(task);
                 tvTime.setText(R.string.timer_finished_text);
                 tvTimeSubtitle.setText("Worktime is up.");
+                notifiyTimerFinished("Work time up.", "The work time of your current assignment is finished.", task.getId());
                 setFABIcon(fabStartPause, R.drawable.ic_free_breakfast_white_48dp);
                 if (vibrationEnabled) {
                     // Vibrate on countdown finished
                     Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-                    vibrator.vibrate(500);
+                    vibrator.vibrate(VIBRATE_DURATION);
                 }
 
                 tvTime.setAnimation(getBlinkAnimation());
                 status = TimerStatus.WAIT_FOR_BREAK;
             }
         };
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private void notifiyTimerFinished(String title, String description, long taskId) {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle(title)
+                        .setContentText(description);
+        // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(this, TimerActivity.class);
+        resultIntent.putExtra("taskId", taskId);
+
+        // The stack builder object will contain an artificial back stack for the
+        // started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(TimerActivity.class);
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        // mId allows you to update the notification later on.
+        int mId = 1;
+        mNotificationManager.notify(mId, mBuilder.build());
+        Log.i(LOGTAG, "Throwed notification.");
+    }
+
+    private void updateTask(Task task) {
+        tvTaskStatus.setText(getStatusText(task));
+        dataSource.updateTask(task);
     }
 
     private void setFABIcon(FloatingActionButton fab, int resourceId) {
@@ -267,18 +327,6 @@ public class TimerActivity extends AppCompatActivity {
         } else {
             fab.setImageDrawable(getResources().getDrawable(resourceId));
         }
-    }
-
-    private void startTimer(String timerMode) {
-
-    }
-
-    private void pauseTimer() {
-
-    }
-
-    private void stopTimer() {
-
     }
 
     // http://stackoverflow.com/questions/23426201/flashing-textview-background-in-android-for-1-second-only-once
@@ -328,6 +376,24 @@ public class TimerActivity extends AppCompatActivity {
                     TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1));
         } else {
             hms = String.format("%02d:%02d",
+                    TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
+                    TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1));
+        }
+
+        return hms;
+    }
+
+    private static String getFriendlyTimeString(long millis, boolean showAll, boolean showSeconds) {
+        String hms;
+        if (TimeUnit.MILLISECONDS.toHours(millis) >= 1 || showAll && !showSeconds) {
+            hms = String.format("%02dh %02dm %02ds", TimeUnit.MILLISECONDS.toHours(millis),
+                    TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
+                    TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1));
+        } else if (!showSeconds) {
+            hms = String.format("%02dh %02dm", TimeUnit.MILLISECONDS.toHours(millis),
+                    TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1));
+        } else {
+            hms = String.format("%01dm %01ds",
                     TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
                     TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1));
         }
