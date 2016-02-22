@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.mathias.apps.tasktracker.R;
 import com.mathias.apps.tasktracker.activities.TimerActivity;
 import com.mathias.apps.tasktracker.database.TasksDataSource;
-import com.mathias.apps.tasktracker.models.SubTask;
 import com.mathias.apps.tasktracker.models.Task;
 
 import java.util.concurrent.TimeUnit;
@@ -135,21 +134,27 @@ public class TaskListCursorAdapter extends CursorAdapter implements View.OnCreat
             String result = String.format("%01d", hours) + "h " + String.format("%01d", remainMinute) + "m";
             timeDone.setText(result);
 
-            // Get subtask status
-            int amountSubTasks = 0;
-            int amountFinishedSubtasks = 0;
-            if (task.getSubTasks() != null) {
-                amountSubTasks = task.getSubTasks().size();
+            // TODO: first create table for subtasks
+//            // Get subtask status
+//            int amountSubTasks = 0;
+//            int amountFinishedSubtasks = 0;
+//            if (task.getSubTasks() != null) {
+//                amountSubTasks = task.getSubTasks().size();
+//
+//                for (SubTask subTask : task.getSubTasks()) {
+//                    if (subTask.isDone()) {
+//                        amountFinishedSubtasks++;
+//                    }
+//                }
+//            }
+//
+//            status.setText(String.format("%d/%d Subtasks done", amountFinishedSubtasks, amountSubTasks));
 
-                for (SubTask subTask : task.getSubTasks()) {
-                    if (subTask.isDone()) {
-                        amountFinishedSubtasks++;
-                    }
-                }
+            if (task.getDescription() == null || task.getDescription().isEmpty()) {
+                status.setText("No description set.");
+            } else {
+                status.setText(task.getDescription());
             }
-
-            status.setText(String.format("%d/%d Subtasks done", amountFinishedSubtasks, amountSubTasks));
-
             // Set opacity of task
             if (task.isDone()) {
                 layout.setAlpha((float) 0.5);

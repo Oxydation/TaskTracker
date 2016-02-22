@@ -1,4 +1,4 @@
-package com.mathias.apps.tasktracker;
+package com.mathias.apps.tasktracker.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+
+import com.mathias.apps.tasktracker.R;
 
 /**
  * Created by Mathias on 22/02/2016.

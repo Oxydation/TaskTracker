@@ -11,6 +11,7 @@
         <item>stopwatch</item>
     </string-array>
 
+    <!-- http://stackoverflow.com/questions/10196015/android-is-it-possible-to-define-a-map-in-an-xml-file -->
     <string-array name="timer_mode_dialog_items">
         <item>Pomodoro Timer</item>
         <item>Stopwatch Timer</item>

@@ -1,9 +1,11 @@
 package com.mathias.apps.tasktracker.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
@@ -116,21 +118,44 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
         menu.setHeaderIcon(R.drawable.ic_icon_task);
 
         // Get the clicked item
-        // AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 
         // Get the name of the clicked item
-        // Task clickedItem = (Task) listViewTasks.getItemAtPosition(info.position);
+        Task clickedItem = dataSource.getTask(cursorAdapter.getItemId(info.position));
 
-//        item.setVisible(false);
-//        if (clickedItem.isDone()) {
-//            v.findViewById(R.id.context_menu_set_done).setVisibility(View.INVISIBLE);
-//            v.findViewById(R.id.context_menu_set_undone).setVisibility(View.VISIBLE);
-//        } else {
-//            v.findViewById(R.id.context_menu_set_done).setVisibility(View.VISIBLE);
-//            v.findViewById(R.id.context_menu_set_undone).setVisibility(View.INVISIBLE);
-//        }
+        if (clickedItem.isDone()) {
+            menu.findItem(R.id.context_menu_set_done).setVisible(false);
+            menu.findItem(R.id.context_menu_set_undone).setVisible(true);
+        } else {
+            menu.findItem(R.id.context_menu_set_done).setVisible(true);
+            menu.findItem(R.id.context_menu_set_undone).setVisible(false);
+        }
 
         super.onCreateContextMenu(menu, v, menuInfo);
+    }
+
+    private void deleteTask(final long taskId) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(
+                TaskListActivity.this);
+        alert.setTitle("Delete task");
+        alert.setMessage("Are you sure to delete the task?");
+        alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dataSource.deleteTask(taskId);
+                Snackbar.make(listViewTasks, "Task has been deleted.", Snackbar.LENGTH_LONG);
+                updateTaskListView();
+                dialog.dismiss();
+            }
+        });
+        alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        alert.show();
     }
 
     @Override
@@ -138,9 +163,8 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
         AdapterView.AdapterContextMenuInfo itemInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.context_menu_delete_item:
-                dataSource.deleteTask(cursorAdapter.getItemId(itemInfo.position));
-                Snackbar.make(listViewTasks, "Task has been deleted.", Snackbar.LENGTH_LONG);
-                updateTaskListView();
+                long taskId = cursorAdapter.getItemId(itemInfo.position);
+                deleteTask(taskId);
                 return true;
 
             case R.id.context_menu_set_done:

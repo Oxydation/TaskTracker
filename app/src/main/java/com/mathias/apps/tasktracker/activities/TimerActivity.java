@@ -30,8 +30,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mathias.apps.tasktracker.R;
-import com.mathias.apps.tasktracker.TimerSelectionDialogFragment;
 import com.mathias.apps.tasktracker.database.TasksDataSource;
+import com.mathias.apps.tasktracker.dialogs.TimerSelectionDialogFragment;
 import com.mathias.apps.tasktracker.models.StopWatch;
 import com.mathias.apps.tasktracker.models.Task;
 import com.mathias.apps.tasktracker.models.TimerMode;
@@ -264,8 +264,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
             status = TimerStatus.PAUSED_WORK;
             setFABIcon(fabStartPause, R.drawable.ic_play_arrow_white_48dp);
             stopWatch.pause();
-            tvTimeChrono.setAnimation(getBlinkAnimation());
-            tvTimeChrono.animate();
+            tvTimeChrono.startAnimation(getBlinkAnimation());
         } else if (status == TimerStatus.PAUSED_WORK) {
             status = TimerStatus.WORK;
             setFABIcon(fabStartPause, R.drawable.ic_pause_white_48dp);
@@ -328,7 +327,6 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         }
         return modus;
     }
-
 
     private CountDownTimer getCountDownBreakTimer(long duration) {
         return new CountDownTimer(duration, TIMER_INTERVAL) {
