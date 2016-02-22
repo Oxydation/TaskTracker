@@ -37,4 +37,5 @@
     <string name="activity_timer_subtitle_work">Time until break</string>
     <string name="cancel">Cancel</string>
     <string name="pick_timer_mode">Select a timer mode</string>
+    <string name="stopwatch_mode_subtitle">Stopwatch</string>
 </resources>

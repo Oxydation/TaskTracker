@@ -69,6 +69,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
     private FloatingActionButton fabStartPause;
     private FloatingActionButton fabStop;
     private ObjectAnimator progressBarAnimation;
+    private long lastStopTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,19 +109,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         }
 
         // Initialize timers
-        // http://stackoverflow.com/questions/4897665/android-chronometer-format
-        tvTimeChrono.setBase(SystemClock.elapsedRealtime());
-        tvTimeChrono.setFormat("00:%s");
-        tvTimeChrono.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-            public void onChronometerTick(Chronometer c) {
-                long elapsedMillis = SystemClock.elapsedRealtime() - c.getBase();
-                if (elapsedMillis > 3600000L) {
-                    c.setFormat("0%s");
-                } else {
-                    c.setFormat("00:%s");
-                }
-            }
-        });
+        initializeChronometer();
 
         countDownBreakTimer = getCountDownBreakTimer(1000 * 60 * breakDuration);
         countDownWorkTimer = getCountdownWorkTimer((long) 1000 * 60 * workDuration);
@@ -133,19 +122,21 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
                     case ASK:
                         break;
                     case STOP_WATCH:
+                        status = TimerStatus.WAIT_FOR_WORK;
                         tvTimeChrono.stop();
                         long elapsed = SystemClock.elapsedRealtime() - tvTimeChrono.getBase();
                         tvTimeChrono.setBase(SystemClock.elapsedRealtime());
+                        lastStopTime = 0;
                         break;
                     case POMODORO:
                         if (status == TimerStatus.BREAK || status == TimerStatus.WORK || status == TimerStatus.WAIT_FOR_BREAK || status == TimerStatus.WAIT_FOR_WORK) {
                             status = TimerStatus.WAIT_FOR_WORK;
                             tvTimeChrono.setText(R.string.timer_finished_text);
                             tvTimeSubtitle.setText(R.string.activity_timer_subtitle_work);
+                            setFABIcon(fabStartPause, R.drawable.ic_play_arrow_white_48dp);
                             countDownWorkTimer.cancel();
                             countDownBreakTimer.cancel();
                             progressBarAnimation.end();
-                            setFABIcon(fabStartPause, R.drawable.ic_play_arrow_white_48dp);
                             tvTimeChrono.setAnimation(null);
                             updateTask(task);
                         } else {
@@ -153,7 +144,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
                         }
                         break;
                 }
-                currentSelectedTimerMode = timerMode;
+                currentSelectedTimerMode = TimerMode.values()[timerMode.ordinal()];
             }
         });
 
@@ -177,18 +168,39 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    private void initializeChronometer() {
+        // http://stackoverflow.com/questions/4897665/android-chronometer-format
+        tvTimeChrono.setBase(SystemClock.elapsedRealtime());
+        tvTimeChrono.setFormat("00:%s");
+        tvTimeChrono.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            public void onChronometerTick(Chronometer c) {
+                long elapsedMillis = SystemClock.elapsedRealtime() - c.getBase();
+                if (elapsedMillis > 3600000L) {
+                    c.setFormat("0%s");
+                } else {
+                    c.setFormat("00:%s");
+                }
+
+                task.setTimeDone(task.getTimeDone() + 0.016666666666666666);
+                updateTask(task);
+            }
+        });
+    }
+
     private void handleStartPauseStopWatch() {
         if (status == TimerStatus.WAIT_FOR_WORK) {
             status = TimerStatus.WORK;
-            tvTimeChrono.setBase(SystemClock.elapsedRealtime());
-            tvTimeChrono.setFormat("00:%s");
-            tvTimeChrono.start();
+            tvTimeSubtitle.setText(R.string.stopwatch_mode_subtitle);
+            setFABIcon(fabStartPause, R.drawable.ic_pause_white_48dp);
+            chronoStart();
         } else if (status == TimerStatus.WORK) {
             status = TimerStatus.PAUSED_WORK;
-            tvTimeChrono.stop();
+            setFABIcon(fabStartPause, R.drawable.ic_play_arrow_white_48dp);
+            chronoPause();
         } else if (status == TimerStatus.PAUSED_WORK) {
             status = TimerStatus.WORK;
-            tvTimeChrono.start();
+            setFABIcon(fabStartPause, R.drawable.ic_pause_white_48dp);
+            chronoStart();
         }
     }
 
@@ -253,6 +265,25 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         tvTimeChrono.setAnimation(null);
     }
 
+    private void chronoStart() {
+        // on first start
+        if (lastStopTime == 0) {
+            tvTimeChrono.setFormat("00:%s");
+            tvTimeChrono.setBase(SystemClock.elapsedRealtime());
+            // on resume after pause
+        } else {
+            long intervalOnPause = (SystemClock.elapsedRealtime() - lastStopTime);
+            tvTimeChrono.setBase(tvTimeChrono.getBase() + intervalOnPause);
+        }
+
+        tvTimeChrono.start();
+    }
+
+    private void chronoPause() {
+        tvTimeChrono.stop();
+        lastStopTime = SystemClock.elapsedRealtime();
+    }
+
     public static String getStatusText(Task task) {
         return String.format("%s spent", getFriendlyTimeString(TimeUnit.SECONDS.toMillis((long) (task.getTimeDone() * 60)), false, true));
     }
@@ -260,16 +291,17 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
     // TODO: Create a better approach to convert from string to enum
     // http://stackoverflow.com/questions/9742050/is-there-an-enum-string-resource-lookup-pattern-for-android
     private TimerMode fromString(String mode) {
+        TimerMode modus;
         if (mode.equals("ask")) {
-            timerMode = TimerMode.ASK;
+            modus = TimerMode.ASK;
         } else if (mode.equals("stopwatch")) {
-            timerMode = TimerMode.STOP_WATCH;
+            modus = TimerMode.STOP_WATCH;
         } else if (mode.equals("pomodoro")) {
-            timerMode = TimerMode.POMODORO;
+            modus = TimerMode.POMODORO;
         } else {
-            timerMode = TimerMode.ASK;
+            modus = TimerMode.ASK;
         }
-        return timerMode;
+        return modus;
     }
 
     private void loadSharedPreferences() {
