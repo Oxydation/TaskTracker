@@ -11,7 +11,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.SystemClock;
 import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
@@ -33,6 +32,7 @@ import android.widget.Toast;
 import com.mathias.apps.tasktracker.R;
 import com.mathias.apps.tasktracker.TimerSelectionDialogFragment;
 import com.mathias.apps.tasktracker.database.TasksDataSource;
+import com.mathias.apps.tasktracker.models.StopWatch;
 import com.mathias.apps.tasktracker.models.Task;
 import com.mathias.apps.tasktracker.models.TimerMode;
 import com.mathias.apps.tasktracker.models.TimerStatus;
@@ -62,6 +62,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
     private TimerMode currentSelectedTimerMode = TimerMode.ASK;
     private TimerMode timerMode = TimerMode.ASK;
     private TimerStatus status = TimerStatus.WAIT_FOR_WORK;
+    private StopWatch stopWatch;
 
     private Chronometer tvTimeChrono;
     private TextView tvTimeSubtitle;
@@ -69,7 +70,6 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
     private FloatingActionButton fabStartPause;
     private FloatingActionButton fabStop;
     private ObjectAnimator progressBarAnimation;
-    private long lastStopTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +109,8 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         }
 
         // Initialize timers
-        initializeChronometer();
+        stopWatch = new StopWatch(tvTimeChrono);
+        initStopWatch();
 
         countDownBreakTimer = getCountDownBreakTimer(1000 * 60 * breakDuration);
         countDownWorkTimer = getCountdownWorkTimer((long) 1000 * 60 * workDuration);
@@ -123,10 +124,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
                         break;
                     case STOP_WATCH:
                         status = TimerStatus.WAIT_FOR_WORK;
-                        tvTimeChrono.stop();
-                        long elapsed = SystemClock.elapsedRealtime() - tvTimeChrono.getBase();
-                        tvTimeChrono.setBase(SystemClock.elapsedRealtime());
-                        lastStopTime = 0;
+                        stopWatch.stop();
                         break;
                     case POMODORO:
                         if (status == TimerStatus.BREAK || status == TimerStatus.WORK || status == TimerStatus.WAIT_FOR_BREAK || status == TimerStatus.WAIT_FOR_WORK) {
@@ -168,23 +166,15 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void initializeChronometer() {
-        // http://stackoverflow.com/questions/4897665/android-chronometer-format
-        tvTimeChrono.setBase(SystemClock.elapsedRealtime());
-        tvTimeChrono.setFormat("00:%s");
-        tvTimeChrono.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-            public void onChronometerTick(Chronometer c) {
-                long elapsedMillis = SystemClock.elapsedRealtime() - c.getBase();
-                if (elapsedMillis > 3600000L) {
-                    c.setFormat("0%s");
-                } else {
-                    c.setFormat("00:%s");
-                }
-
+    private void initStopWatch() {
+        stopWatch.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            @Override
+            public void onChronometerTick(Chronometer chronometer) {
                 task.setTimeDone(task.getTimeDone() + 0.016666666666666666);
                 updateTask(task);
             }
         });
+
     }
 
     private void handleStartPauseStopWatch() {
@@ -192,15 +182,15 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
             status = TimerStatus.WORK;
             tvTimeSubtitle.setText(R.string.stopwatch_mode_subtitle);
             setFABIcon(fabStartPause, R.drawable.ic_pause_white_48dp);
-            chronoStart();
+            stopWatch.start();
         } else if (status == TimerStatus.WORK) {
             status = TimerStatus.PAUSED_WORK;
             setFABIcon(fabStartPause, R.drawable.ic_play_arrow_white_48dp);
-            chronoPause();
+            stopWatch.pause();
         } else if (status == TimerStatus.PAUSED_WORK) {
             status = TimerStatus.WORK;
             setFABIcon(fabStartPause, R.drawable.ic_pause_white_48dp);
-            chronoStart();
+            stopWatch.start();
         }
     }
 
@@ -265,24 +255,6 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         tvTimeChrono.setAnimation(null);
     }
 
-    private void chronoStart() {
-        // on first start
-        if (lastStopTime == 0) {
-            tvTimeChrono.setFormat("00:%s");
-            tvTimeChrono.setBase(SystemClock.elapsedRealtime());
-            // on resume after pause
-        } else {
-            long intervalOnPause = (SystemClock.elapsedRealtime() - lastStopTime);
-            tvTimeChrono.setBase(tvTimeChrono.getBase() + intervalOnPause);
-        }
-
-        tvTimeChrono.start();
-    }
-
-    private void chronoPause() {
-        tvTimeChrono.stop();
-        lastStopTime = SystemClock.elapsedRealtime();
-    }
 
     public static String getStatusText(Task task) {
         return String.format("%s spent", getFriendlyTimeString(TimeUnit.SECONDS.toMillis((long) (task.getTimeDone() * 60)), false, true));
