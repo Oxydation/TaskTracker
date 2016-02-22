@@ -1,6 +1,5 @@
 package com.mathias.apps.tasktracker.activities;
 
-import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -37,10 +36,10 @@ import com.mathias.apps.tasktracker.models.TimerStatus;
 import java.util.concurrent.TimeUnit;
 
 public class TimerActivity extends AppCompatActivity implements TimerSelectionDialogFragment.TimerSelectionDialogListener {
-    private static final long BLINK_DURATION = 600;
-    private static final long TIMER_INTERVAL = 1000;
     private static final long VIBRATE_DURATION = 500;
     private static final String LOGTAG = "TimerActivity";
+
+    private boolean isInForegroundMode = false;
 
     private int workDuration;
     private int breakDuration;
@@ -52,9 +51,6 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
     private TasksDataSource dataSource;
     private SharedPreferences sharedPreferences;
 
-    // private CountDownTimer countDownWorkTimer;
-    //private CountDownTimer countDownBreakTimer;
-    //private long lastTimerValue;
     private Task task;
     private TimerMode currentSelectedTimerMode = TimerMode.ASK;
     private TimerMode timerMode = TimerMode.ASK;
@@ -67,7 +63,6 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
     private TextView tvTaskStatus;
     private FloatingActionButton fabStartPause;
     private FloatingActionButton fabStop;
-    private ObjectAnimator progressBarAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -196,7 +191,12 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
             @Override
             public void onFinish() {
                 updateTask(task);
-                notifiyTimerFinished("Work time up.", "The work time of your current assignment is finished.", task.getId());
+                tvTimeSubtitle.setText("Worktime is up.");
+
+                if (isInForeground()) {
+                    notifiyTimerFinished("Work time up.", "Task: " + task.getName(), task.getId());
+                }
+
                 setFABIcon(fabStartPause, R.drawable.ic_free_breakfast_white_48dp);
                 if (vibrationEnabled) {
                     // Vibrate on countdown finished
@@ -446,5 +446,21 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
                 handleStartPausePomodoro();
                 break;
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isInForegroundMode = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isInForegroundMode = true;
+    }
+
+    public boolean isInForeground() {
+        return isInForegroundMode;
     }
 }

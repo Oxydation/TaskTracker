@@ -135,6 +135,8 @@ public class PomodoroTimer {
         progressBarAnimation.setDuration(1000 * 60 * breakDuration); //in milliseconds
         progressBarAnimation.setInterpolator(new LinearInterpolator());
         progressBarAnimation.start();
+
+        countDownBreakTimer = getCountDownBreakTimer(1000 * 60 * breakDuration);
         countDownBreakTimer.start();
     }
 
