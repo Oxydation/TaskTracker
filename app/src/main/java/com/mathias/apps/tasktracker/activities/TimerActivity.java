@@ -176,6 +176,10 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
                     vibrator.vibrate(VIBRATE_DURATION);
                 }
 
+                if (notificationEnabled && !isInForeground()) {
+                    notifiyTimer("Break time up.", "Task: " + task.getName(), task.getId(), 100);
+                }
+
                 status = TimerStatus.WAIT_FOR_WORK;
             }
         });
@@ -186,6 +190,8 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
                 // Update task time
                 task.setTimeDone(task.getTimeDone() + 0.016666666666666666);
                 updateTask(task);
+
+                notifiyTimer("Task Tracker", "Time until break: " + PomodoroTimer.getTimeString(millisUntilFinished), task.getId(), pomodoroTimer.getProgressBar().getProgress());
             }
 
             @Override
@@ -193,8 +199,8 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
                 updateTask(task);
                 tvTimeSubtitle.setText("Worktime is up.");
 
-                if (isInForeground()) {
-                    notifiyTimerFinished("Work time up.", "Task: " + task.getName(), task.getId());
+                if (notificationEnabled && !isInForeground()) {
+                    notifiyTimer("Work time up.", "Task: " + task.getName(), task.getId(), 100);
                 }
 
                 setFABIcon(fabStartPause, R.drawable.ic_free_breakfast_white_48dp);
@@ -330,12 +336,15 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void notifiyTimerFinished(String title, String description, long taskId) {
+    private void notifiyTimer(String title, String description, long taskId, int percent) {
+        // TODO
+        // http://stackoverflow.com/questions/14885368/update-text-of-notification-not-entire-notification
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle(title)
-                        .setContentText(description);
+                        .setContentText(description)
+                        .setProgress(500, percent, false);
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, TimerActivity.class);
         resultIntent.putExtra("taskId", taskId);
