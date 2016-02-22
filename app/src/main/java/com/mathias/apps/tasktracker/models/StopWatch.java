@@ -28,6 +28,7 @@ public class StopWatch {
                 } else {
                     c.setFormat("00:%s");
                 }
+                onChronometerTickListener.onChronometerTick(c);
             }
         });
     }

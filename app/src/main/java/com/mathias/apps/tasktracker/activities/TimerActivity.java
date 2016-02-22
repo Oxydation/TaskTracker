@@ -85,6 +85,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         fabStop = (FloatingActionButton) findViewById(R.id.fabStop);
 
         loadSharedPreferences();
+        currentSelectedTimerMode = TimerMode.values()[timerMode.ordinal()];
 
         // Get the task to work with
         task = dataSource.getTask(getIntent().getExtras().getLong("taskId"));
@@ -116,42 +117,12 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         countDownWorkTimer = getCountdownWorkTimer((long) 1000 * 60 * workDuration);
         progressBarAnimation = ObjectAnimator.ofInt(progressBar, "progress", 500, 0);
 
-        fabStop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (currentSelectedTimerMode) {
-                    case ASK:
-                        break;
-                    case STOP_WATCH:
-                        status = TimerStatus.WAIT_FOR_WORK;
-                        stopWatch.stop();
-                        break;
-                    case POMODORO:
-                        if (status == TimerStatus.BREAK || status == TimerStatus.WORK || status == TimerStatus.WAIT_FOR_BREAK || status == TimerStatus.WAIT_FOR_WORK) {
-                            status = TimerStatus.WAIT_FOR_WORK;
-                            tvTimeChrono.setText(R.string.timer_finished_text);
-                            tvTimeSubtitle.setText(R.string.activity_timer_subtitle_work);
-                            setFABIcon(fabStartPause, R.drawable.ic_play_arrow_white_48dp);
-                            countDownWorkTimer.cancel();
-                            countDownBreakTimer.cancel();
-                            progressBarAnimation.end();
-                            tvTimeChrono.setAnimation(null);
-                            updateTask(task);
-                        } else {
-                            Toast.makeText(TimerActivity.this, "No timer running.", Toast.LENGTH_SHORT).show();
-                        }
-                        break;
-                }
-                currentSelectedTimerMode = TimerMode.values()[timerMode.ordinal()];
-            }
-        });
-
         fabStartPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switch (currentSelectedTimerMode) {
                     case ASK:
-                        showNoticeDialog();
+                        showTimerModeSelectionDialog();
                         break;
                     case STOP_WATCH:
                         handleStartPauseStopWatch();
@@ -163,117 +134,85 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
             }
         });
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
-    private void initStopWatch() {
-        stopWatch.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+        fabStop.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onChronometerTick(Chronometer chronometer) {
-                task.setTimeDone(task.getTimeDone() + 0.016666666666666666);
-                updateTask(task);
+            public void onClick(View v) {
+                switch (currentSelectedTimerMode) {
+                    case ASK:
+                        break;
+                    case STOP_WATCH:
+                        status = TimerStatus.WAIT_FOR_WORK;
+                        setFABIcon(fabStartPause, R.drawable.ic_play_arrow_white_48dp);
+                        stopWatch.stop();
+                        break;
+                    case POMODORO:
+                        if (status == TimerStatus.BREAK || status == TimerStatus.WORK || status == TimerStatus.WAIT_FOR_BREAK || status == TimerStatus.WAIT_FOR_WORK) {
+                            status = TimerStatus.WAIT_FOR_WORK;
+                            tvTimeChrono.setText(R.string.timer_finished_text);
+                            tvTimeSubtitle.setText(R.string.activity_timer_subtitle_work);
+                            setFABIcon(fabStartPause, R.drawable.ic_play_arrow_white_48dp);
+                            stopPomodoro();
+                            updateTask(task);
+                        } else {
+                            Toast.makeText(TimerActivity.this, "No timer running.", Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+                }
+                currentSelectedTimerMode = TimerMode.values()[timerMode.ordinal()];
             }
         });
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void handleStartPauseStopWatch() {
-        if (status == TimerStatus.WAIT_FOR_WORK) {
-            status = TimerStatus.WORK;
-            tvTimeSubtitle.setText(R.string.stopwatch_mode_subtitle);
-            setFABIcon(fabStartPause, R.drawable.ic_pause_white_48dp);
-            stopWatch.start();
-        } else if (status == TimerStatus.WORK) {
-            status = TimerStatus.PAUSED_WORK;
-            setFABIcon(fabStartPause, R.drawable.ic_play_arrow_white_48dp);
-            stopWatch.pause();
-        } else if (status == TimerStatus.PAUSED_WORK) {
-            status = TimerStatus.WORK;
-            setFABIcon(fabStartPause, R.drawable.ic_pause_white_48dp);
-            stopWatch.start();
-        }
+    private void startPomodoro() {
+        progressBarAnimation.setDuration(1000 * 60 * workDuration); //in milliseconds
+        progressBarAnimation.setInterpolator(new LinearInterpolator());
+        progressBarAnimation.start();
+
+        // Set new countdowntimer
+        countDownWorkTimer = getCountdownWorkTimer(1000 * 60 * workDuration);
+        countDownWorkTimer.start();
     }
 
-    private void handleStartPausePomodoro() {
-        if (status == TimerStatus.WAIT_FOR_WORK) {
-            status = TimerStatus.WORK;
-            tvTimeSubtitle.setText(R.string.activity_timer_subtitle_work);
-            setFABIcon(fabStartPause, R.drawable.ic_pause_white_48dp);
-            progressBarAnimation.setDuration(1000 * 60 * workDuration); //in milliseconds
-            progressBarAnimation.setInterpolator(new LinearInterpolator());
-            progressBarAnimation.start();
+    private void startBreak() {
+        progressBarAnimation.setDuration(1000 * 60 * breakDuration); //in milliseconds
+        progressBarAnimation.setInterpolator(new LinearInterpolator());
+        progressBarAnimation.start();
+        countDownBreakTimer.start();
+    }
 
-            // Set new countdowntimer
-            countDownWorkTimer = getCountdownWorkTimer(1000 * 60 * workDuration);
-            countDownWorkTimer.start();
-        } else if (status == TimerStatus.WAIT_FOR_BREAK) {
-            status = TimerStatus.BREAK;
-            tvTimeSubtitle.setText("It's break time.");
-            setFABIcon(fabStartPause, R.drawable.ic_skip_next_white_48dp);
-            progressBarAnimation.setDuration(1000 * 60 * breakDuration); //in milliseconds
-            progressBarAnimation.setInterpolator(new LinearInterpolator());
-            progressBarAnimation.start();
-            countDownBreakTimer.start();
-        } else if (status == TimerStatus.BREAK) {
-            // Skip break
-            countDownBreakTimer.cancel();
-            progressBarAnimation.end();
+    private void skipBreak() {
+        // Skip break
+        countDownBreakTimer.cancel();
+        progressBarAnimation.end();
+    }
 
-            // Snackbar.make(v,"Skipped break.", Snackbar.LENGTH_LONG);
-            // Restart work timer
-            status = TimerStatus.WORK;
-            tvTimeSubtitle.setText(R.string.activity_timer_subtitle_work);
-            setFABIcon(fabStartPause, R.drawable.ic_pause_white_48dp);
-            progressBarAnimation.setDuration(1000 * 60 * workDuration); //in milliseconds
-            progressBarAnimation.setInterpolator(new LinearInterpolator());
-            progressBarAnimation.start();
-            countDownWorkTimer = getCountdownWorkTimer(1000 * 60 * workDuration);
-            countDownWorkTimer.start();
-        } else if (status == TimerStatus.WORK) {
-            status = TimerStatus.PAUSED_WORK;
-            dataSource.updateTask(task);
-            setFABIcon(fabStartPause, R.drawable.ic_play_arrow_white_48dp);
-            countDownWorkTimer.cancel();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                progressBarAnimation.pause();
-            } else {
-                progressBarAnimation.cancel();
-            }
-        } else if (status == TimerStatus.PAUSED_WORK) {
-            status = TimerStatus.WORK;
-            setFABIcon(fabStartPause, R.drawable.ic_pause_white_48dp);
-            countDownWorkTimer = getCountdownWorkTimer(lastTimerValue);
-            countDownWorkTimer.start();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                progressBarAnimation.resume();
-            } else {
-                progressBarAnimation.start();
-            }
+    private void pausePomodoro() {
+        countDownWorkTimer.cancel();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            progressBarAnimation.pause();
         } else {
-            Toast.makeText(TimerActivity.this, "Timer already running.", Toast.LENGTH_SHORT).show();
+            progressBarAnimation.cancel();
         }
+        tvTimeChrono.setAnimation(getBlinkAnimation());
+    }
+
+    private void resumePomodoro() {
+        countDownWorkTimer = getCountdownWorkTimer(lastTimerValue);
+        countDownWorkTimer.start();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            progressBarAnimation.resume();
+        } else {
+            progressBarAnimation.start();
+        }
+    }
+
+    private void stopPomodoro() {
+        countDownWorkTimer.cancel();
+        countDownBreakTimer.cancel();
+        progressBarAnimation.end();
         tvTimeChrono.setAnimation(null);
-    }
-
-
-    public static String getStatusText(Task task) {
-        return String.format("%s spent", getFriendlyTimeString(TimeUnit.SECONDS.toMillis((long) (task.getTimeDone() * 60)), false, true));
-    }
-
-    // TODO: Create a better approach to convert from string to enum
-    // http://stackoverflow.com/questions/9742050/is-there-an-enum-string-resource-lookup-pattern-for-android
-    private TimerMode fromString(String mode) {
-        TimerMode modus;
-        if (mode.equals("ask")) {
-            modus = TimerMode.ASK;
-        } else if (mode.equals("stopwatch")) {
-            modus = TimerMode.STOP_WATCH;
-        } else if (mode.equals("pomodoro")) {
-            modus = TimerMode.POMODORO;
-        } else {
-            modus = TimerMode.ASK;
-        }
-        return modus;
     }
 
     private void loadSharedPreferences() {
@@ -304,6 +243,92 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
             }
         });
     }
+
+    private void initStopWatch() {
+        stopWatch.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            @Override
+            public void onChronometerTick(Chronometer chronometer) {
+                task.setTimeDone(task.getTimeDone() + 0.016666666666666666);
+                updateTask(task);
+            }
+        });
+    }
+
+    private void handleStartPauseStopWatch() {
+        if (status == TimerStatus.WAIT_FOR_WORK) {
+            status = TimerStatus.WORK;
+            tvTimeSubtitle.setText(R.string.stopwatch_mode_subtitle);
+            setFABIcon(fabStartPause, R.drawable.ic_pause_white_48dp);
+            stopWatch.start();
+        } else if (status == TimerStatus.WORK) {
+            status = TimerStatus.PAUSED_WORK;
+            setFABIcon(fabStartPause, R.drawable.ic_play_arrow_white_48dp);
+            stopWatch.pause();
+            tvTimeChrono.setAnimation(getBlinkAnimation());
+            tvTimeChrono.animate();
+        } else if (status == TimerStatus.PAUSED_WORK) {
+            status = TimerStatus.WORK;
+            setFABIcon(fabStartPause, R.drawable.ic_pause_white_48dp);
+            tvTimeChrono.clearAnimation();
+            stopWatch.start();
+        }
+    }
+
+    private void handleStartPausePomodoro() {
+        if (status == TimerStatus.WAIT_FOR_WORK) {
+            status = TimerStatus.WORK;
+            tvTimeSubtitle.setText(R.string.activity_timer_subtitle_work);
+            setFABIcon(fabStartPause, R.drawable.ic_pause_white_48dp);
+            startPomodoro();
+        } else if (status == TimerStatus.WAIT_FOR_BREAK) {
+            status = TimerStatus.BREAK;
+            tvTimeSubtitle.setText("It's break time.");
+            setFABIcon(fabStartPause, R.drawable.ic_skip_next_white_48dp);
+            startBreak();
+        } else if (status == TimerStatus.BREAK) {
+            // Skip break
+            skipBreak();
+
+            // Restart work timer
+            status = TimerStatus.WORK;
+            tvTimeSubtitle.setText(R.string.activity_timer_subtitle_work);
+            setFABIcon(fabStartPause, R.drawable.ic_pause_white_48dp);
+            startPomodoro();
+        } else if (status == TimerStatus.WORK) {
+            status = TimerStatus.PAUSED_WORK;
+            dataSource.updateTask(task);
+            setFABIcon(fabStartPause, R.drawable.ic_play_arrow_white_48dp);
+            pausePomodoro();
+        } else if (status == TimerStatus.PAUSED_WORK) {
+            status = TimerStatus.WORK;
+            setFABIcon(fabStartPause, R.drawable.ic_pause_white_48dp);
+            resumePomodoro();
+        } else {
+            Toast.makeText(TimerActivity.this, "Timer already running.", Toast.LENGTH_SHORT).show();
+        }
+        tvTimeChrono.setAnimation(null);
+    }
+
+    public static String getStatusText(Task task) {
+        return String.format("%s spent", getFriendlyTimeString(TimeUnit.SECONDS.toMillis((long) (task.getTimeDone() * 60)), false, true));
+    }
+
+    // TODO: Create a better approach to convert from string to enum
+    // http://stackoverflow.com/questions/9742050/is-there-an-enum-string-resource-lookup-pattern-for-android
+    private TimerMode fromString(String mode) {
+        TimerMode modus;
+        if (mode.equals("ask")) {
+            modus = TimerMode.ASK;
+        } else if (mode.equals("stopwatch")) {
+            modus = TimerMode.STOP_WATCH;
+        } else if (mode.equals("pomodoro")) {
+            modus = TimerMode.POMODORO;
+        } else {
+            modus = TimerMode.ASK;
+        }
+        return modus;
+    }
+
 
     private CountDownTimer getCountDownBreakTimer(long duration) {
         return new CountDownTimer(duration, TIMER_INTERVAL) {
@@ -484,7 +509,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         return hms;
     }
 
-    public void showNoticeDialog() {
+    public void showTimerModeSelectionDialog() {
         // Create an instance of the dialog fragment and show it
         DialogFragment dialog = new TimerSelectionDialogFragment();
         dialog.show(getSupportFragmentManager(), "NoticeDialogFragment");
