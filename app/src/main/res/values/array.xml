@@ -3,12 +3,21 @@
     <string-array name="timer_modes">
         <item>Ask before start</item>
         <item>Pomodoro Timer</item>
-        <item>General Timer</item>
+        <item>Stopwatch Timer</item>
     </string-array>
     <string-array name="timer_mode_values">
         <item>ask</item>
         <item>pomodoro</item>
-        <item>general</item>
+        <item>stopwatch</item>
+    </string-array>
+
+    <string-array name="timer_mode_dialog_items">
+        <item>Pomodoro Timer</item>
+        <item>Stopwatch Timer</item>
+    </string-array>
+    <string-array name="timer_mode_dialog_items_values">
+        <item>pomodoro</item>
+        <item>stopwatch</item>
     </string-array>
 
     <string-array name="background_colors">

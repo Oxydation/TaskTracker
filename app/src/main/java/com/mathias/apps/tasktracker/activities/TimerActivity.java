@@ -11,8 +11,10 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.SystemClock;
 import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,18 +25,21 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
+import android.widget.Chronometer;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mathias.apps.tasktracker.R;
+import com.mathias.apps.tasktracker.TimerSelectionDialogFragment;
 import com.mathias.apps.tasktracker.database.TasksDataSource;
 import com.mathias.apps.tasktracker.models.Task;
+import com.mathias.apps.tasktracker.models.TimerMode;
 import com.mathias.apps.tasktracker.models.TimerStatus;
 
 import java.util.concurrent.TimeUnit;
 
-public class TimerActivity extends AppCompatActivity {
+public class TimerActivity extends AppCompatActivity implements TimerSelectionDialogFragment.TimerSelectionDialogListener {
     private static final long BLINK_DURATION = 600;
     private static final long TIMER_INTERVAL = 1000;
     private static final long VIBRATE_DURATION = 500;
@@ -54,14 +59,16 @@ public class TimerActivity extends AppCompatActivity {
     private CountDownTimer countDownBreakTimer;
     private long lastTimerValue;
     private Task task;
-    private String timerMode;
+    private TimerMode currentSelectedTimerMode = TimerMode.ASK;
+    private TimerMode timerMode = TimerMode.ASK;
     private TimerStatus status = TimerStatus.WAIT_FOR_WORK;
 
-    private TextView tvTime;
+    private Chronometer tvTimeChrono;
     private TextView tvTimeSubtitle;
     private TextView tvTaskStatus;
     private FloatingActionButton fabStartPause;
     private FloatingActionButton fabStop;
+    private ObjectAnimator progressBarAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +90,7 @@ public class TimerActivity extends AppCompatActivity {
 
         // Load view items
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        tvTime = (TextView) findViewById(R.id.tvTime);
+        tvTimeChrono = (Chronometer) findViewById(R.id.tvTimeChrono);
         tvTimeSubtitle = (TextView) findViewById(R.id.tvTimeSubtitle);
         tvTaskStatus = (TextView) findViewById(R.id.tvTaskStatus);
         final TextView tvTaskName = (TextView) findViewById(R.id.tvTaskName);
@@ -97,108 +104,177 @@ public class TimerActivity extends AppCompatActivity {
         if (timerMode != null && timerMode.equals("pomodoro")) {
             // Set time remaining
             long millis = TimeUnit.MINUTES.toMillis(workDuration);
-            tvTime.setText(getTimeString(millis));
+            tvTimeChrono.setText(getTimeString(millis));
         }
 
-
         // Initialize timers
+        // http://stackoverflow.com/questions/4897665/android-chronometer-format
+        tvTimeChrono.setBase(SystemClock.elapsedRealtime());
+        tvTimeChrono.setFormat("00:%s");
+        tvTimeChrono.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            public void onChronometerTick(Chronometer c) {
+                long elapsedMillis = SystemClock.elapsedRealtime() - c.getBase();
+                if (elapsedMillis > 3600000L) {
+                    c.setFormat("0%s");
+                } else {
+                    c.setFormat("00:%s");
+                }
+            }
+        });
+
         countDownBreakTimer = getCountDownBreakTimer(1000 * 60 * breakDuration);
         countDownWorkTimer = getCountdownWorkTimer((long) 1000 * 60 * workDuration);
-        final ObjectAnimator progressBarAnimation = ObjectAnimator.ofInt(progressBar, "progress", 500, 0);
+        progressBarAnimation = ObjectAnimator.ofInt(progressBar, "progress", 500, 0);
 
         fabStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (status == TimerStatus.BREAK || status == TimerStatus.WORK || status == TimerStatus.WAIT_FOR_BREAK || status == TimerStatus.WAIT_FOR_WORK) {
-                    status = TimerStatus.WAIT_FOR_WORK;
-                    tvTime.setText(R.string.timer_finished_text);
-                    tvTimeSubtitle.setText(R.string.activity_timer_subtitle_work);
-                    countDownWorkTimer.cancel();
-                    countDownBreakTimer.cancel();
-                    progressBarAnimation.end();
-                    setFABIcon(fabStartPause, R.drawable.ic_play_arrow_white_48dp);
-                    tvTime.setAnimation(null);
-                    updateTask(task);
-                } else {
-                    Toast.makeText(TimerActivity.this, "No timer running.", Toast.LENGTH_SHORT).show();
+                switch (currentSelectedTimerMode) {
+                    case ASK:
+                        break;
+                    case STOP_WATCH:
+                        tvTimeChrono.stop();
+                        long elapsed = SystemClock.elapsedRealtime() - tvTimeChrono.getBase();
+                        tvTimeChrono.setBase(SystemClock.elapsedRealtime());
+                        break;
+                    case POMODORO:
+                        if (status == TimerStatus.BREAK || status == TimerStatus.WORK || status == TimerStatus.WAIT_FOR_BREAK || status == TimerStatus.WAIT_FOR_WORK) {
+                            status = TimerStatus.WAIT_FOR_WORK;
+                            tvTimeChrono.setText(R.string.timer_finished_text);
+                            tvTimeSubtitle.setText(R.string.activity_timer_subtitle_work);
+                            countDownWorkTimer.cancel();
+                            countDownBreakTimer.cancel();
+                            progressBarAnimation.end();
+                            setFABIcon(fabStartPause, R.drawable.ic_play_arrow_white_48dp);
+                            tvTimeChrono.setAnimation(null);
+                            updateTask(task);
+                        } else {
+                            Toast.makeText(TimerActivity.this, "No timer running.", Toast.LENGTH_SHORT).show();
+                        }
+                        break;
                 }
+                currentSelectedTimerMode = timerMode;
             }
         });
 
         fabStartPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (status == TimerStatus.WAIT_FOR_WORK) {
-                    status = TimerStatus.WORK;
-                    tvTimeSubtitle.setText(R.string.activity_timer_subtitle_work);
-                    setFABIcon(fabStartPause, R.drawable.ic_pause_white_48dp);
-                    progressBarAnimation.setDuration(1000 * 60 * workDuration); //in milliseconds
-                    progressBarAnimation.setInterpolator(new LinearInterpolator());
-                    progressBarAnimation.start();
-
-                    // Set new countdowntimer
-                    countDownWorkTimer = getCountdownWorkTimer(1000 * 60 * workDuration);
-                    countDownWorkTimer.start();
-                } else if (status == TimerStatus.WAIT_FOR_BREAK) {
-                    status = TimerStatus.BREAK;
-                    tvTimeSubtitle.setText("It's break time.");
-                    setFABIcon(fabStartPause, R.drawable.ic_skip_next_white_48dp);
-                    progressBarAnimation.setDuration(1000 * 60 * breakDuration); //in milliseconds
-                    progressBarAnimation.setInterpolator(new LinearInterpolator());
-                    progressBarAnimation.start();
-                    countDownBreakTimer.start();
-                } else if (status == TimerStatus.BREAK) {
-                    // Skip break
-                    countDownBreakTimer.cancel();
-                    progressBarAnimation.end();
-
-                    // Snackbar.make(v,"Skipped break.", Snackbar.LENGTH_LONG);
-                    // Restart work timer
-                    status = TimerStatus.WORK;
-                    tvTimeSubtitle.setText(R.string.activity_timer_subtitle_work);
-                    setFABIcon(fabStartPause, R.drawable.ic_pause_white_48dp);
-                    progressBarAnimation.setDuration(1000 * 60 * workDuration); //in milliseconds
-                    progressBarAnimation.setInterpolator(new LinearInterpolator());
-                    progressBarAnimation.start();
-                    countDownWorkTimer = getCountdownWorkTimer(1000 * 60 * workDuration);
-                    countDownWorkTimer.start();
-                } else if (status == TimerStatus.WORK) {
-                    status = TimerStatus.PAUSED_WORK;
-                    dataSource.updateTask(task);
-                    setFABIcon(fabStartPause, R.drawable.ic_play_arrow_white_48dp);
-                    countDownWorkTimer.cancel();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        progressBarAnimation.pause();
-                    } else {
-                        progressBarAnimation.cancel();
-                    }
-                } else if (status == TimerStatus.PAUSED_WORK) {
-                    status = TimerStatus.WORK;
-                    setFABIcon(fabStartPause, R.drawable.ic_pause_white_48dp);
-                    countDownWorkTimer = getCountdownWorkTimer(lastTimerValue);
-                    countDownWorkTimer.start();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        progressBarAnimation.resume();
-                    } else {
-                        progressBarAnimation.start();
-                    }
-                } else {
-                    Toast.makeText(TimerActivity.this, "Timer already running.", Toast.LENGTH_SHORT).show();
+                switch (currentSelectedTimerMode) {
+                    case ASK:
+                        showNoticeDialog();
+                        break;
+                    case STOP_WATCH:
+                        handleStartPauseStopWatch();
+                        break;
+                    case POMODORO:
+                        handleStartPausePomodoro();
+                        break;
                 }
-                tvTime.setAnimation(null);
             }
         });
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    private void handleStartPauseStopWatch() {
+        if (status == TimerStatus.WAIT_FOR_WORK) {
+            status = TimerStatus.WORK;
+            tvTimeChrono.setBase(SystemClock.elapsedRealtime());
+            tvTimeChrono.setFormat("00:%s");
+            tvTimeChrono.start();
+        } else if (status == TimerStatus.WORK) {
+            status = TimerStatus.PAUSED_WORK;
+            tvTimeChrono.stop();
+        } else if (status == TimerStatus.PAUSED_WORK) {
+            status = TimerStatus.WORK;
+            tvTimeChrono.start();
+        }
+    }
+
+    private void handleStartPausePomodoro() {
+        if (status == TimerStatus.WAIT_FOR_WORK) {
+            status = TimerStatus.WORK;
+            tvTimeSubtitle.setText(R.string.activity_timer_subtitle_work);
+            setFABIcon(fabStartPause, R.drawable.ic_pause_white_48dp);
+            progressBarAnimation.setDuration(1000 * 60 * workDuration); //in milliseconds
+            progressBarAnimation.setInterpolator(new LinearInterpolator());
+            progressBarAnimation.start();
+
+            // Set new countdowntimer
+            countDownWorkTimer = getCountdownWorkTimer(1000 * 60 * workDuration);
+            countDownWorkTimer.start();
+        } else if (status == TimerStatus.WAIT_FOR_BREAK) {
+            status = TimerStatus.BREAK;
+            tvTimeSubtitle.setText("It's break time.");
+            setFABIcon(fabStartPause, R.drawable.ic_skip_next_white_48dp);
+            progressBarAnimation.setDuration(1000 * 60 * breakDuration); //in milliseconds
+            progressBarAnimation.setInterpolator(new LinearInterpolator());
+            progressBarAnimation.start();
+            countDownBreakTimer.start();
+        } else if (status == TimerStatus.BREAK) {
+            // Skip break
+            countDownBreakTimer.cancel();
+            progressBarAnimation.end();
+
+            // Snackbar.make(v,"Skipped break.", Snackbar.LENGTH_LONG);
+            // Restart work timer
+            status = TimerStatus.WORK;
+            tvTimeSubtitle.setText(R.string.activity_timer_subtitle_work);
+            setFABIcon(fabStartPause, R.drawable.ic_pause_white_48dp);
+            progressBarAnimation.setDuration(1000 * 60 * workDuration); //in milliseconds
+            progressBarAnimation.setInterpolator(new LinearInterpolator());
+            progressBarAnimation.start();
+            countDownWorkTimer = getCountdownWorkTimer(1000 * 60 * workDuration);
+            countDownWorkTimer.start();
+        } else if (status == TimerStatus.WORK) {
+            status = TimerStatus.PAUSED_WORK;
+            dataSource.updateTask(task);
+            setFABIcon(fabStartPause, R.drawable.ic_play_arrow_white_48dp);
+            countDownWorkTimer.cancel();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                progressBarAnimation.pause();
+            } else {
+                progressBarAnimation.cancel();
+            }
+        } else if (status == TimerStatus.PAUSED_WORK) {
+            status = TimerStatus.WORK;
+            setFABIcon(fabStartPause, R.drawable.ic_pause_white_48dp);
+            countDownWorkTimer = getCountdownWorkTimer(lastTimerValue);
+            countDownWorkTimer.start();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                progressBarAnimation.resume();
+            } else {
+                progressBarAnimation.start();
+            }
+        } else {
+            Toast.makeText(TimerActivity.this, "Timer already running.", Toast.LENGTH_SHORT).show();
+        }
+        tvTimeChrono.setAnimation(null);
+    }
+
     public static String getStatusText(Task task) {
         return String.format("%s spent", getFriendlyTimeString(TimeUnit.SECONDS.toMillis((long) (task.getTimeDone() * 60)), false, true));
     }
 
+    // TODO: Create a better approach to convert from string to enum
+    // http://stackoverflow.com/questions/9742050/is-there-an-enum-string-resource-lookup-pattern-for-android
+    private TimerMode fromString(String mode) {
+        if (mode.equals("ask")) {
+            timerMode = TimerMode.ASK;
+        } else if (mode.equals("stopwatch")) {
+            timerMode = TimerMode.STOP_WATCH;
+        } else if (mode.equals("pomodoro")) {
+            timerMode = TimerMode.POMODORO;
+        } else {
+            timerMode = TimerMode.ASK;
+        }
+        return timerMode;
+    }
+
     private void loadSharedPreferences() {
         sharedPreferences = getSharedPreferences(SettingsActivityFragment.SETTINGS_SHARED_PREFERENCES_FILE_NAME, MODE_PRIVATE);
-        timerMode = sharedPreferences.getString("timer_mode", null);
+        timerMode = fromString(sharedPreferences.getString("timer_mode", null));
         workDuration = sharedPreferences.getInt("work_duration", 25);
         breakDuration = sharedPreferences.getInt("break_duration", 5);
         longBreakInterval = sharedPreferences.getInt("long_break_interval", 4);
@@ -218,6 +294,8 @@ public class TimerActivity extends AppCompatActivity {
                     case "break_duration":
                         breakDuration = sharedPreferences.getInt("break_duration", 5);
                         break;
+                    case "time_mode":
+                        timerMode = fromString(sharedPreferences.getString("timer_mode", null));
                 }
             }
         });
@@ -227,12 +305,12 @@ public class TimerActivity extends AppCompatActivity {
         return new CountDownTimer(duration, TIMER_INTERVAL) {
             @Override
             public void onTick(long millisUntilFinished) {
-                tvTime.setText(getTimeString(millisUntilFinished));
+                tvTimeChrono.setText(getTimeString(millisUntilFinished));
             }
 
             @Override
             public void onFinish() {
-                tvTime.setText(R.string.timer_finished_text);
+                tvTimeChrono.setText(R.string.timer_finished_text);
                 tvTimeSubtitle.setText("Break is up.");
 
                 setFABIcon(fabStartPause, R.drawable.ic_play_arrow_white_48dp);
@@ -241,7 +319,7 @@ public class TimerActivity extends AppCompatActivity {
                     Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
                     vibrator.vibrate(VIBRATE_DURATION);
                 }
-                tvTime.setAnimation(getBlinkAnimation());
+                tvTimeChrono.setAnimation(getBlinkAnimation());
                 status = TimerStatus.WAIT_FOR_WORK;
             }
         };
@@ -253,7 +331,7 @@ public class TimerActivity extends AppCompatActivity {
             @Override
             public void onTick(long millisUntilFinished) {
                 lastTimerValue = millisUntilFinished;
-                tvTime.setText(getTimeString(millisUntilFinished));
+                tvTimeChrono.setText(getTimeString(millisUntilFinished));
 
                 task.setTimeDone(task.getTimeDone() + 0.016666666666666666);
                 updateTask(task);
@@ -262,7 +340,7 @@ public class TimerActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 updateTask(task);
-                tvTime.setText(R.string.timer_finished_text);
+                tvTimeChrono.setText(R.string.timer_finished_text);
                 tvTimeSubtitle.setText("Worktime is up.");
                 notifiyTimerFinished("Work time up.", "The work time of your current assignment is finished.", task.getId());
                 setFABIcon(fabStartPause, R.drawable.ic_free_breakfast_white_48dp);
@@ -272,7 +350,7 @@ public class TimerActivity extends AppCompatActivity {
                     vibrator.vibrate(VIBRATE_DURATION);
                 }
 
-                tvTime.setAnimation(getBlinkAnimation());
+                tvTimeChrono.setAnimation(getBlinkAnimation());
                 status = TimerStatus.WAIT_FOR_BREAK;
             }
         };
@@ -308,6 +386,7 @@ public class TimerActivity extends AppCompatActivity {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // mId allows you to update the notification later on.
         int mId = 1;
+        mBuilder.setAutoCancel(true);
         mNotificationManager.notify(mId, mBuilder.build());
         Log.i(LOGTAG, "Throwed notification.");
     }
@@ -399,5 +478,26 @@ public class TimerActivity extends AppCompatActivity {
         }
 
         return hms;
+    }
+
+    public void showNoticeDialog() {
+        // Create an instance of the dialog fragment and show it
+        DialogFragment dialog = new TimerSelectionDialogFragment();
+        dialog.show(getSupportFragmentManager(), "NoticeDialogFragment");
+    }
+
+    @Override
+    public void onDialogItemSelect(DialogFragment dialog, String selectedTimerMode) {
+        currentSelectedTimerMode = fromString(selectedTimerMode);
+        switch (currentSelectedTimerMode) {
+            case ASK:
+                break;
+            case STOP_WATCH:
+                handleStartPauseStopWatch();
+                break;
+            case POMODORO:
+                handleStartPausePomodoro();
+                break;
+        }
     }
 }

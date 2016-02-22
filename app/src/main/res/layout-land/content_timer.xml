@@ -28,7 +28,7 @@
         android:rotation="-90" />
 
     <TextView
-        android:id="@+id/tvTime"
+        android:id="@+id/tvTimeChrono"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/activity_timer_default"
@@ -47,11 +47,11 @@
         android:layout_height="wrap_content"
         android:textSize="15sp"
         android:text="@string/activity_timer_subtitle_work"
-        android:layout_below="@+id/tvTime"
-        android:layout_alignLeft="@+id/tvTime"
-        android:layout_alignStart="@+id/tvTime"
-        android:layout_alignRight="@+id/tvTime"
-        android:layout_alignEnd="@+id/tvTime"
+        android:layout_below="@+id/tvTimeChrono"
+        android:layout_alignLeft="@+id/tvTimeChrono"
+        android:layout_alignStart="@+id/tvTimeChrono"
+        android:layout_alignRight="@+id/tvTimeChrono"
+        android:layout_alignEnd="@+id/tvTimeChrono"
         android:textAlignment="center" />
 
     <LinearLayout

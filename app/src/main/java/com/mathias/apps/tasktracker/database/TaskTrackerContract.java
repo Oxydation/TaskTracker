@@ -34,15 +34,29 @@ public final class TaskTrackerContract {
 
     public static abstract class SubTaskEntry implements BaseColumns {
         public static final String TABLE_NAME = "subtask";
-        public static final String COLUMN_NAME_ENTRY_ID = "subTaskId";
+        // public static final String COLUMN_NAME_ENTRY_ID = "subTaskId";
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_IS_DONE = "isDone";
         public static final String COLUMN_NAME_PARENT_TASK = "taskId";
 
         public static final String[] ALL_COLUMNS = {
-                COLUMN_NAME_ENTRY_ID,
+                _ID,
                 COLUMN_NAME_NAME,
                 COLUMN_NAME_PARENT_TASK,
                 COLUMN_NAME_IS_DONE};
     }
+
+    public static abstract class LogEntry implements BaseColumns {
+        public static final String TABLE_NAME = "subtask";
+        // public static final String COLUMN_NAME_ENTRY_ID = "subTaskId";
+        public static final String COLUMN_NAME_NAME = "name";
+        public static final String COLUMN_NAME_PARENT_TASK = "taskId";
+
+        public static final String[] ALL_COLUMNS = {
+                _ID,
+                COLUMN_NAME_NAME,
+                COLUMN_NAME_PARENT_TASK,
+        };
+    }
+
 }

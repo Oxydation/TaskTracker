@@ -35,4 +35,6 @@
     <string name="activity_timer_default">00:00</string>
     <string name="activity_new_task_minute">m</string>
     <string name="activity_timer_subtitle_work">Time until break</string>
+    <string name="cancel">Cancel</string>
+    <string name="pick_timer_mode">Select a timer mode</string>
 </resources>
