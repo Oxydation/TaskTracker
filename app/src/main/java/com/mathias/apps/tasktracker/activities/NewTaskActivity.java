@@ -39,7 +39,11 @@ public class NewTaskActivity extends AppCompatActivity {
 */
         final EditText taskName = (EditText) findViewById(R.id.editTextTaskName);
         final EditText description = (EditText) findViewById(R.id.editTextDescription);
-        final EditText estTime = (EditText) findViewById(R.id.editTextEstTime);
+        final EditText estTimeMinutes = (EditText) findViewById(R.id.editTextEstTime);
+        final EditText estTimeHours = (EditText) findViewById(R.id.editTextEstTimeHours);
+        final EditText doneTimeMinutes = (EditText) findViewById(R.id.editTextTimeDone);
+        final EditText doneTimeHours = (EditText) findViewById(R.id.editTextTimeDoneHours);
+
         final Spinner bgColor = (Spinner) findViewById(R.id.spinnerColor);
 
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -68,21 +72,52 @@ public class NewTaskActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Get data
                 Task task = new Task();
-                task.setName(taskName.getText().toString());
-                task.setDescription(description.getText().toString());
 
+                if (taskName.getText().toString() != null && taskName.getText().toString().isEmpty()) {
+                    taskName.setError("Please enter a name!!");
+                    return;
+                } else {
+                    task.setName(taskName.getText().toString());
+                }
+
+                task.setDescription(description.getText().toString());
                 task.setSubTasks(new ArrayList<SubTask>());
                 /*for (String subtask : subTasks) {
                     task.getSubTasks().add(new SubTask(subtask));
                 }*/
-                if (!estTime.getText().toString().isEmpty()) {
-                    task.setTimeEstaminated(Long.valueOf(estTime.getText().toString()));
+
+                // Get estimaed time
+                if (!estTimeMinutes.getText().toString().isEmpty() || !estTimeHours.getText().toString().isEmpty()) {
+                    int minutes = 0;
+                    if (!estTimeMinutes.getText().toString().isEmpty()) {
+                        minutes = Integer.valueOf(estTimeMinutes.getText().toString());
+                    }
+
+                    int hours = 0;
+                    if (!estTimeHours.getText().toString().isEmpty()) {
+                        hours = Integer.valueOf(estTimeHours.getText().toString());
+                    }
+                    task.setTimeEstaminated(hours * 60 + minutes);
+                } else {
+                    task.setTimeEstaminated(0);
                 }
 
-                if (task.getName().equals("")) {
-                    taskName.setError("No name set!");
-                    return;
+                // Get time done
+                if (!doneTimeMinutes.getText().toString().isEmpty() || !doneTimeHours.getText().toString().isEmpty()) {
+                    int minutes = 0;
+                    if (!doneTimeMinutes.getText().toString().isEmpty()) {
+                        minutes = Integer.valueOf(doneTimeMinutes.getText().toString());
+                    }
+
+                    int hours = 0;
+                    if (!doneTimeHours.getText().toString().isEmpty()) {
+                        hours = Integer.valueOf(doneTimeHours.getText().toString());
+                    }
+                    task.setTimeEstaminated(hours * 60 + minutes);
+                } else {
+                    task.setTimeEstaminated(0);
                 }
+
 
                 // Create task in db
                 task = dataSource.createTask(task);

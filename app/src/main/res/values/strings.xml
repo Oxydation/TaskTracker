@@ -38,4 +38,5 @@
     <string name="cancel">Cancel</string>
     <string name="pick_timer_mode">Select a timer mode</string>
     <string name="stopwatch_mode_subtitle">Stopwatch</string>
+    <string name="activity_new_task_time_done">Time Done</string>
 </resources>

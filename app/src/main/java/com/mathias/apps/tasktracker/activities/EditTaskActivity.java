@@ -33,6 +33,8 @@ public class EditTaskActivity extends AppCompatActivity {
         final EditText description = (EditText) findViewById(R.id.editTextDescription);
         final EditText estTime = (EditText) findViewById(R.id.editTextEstTime);
         final EditText estTimeHours = (EditText) findViewById(R.id.editTextEstTimeHours);
+        final EditText doneTimeMinutes = (EditText) findViewById(R.id.editTextTimeDone);
+        final EditText doneTimeHours = (EditText) findViewById(R.id.editTextTimeDoneHours);
 
         taskName.setText(editTask.getName());
         description.setText(editTask.getDescription());
@@ -43,8 +45,14 @@ public class EditTaskActivity extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Get data
-                editTask.setName(taskName.getText().toString());
+
+                if (taskName.getText().toString() != null && taskName.getText().toString().isEmpty()) {
+                    taskName.setError("Please enter a name!!");
+                    return;
+                } else {
+                    editTask.setName(taskName.getText().toString());
+                }
+
                 editTask.setDescription(description.getText().toString());
 
                 editTask.setSubTasks(new ArrayList<SubTask>());
@@ -66,9 +74,20 @@ public class EditTaskActivity extends AppCompatActivity {
                     editTask.setTimeEstaminated(0);
                 }
 
-                if (editTask.getName().equals("")) {
-                    taskName.setError("No name set!");
-                    return;
+                // Get time done
+                if (!doneTimeMinutes.getText().toString().isEmpty() || !doneTimeHours.getText().toString().isEmpty()) {
+                    int minutes = 0;
+                    if (!doneTimeMinutes.getText().toString().isEmpty()) {
+                        minutes = Integer.valueOf(doneTimeMinutes.getText().toString());
+                    }
+
+                    int hours = 0;
+                    if (!doneTimeHours.getText().toString().isEmpty()) {
+                        hours = Integer.valueOf(doneTimeHours.getText().toString());
+                    }
+                    editTask.setTimeEstaminated(hours * 60 + minutes);
+                } else {
+                    editTask.setTimeEstaminated(0);
                 }
 
                 // Update task

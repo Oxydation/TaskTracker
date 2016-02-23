@@ -113,10 +113,63 @@
         android:id="@+id/spinnerColor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
+        android:spinnerMode="dropdown"
+        android:layout_below="@+id/textView"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/editTextEstTime"
-        android:layout_marginTop="51dp"
-        android:spinnerMode="dropdown" />
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/activity_new_task_hour"
+        android:textSize="18sp"
+        android:layout_alignBottom="@+id/editTextTimeDoneHours"
+        android:layout_toRightOf="@+id/editTextTimeDoneHours"
+        android:layout_toEndOf="@+id/editTextTimeDoneHours" />
+
+    <EditText
+        android:id="@+id/editTextTimeDone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="3"
+        android:hint=""
+        android:inputType="number"
+        android:maxLength="3"
+        android:layout_above="@+id/spinnerColor"
+        android:layout_alignLeft="@+id/editTextEstTime"
+        android:layout_alignStart="@+id/editTextEstTime" />
+
+    <EditText
+        android:id="@+id/editTextTimeDoneHours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="3"
+        android:hint=""
+        android:inputType="number"
+        android:maxLength="3"
+        android:layout_below="@+id/editTextEstTimeHours"
+        android:layout_toLeftOf="@+id/textView2"
+        android:layout_toStartOf="@+id/textView2" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/activity_new_task_minute"
+        android:textSize="18sp"
+        android:layout_alignBottom="@+id/editTextTimeDone"
+        android:layout_alignLeft="@+id/tvMinutes"
+        android:layout_alignStart="@+id/tvMinutes" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/activity_new_task_time_done"
+        android:textSize="18sp"
+        android:layout_above="@+id/spinnerColor"
+        android:layout_alignLeft="@+id/textView3"
+        android:layout_alignStart="@+id/textView3" />
 
 </RelativeLayout>
