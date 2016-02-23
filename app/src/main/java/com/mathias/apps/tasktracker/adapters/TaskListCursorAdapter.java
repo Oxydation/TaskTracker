@@ -114,7 +114,7 @@ public class TaskListCursorAdapter extends CursorAdapter implements View.OnCreat
         /**
          * Initialize the holder.
          *
-         * @param view
+         * @param view The view to populate the objects from.
          */
         public ViewHolder(View view) {
             name = (TextView) view.findViewById(R.id.tvName);
@@ -151,7 +151,7 @@ public class TaskListCursorAdapter extends CursorAdapter implements View.OnCreat
 //            status.setText(String.format("%d/%d Subtasks done", amountFinishedSubtasks, amountSubTasks));
 
             if (task.getDescription() == null || task.getDescription().isEmpty()) {
-                status.setText("No description set.");
+                status.setText(R.string.task_item_description_empty);
             } else {
                 status.setText(task.getDescription());
             }

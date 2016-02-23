@@ -9,9 +9,6 @@
     <string name="new_task_name">Name:</string>
     <string name="new_task_hint">Task Name</string>
     <string name="action_statistic">Statistic</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_edit_task">Edit Task</string>
     <string name="main_list_empty">No tasks added. Click the plus button to add a new task.</string>
     <string name="timer_finished_text">00:00</string>
@@ -39,4 +36,5 @@
     <string name="pick_timer_mode">Select a timer mode</string>
     <string name="stopwatch_mode_subtitle">Stopwatch</string>
     <string name="activity_new_task_time_done">Time Done</string>
+    <string name="task_item_description_empty">No description</string>
 </resources>
