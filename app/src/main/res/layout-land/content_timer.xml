@@ -16,72 +16,47 @@
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="false"
-        android:layout_marginRight="50dp"
+        android:layout_width="290dp"
+        android:layout_height="290dp"
         android:indeterminate="false"
         android:max="500"
         android:progress="0"
         android:progressDrawable="@drawable/circular"
-        android:rotation="-90" />
-
-    <TextView
-        android:id="@+id/tvTimeChrono"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/activity_timer_default"
-        android:textSize="50sp"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="60dp"
-        android:layout_alignLeft="@+id/progressBar"
-        android:layout_alignStart="@+id/progressBar"
-        android:layout_alignRight="@+id/progressBar"
-        android:layout_alignEnd="@+id/progressBar"
-        android:textAlignment="center" />
-
-    <TextView
-        android:id="@+id/tvTimeSubtitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="15sp"
-        android:text="@string/activity_timer_subtitle_work"
-        android:layout_below="@+id/tvTimeChrono"
-        android:layout_alignLeft="@+id/tvTimeChrono"
-        android:layout_alignStart="@+id/tvTimeChrono"
-        android:layout_alignRight="@+id/tvTimeChrono"
-        android:layout_alignEnd="@+id/tvTimeChrono"
-        android:textAlignment="center" />
+        android:rotation="-90"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/linearLayout3"
+        android:layout_toEndOf="@+id/linearLayout3" />
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/progressBar"
         android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        android:layout_alignLeft="@+id/progressBar"
-        android:layout_alignStart="@+id/progressBar"
-        android:layout_marginRight="50dp">
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fabStartPause"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:src="@drawable/ic_play_arrow_white_48dp" />
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/progressBar"
+        android:layout_toEndOf="@+id/progressBar">
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fabStop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginLeft="10dp"
+            android:layout_gravity="center|start"
+            android:layout_marginBottom="10dp"
             android:src="@drawable/ic_stop_white_48dp" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabStartPause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|start"
+            android:src="@drawable/ic_play_arrow_white_48dp" />
+
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout3"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
@@ -97,17 +72,51 @@
 
         <TextView
             android:id="@+id/tvTaskDescription"
-            android:layout_width="261dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Description"
             android:textSize="20sp" />
 
         <ListView
             android:id="@+id/listView"
-            android:layout_width="match_parent"
+            android:layout_width="192dp"
             android:layout_height="match_parent"
             android:choiceMode="multipleChoice" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="194dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/linearLayout2"
+        android:layout_alignLeft="@+id/progressBar"
+        android:layout_alignStart="@+id/progressBar">
+
+        <TextView
+            android:id="@+id/tvTaskStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="20sp"
+            android:text="@string/content_timer_status_empty" />
+
+        <Chronometer
+            android:id="@+id/tvTimeChrono"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/activity_timer_default"
+            android:textSize="50sp" />
+
+        <TextView
+            android:id="@+id/tvTimeSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/activity_timer_subtitle_work"
+            android:textSize="15sp" />
     </LinearLayout>
 
 </RelativeLayout>

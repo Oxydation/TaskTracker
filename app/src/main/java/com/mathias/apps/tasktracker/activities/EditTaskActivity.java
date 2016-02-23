@@ -42,8 +42,8 @@ public class EditTaskActivity extends AppCompatActivity {
         estTime.setText(String.valueOf(editTask.getTimeEstaminated() % 60));
         estTimeHours.setText(String.valueOf((int) editTask.getTimeEstaminated() / 60));
 
-        doneTimeHours.setText(String.valueOf((int) TimeUnit.SECONDS.toHours((long) editTask.getTimeDone())));
-        doneTimeMinutes.setText(String.valueOf((long) (editTask.getTimeDone() % 3600)));
+        doneTimeHours.setText(String.valueOf((int) TimeUnit.SECONDS.toHours(editTask.getTimeDone())));
+        doneTimeMinutes.setText(String.valueOf(TimeUnit.SECONDS.toMinutes(editTask.getTimeDone() % 3600)));
 
         Button btnSave = (Button) findViewById(R.id.buttonSave);
         btnSave.setOnClickListener(new View.OnClickListener() {

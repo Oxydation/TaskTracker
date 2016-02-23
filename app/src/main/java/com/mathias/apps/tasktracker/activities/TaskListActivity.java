@@ -165,15 +165,20 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
             case R.id.context_menu_delete_item:
                 long taskId = cursorAdapter.getItemId(itemInfo.position);
                 deleteTask(taskId);
+                // Add snackbar to undo this step
                 return true;
-
             case R.id.context_menu_set_done:
                 Task changedTask = TasksDataSource.cursorToTask((Cursor) cursorAdapter.getItem(itemInfo.position));
                 changedTask.setDone(true);
                 dataSource.updateTask(changedTask);
                 updateTaskListView();
                 return true;
-
+            case R.id.context_menu_duplicate:
+                Task original = TasksDataSource.cursorToTask((Cursor) cursorAdapter.getItem(itemInfo.position));
+                dataSource.createTask(original);
+                updateTaskListView();
+                // Add snackbar to undo this step
+                return true;
             case R.id.context_menu_set_undone:
                 Task changedTask1 = TasksDataSource.cursorToTask((Cursor) cursorAdapter.getItem(itemInfo.position));
                 changedTask1.setDone(false);

@@ -7,6 +7,9 @@
         android:id="@+id/context_menu_set_undone"
         android:title="@string/context_menu_undone" />
     <item
+        android:id="@+id/context_menu_duplicate"
+        android:title="@string/context_menu_duplicate"></item>
+    <item
         android:id="@+id/context_menu_delete_item"
         android:title="@string/context_menu_delete" />
 </menu>
