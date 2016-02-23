@@ -37,4 +37,5 @@
     <string name="stopwatch_mode_subtitle">Stopwatch</string>
     <string name="activity_new_task_time_done">Time Done</string>
     <string name="task_item_description_empty">No description</string>
+    <string name="error_no_name">Please enter a name!</string>
 </resources>

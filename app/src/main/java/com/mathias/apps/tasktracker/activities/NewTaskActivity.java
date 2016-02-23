@@ -73,8 +73,8 @@ public class NewTaskActivity extends AppCompatActivity {
                 // Get data
                 Task task = new Task();
 
-                if (taskName.getText().toString() != null && taskName.getText().toString().isEmpty()) {
-                    taskName.setError("Please enter a name!!");
+                if (taskName.getText().toString() != null && taskName.getText().toString().trim().isEmpty()) {
+                    taskName.setError(getString(R.string.error_no_name));
                     return;
                 } else {
                     task.setName(taskName.getText().toString());
@@ -97,7 +97,7 @@ public class NewTaskActivity extends AppCompatActivity {
                     if (!estTimeHours.getText().toString().isEmpty()) {
                         hours = Integer.valueOf(estTimeHours.getText().toString());
                     }
-                    task.setTimeEstaminated(hours * 60 + minutes);
+                    task.setTimeEstaminated(hours * 3600 + minutes * 60);
                 } else {
                     task.setTimeEstaminated(0);
                 }
@@ -113,9 +113,9 @@ public class NewTaskActivity extends AppCompatActivity {
                     if (!doneTimeHours.getText().toString().isEmpty()) {
                         hours = Integer.valueOf(doneTimeHours.getText().toString());
                     }
-                    task.setTimeEstaminated(hours * 60 + minutes);
+                    task.setTimeDone(hours * 3600 + minutes * 60);
                 } else {
-                    task.setTimeEstaminated(0);
+                    task.setTimeDone(0);
                 }
 
 

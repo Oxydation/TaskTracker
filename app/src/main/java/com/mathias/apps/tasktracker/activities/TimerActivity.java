@@ -188,7 +188,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
             @Override
             public void onTick(long millisUntilFinished) {
                 // Update task time
-                task.setTimeDone(task.getTimeDone() + 0.016666666666666666);
+                task.setTimeDone(task.getTimeDone() + 1);
                 updateTask(task);
 
                 notifiyTimer("Task Tracker", "Time until break: " + PomodoroTimer.getTimeString(millisUntilFinished), task.getId(), pomodoroTimer.getProgressBar().getProgress());
@@ -224,7 +224,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
 
     private void loadSharedPreferences() {
         sharedPreferences = getSharedPreferences(SettingsActivityFragment.SETTINGS_SHARED_PREFERENCES_FILE_NAME, MODE_PRIVATE);
-        timerMode = fromString(sharedPreferences.getString("timer_mode", null));
+        timerMode = fromString(sharedPreferences.getString("timer_mode", "ask"));
         workDuration = sharedPreferences.getInt("work_duration", 25);
         breakDuration = sharedPreferences.getInt("break_duration", 5);
         longBreakInterval = sharedPreferences.getInt("long_break_interval", 4);
@@ -256,7 +256,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         stopWatch.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
             public void onChronometerTick(Chronometer chronometer) {
-                task.setTimeDone(task.getTimeDone() + 0.016666666666666666);
+                task.setTimeDone(task.getTimeDone() + 1);
                 updateTask(task);
             }
         });
@@ -316,7 +316,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
     }
 
     public static String getStatusText(Task task) {
-        return String.format("%s spent", getFriendlyTimeString(TimeUnit.SECONDS.toMillis((long) (task.getTimeDone() * 60)), false, true));
+        return String.format("%s spent", getFriendlyTimeString(TimeUnit.SECONDS.toMillis((long) (task.getTimeDone())), false, true));
     }
 
     // TODO: Create a better approach to convert from string to enum

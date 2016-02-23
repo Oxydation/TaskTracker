@@ -14,6 +14,7 @@ import com.mathias.apps.tasktracker.models.SubTask;
 import com.mathias.apps.tasktracker.models.Task;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class EditTaskActivity extends AppCompatActivity {
     private TasksDataSource dataSource;
@@ -41,13 +42,16 @@ public class EditTaskActivity extends AppCompatActivity {
         estTime.setText(String.valueOf(editTask.getTimeEstaminated() % 60));
         estTimeHours.setText(String.valueOf((int) editTask.getTimeEstaminated() / 60));
 
+        doneTimeHours.setText(String.valueOf((int) TimeUnit.SECONDS.toHours((long) editTask.getTimeDone())));
+        doneTimeMinutes.setText(String.valueOf((long) (editTask.getTimeDone() % 3600)));
+
         Button btnSave = (Button) findViewById(R.id.buttonSave);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (taskName.getText().toString() != null && taskName.getText().toString().isEmpty()) {
-                    taskName.setError("Please enter a name!!");
+                if (taskName.getText().toString() != null && taskName.getText().toString().trim().isEmpty()) {
+                    taskName.setError(getString(R.string.error_no_name));
                     return;
                 } else {
                     editTask.setName(taskName.getText().toString());
@@ -69,7 +73,7 @@ public class EditTaskActivity extends AppCompatActivity {
                     if (!estTime.getText().toString().isEmpty()) {
                         hours = Integer.valueOf(estTimeHours.getText().toString());
                     }
-                    editTask.setTimeEstaminated(hours * 60 + minutes);
+                    editTask.setTimeEstaminated(hours * 3600 + minutes * 60);
                 } else {
                     editTask.setTimeEstaminated(0);
                 }
@@ -85,9 +89,9 @@ public class EditTaskActivity extends AppCompatActivity {
                     if (!doneTimeHours.getText().toString().isEmpty()) {
                         hours = Integer.valueOf(doneTimeHours.getText().toString());
                     }
-                    editTask.setTimeEstaminated(hours * 60 + minutes);
+                    editTask.setTimeDone(hours * 3600 + minutes * 60);
                 } else {
-                    editTask.setTimeEstaminated(0);
+                    editTask.setTimeDone(0);
                 }
 
                 // Update task

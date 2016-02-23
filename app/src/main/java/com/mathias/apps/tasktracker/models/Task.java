@@ -12,7 +12,7 @@ public class Task implements Serializable {
     private List<SubTask> subTasks;
     private int color;
     private long timeEstaminated;
-    private double timeDone;
+    private long timeDone;
     private boolean done;
     private String description;
 
@@ -81,11 +81,11 @@ public class Task implements Serializable {
         this.subTasks = subTasks;
     }
 
-    public double getTimeDone() {
+    public long getTimeDone() {
         return timeDone;
     }
 
-    public void setTimeDone(double timeDone) {
+    public void setTimeDone(long timeDone) {
         this.timeDone = timeDone;
     }
 
