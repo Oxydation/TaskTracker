@@ -109,6 +109,7 @@ public class TasksDataSource {
             task.setTimeEstaminated(cursor.getLong(cursor.getColumnIndexOrThrow(TaskEntry.COLUMN_NAME_TIME_EST)));
             task.setTimeDone(cursor.getLong(cursor.getColumnIndexOrThrow(TaskEntry.COLUMN_NAME_TIME_DONE)));
             task.setColor(cursor.getInt(cursor.getColumnIndexOrThrow(TaskEntry.COLUMN_NAME_COLOR)));
+            task.setArchived(cursor.getInt(cursor.getColumnIndexOrThrow(TaskEntry.COLUMN_NAME_ARCHIVED)) == 1);
             task.setDone(cursor.getInt(cursor.getColumnIndexOrThrow(TaskEntry.COLUMN_NAME_IS_DONE)) == 1);
             return task;
         } catch (CursorIndexOutOfBoundsException ex) {
@@ -125,12 +126,26 @@ public class TasksDataSource {
         values.put(TaskEntry.COLUMN_NAME_COLOR, task.getColor());
         values.put(TaskEntry.COLUMN_NAME_TIME_EST, task.getTimeEstaminated());
         values.put(TaskEntry.COLUMN_NAME_TIME_DONE, task.getTimeDone());
+        values.put(TaskEntry.COLUMN_NAME_ARCHIVED, task.isArchived());
         values.put(TaskEntry.COLUMN_NAME_IS_DONE, task.isDone());
         return values;
     }
 
     public Cursor getAllTasksCursor() {
+        return getAllTasksCursor(false);
+    }
+
+    public Cursor getAllTasksCursor(boolean withArchived) {
         open();
+
+        String[] selection = null;
+        String where = "";
+
+        if (!withArchived) {
+            where = " WHERE " + TaskEntry.COLUMN_NAME_ARCHIVED + " = ?";
+            selection = new String[]{"0"};
+        }
+
         //Cursor cursor = db.query(TaskEntry.TABLE_NAME, TaskEntry.ALL_COLUMNS, null, null, null, null, null);
         Cursor cursor = db.rawQuery(
                 "SELECT " +
@@ -140,8 +155,9 @@ public class TasksDataSource {
                         TaskEntry.COLUMN_NAME_TIME_DONE + ", " +
                         TaskEntry.COLUMN_NAME_COLOR + ", " +
                         TaskEntry.COLUMN_NAME_IS_DONE + ", " +
+                        TaskEntry.COLUMN_NAME_ARCHIVED + ", " +
                         TaskEntry.COLUMN_NAME_NAME +
-                        " FROM " + TaskEntry.TABLE_NAME, null);
+                        " FROM " + TaskEntry.TABLE_NAME + where, selection);
 
         if (cursor != null) {
             cursor.moveToFirst();

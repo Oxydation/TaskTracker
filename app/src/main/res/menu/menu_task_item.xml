@@ -7,6 +7,10 @@
         android:id="@+id/context_menu_set_undone"
         android:title="@string/context_menu_undone" />
     <item
+        android:id="@+id/context_menu_archive"
+        android:enabled="false"
+        android:title="@string/context_menu_archive"></item>
+    <item
         android:id="@+id/context_menu_duplicate"
         android:title="@string/context_menu_duplicate"></item>
     <item

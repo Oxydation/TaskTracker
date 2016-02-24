@@ -173,6 +173,12 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
                 dataSource.updateTask(changedTask);
                 updateTaskListView();
                 return true;
+            case R.id.context_menu_archive:
+                Task changedTask2 = TasksDataSource.cursorToTask((Cursor) cursorAdapter.getItem(itemInfo.position));
+                changedTask2.setArchived(true);
+                dataSource.updateTask(changedTask2);
+                updateTaskListView();
+                return true;
             case R.id.context_menu_duplicate:
                 Task original = TasksDataSource.cursorToTask((Cursor) cursorAdapter.getItem(itemInfo.position));
                 dataSource.createTask(original);

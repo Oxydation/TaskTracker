@@ -35,6 +35,8 @@ public class PomodoroTimer {
     private CountDownTimer countDownWorkTimer;
     private CountDownTimer countDownBreakTimer;
     private long lastTimerValue;
+    private int amountWorkPeriods = 0;
+
     private TimerStatus status = TimerStatus.WAIT_FOR_WORK;
     private ObjectAnimator progressBarAnimation;
     private TextView tvTime;
@@ -102,6 +104,7 @@ public class PomodoroTimer {
 
             @Override
             public void onFinish() {
+                amountWorkPeriods++;
                 tvTime.setText(R.string.timer_finished_text);
 
                 if (tvTimeSubtitle != null) {
@@ -132,11 +135,18 @@ public class PomodoroTimer {
 
     public void startBreak() {
         status = TimerStatus.BREAK;
-        progressBarAnimation.setDuration(1000 * 60 * breakDuration); //in milliseconds
+        if (isLongBreakEnabled() && isLongBreak()) {
+            // Long break -> change sub title
+            progressBarAnimation.setDuration(1000 * 60 * longBreakDuration); //in milliseconds
+            countDownBreakTimer = getCountDownBreakTimer(1000 * 60 * longBreakDuration);
+        } else {
+            progressBarAnimation.setDuration(1000 * 60 * breakDuration); //in milliseconds
+            countDownBreakTimer = getCountDownBreakTimer(1000 * 60 * breakDuration);
+        }
+
         progressBarAnimation.setInterpolator(new LinearInterpolator());
         progressBarAnimation.start();
 
-        countDownBreakTimer = getCountDownBreakTimer(1000 * 60 * breakDuration);
         countDownBreakTimer.start();
     }
 
@@ -296,4 +306,15 @@ public class PomodoroTimer {
         return status;
     }
 
+    public int getAmountWorkPeriods() {
+        return amountWorkPeriods;
+    }
+
+    public void setAmountWorkPeriods(int amountWorkPeriods) {
+        this.amountWorkPeriods = amountWorkPeriods;
+    }
+
+    public boolean isLongBreak() {
+        return (amountWorkPeriods > 0 && (amountWorkPeriods % longBreakInterval) == 0);
+    }
 }

@@ -32,8 +32,7 @@
             android:name=".activities.NewTaskActivity"
             android:label="@string/title_activity_new_task"
             android:parentActivityName=".activities.TaskListActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait">
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.TaskListActivity" />
@@ -51,8 +50,7 @@
             android:name=".activities.EditTaskActivity"
             android:label="@string/title_activity_edit_task"
             android:parentActivityName=".activities.TaskListActivity"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait">
+            android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mathias.apps.tasktracker.activities.TaskListActivity" />

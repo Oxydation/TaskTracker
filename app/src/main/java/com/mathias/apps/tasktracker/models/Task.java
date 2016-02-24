@@ -15,6 +15,7 @@ public class Task implements Serializable {
     private long timeDone;
     private boolean done;
     private String description;
+    private boolean archived;
 
     //TODO: add created and modified datetime
 
@@ -97,8 +98,17 @@ public class Task implements Serializable {
         this.done = done;
     }
 
+    public void setArchived(boolean archived) {
+        this.archived = archived;
+    }
+
+    public boolean isArchived() {
+        return archived;
+    }
+
     @Override
     public String toString() {
         return name;
     }
+
 }

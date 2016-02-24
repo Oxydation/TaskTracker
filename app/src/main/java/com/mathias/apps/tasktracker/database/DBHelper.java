@@ -15,7 +15,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String LOGTAG = "TASKTRACKER";
 
     private static final String DATABASE_NAME = "tasktracker.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private static final String DATABASE_CREATE_TASKS = "CREATE TABLE " + TaskEntry.TABLE_NAME +
             "("
@@ -25,6 +25,7 @@ public class DBHelper extends SQLiteOpenHelper {
             + TaskEntry.COLUMN_NAME_DESC + " TEXT " + ","
             + TaskEntry.COLUMN_NAME_TIME_EST + " NUMERIC " + ","
             + TaskEntry.COLUMN_NAME_TIME_DONE + " NUMERIC " + ","
+            + TaskEntry.COLUMN_NAME_ARCHIVED + " INTEGER DEFAULT 0 " + ","
             + TaskEntry.COLUMN_NAME_IS_DONE + " INTEGER DEFAULT 0"
             + ");";
 

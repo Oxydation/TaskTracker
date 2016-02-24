@@ -40,4 +40,5 @@
     <string name="error_no_name">Please enter a name!</string>
     <string name="context_menu_duplicate">Duplicate</string>
     <string name="content_timer_status_empty">0s spent</string>
+    <string name="context_menu_archive">Archive</string>
 </resources>
