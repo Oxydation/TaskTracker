@@ -22,14 +22,14 @@ import java.util.List;
 /**
  * Created by Mathias on 18/02/2016.
  */
-public class TasksDataSource {
+public class DataSource {
 
     private static final String LOGTAG = "TASKTRACKER";
 
     private SQLiteDatabase db;
     private final SQLiteOpenHelper helper;
 
-    public TasksDataSource(Context context) {
+    public DataSource(Context context) {
         // Create or access db
         helper = new DBHelper(context);
     }
@@ -262,7 +262,7 @@ public class TasksDataSource {
         return statisticLog;
     }
 
-    private StatisticLog cursorToStatisticLog(Cursor cursor) {
+    public static StatisticLog cursorToStatisticLog(Cursor cursor) {
         try {
             StatisticLog statisticLog = new StatisticLog();
             Task task = null;

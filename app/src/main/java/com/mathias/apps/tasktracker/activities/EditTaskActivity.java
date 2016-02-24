@@ -14,7 +14,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.mathias.apps.tasktracker.R;
-import com.mathias.apps.tasktracker.database.TasksDataSource;
+import com.mathias.apps.tasktracker.database.DataSource;
 import com.mathias.apps.tasktracker.models.SubTask;
 import com.mathias.apps.tasktracker.models.Task;
 
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class EditTaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    private TasksDataSource dataSource;
+    private DataSource dataSource;
     private String selectedColor;
 
     @Override
@@ -32,7 +32,7 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        dataSource = new TasksDataSource(this);
+        dataSource = new DataSource(this);
 
         final Task editTask = dataSource.getTask(getIntent().getExtras().getLong("taskId"));
 

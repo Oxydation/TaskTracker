@@ -27,9 +27,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mathias.apps.tasktracker.R;
-import com.mathias.apps.tasktracker.database.TasksDataSource;
+import com.mathias.apps.tasktracker.database.DataSource;
 import com.mathias.apps.tasktracker.dialogs.TimerSelectionDialogFragment;
 import com.mathias.apps.tasktracker.models.PomodoroTimer;
+import com.mathias.apps.tasktracker.models.StatisticLog;
 import com.mathias.apps.tasktracker.models.StopWatch;
 import com.mathias.apps.tasktracker.models.Task;
 import com.mathias.apps.tasktracker.models.TimerMode;
@@ -50,7 +51,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
     private boolean longBreakEnabled;
     private boolean vibrationEnabled;
     private boolean notificationEnabled;
-    private TasksDataSource dataSource;
+    private DataSource dataSource;
     private SharedPreferences sharedPreferences;
 
     private Task task;
@@ -75,7 +76,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         setSupportActionBar(toolbar);
 
         // Get datasource
-        dataSource = new TasksDataSource(this);
+        dataSource = new DataSource(this);
         fabStartPause = (FloatingActionButton) findViewById(R.id.fabStartPause);
         fabStop = (FloatingActionButton) findViewById(R.id.fabStop);
 
@@ -171,6 +172,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         setFABIcon(fabStartPause, R.drawable.ic_play_arrow_white_48dp);
         pomodoroTimer.stop();
         updateTask(task);
+        createStatisticLog("Work", "Work time stopped.", 1000, 500);
         getCurrentSelectedMode();
     }
 
@@ -236,6 +238,8 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
             @Override
             public void onFinish() {
                 updateTask(task);
+                createStatisticLog("Work", "Work time finished.", 1000, 500);
+
                 tvTimeSubtitle.setText(R.string.pomodoro_work_time_up);
 
                 if (notificationEnabled && !isInForeground()) {
@@ -354,6 +358,16 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         tvTimeChrono.setAnimation(null);
     }
 
+    private void createStatisticLog(String action, String message, long workTime, long breakTime) {
+        StatisticLog statisticLog = new StatisticLog();
+        statisticLog.setTask(task);
+        statisticLog.setAction(action);
+        statisticLog.setMessage("Something");
+        statisticLog.setWorkTime(workTime);
+        statisticLog.setBreakTime(breakTime);
+        dataSource.createStatisticLog(statisticLog);
+    }
+
     public static String getStatusText(Task task) {
         return String.format("%s spent", getFriendlyTimeString(TimeUnit.SECONDS.toMillis((long) (task.getTimeDone())), false, true));
     }
@@ -452,6 +466,10 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
             case R.id.action_settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivityForResult(intent, TaskListActivity.REQUEST_CODE_SETTINGS);
+                return true;
+            case R.id.action_statistic:
+                Intent intent2 = new Intent(this, StatisticsActivity.class);
+                startActivity(intent2);
                 return true;
             case R.id.action_exit:
                 this.finish();

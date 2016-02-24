@@ -51,4 +51,10 @@
     <string name="pomodoro_work_time_up">Work time is up.</string>
     <string name="pomodoro_break_time">It\'s break time.</string>
     <string name="color_spinner_label">Color:</string>
+    <string name="title_activity_statistics">Statistic</string>
+    <string name="statistic_list_empty">No previous statistic data found.</string>
+    <string name="statistic_action_default">Action</string>
+    <string name="statistic_timestamp_default">1.1.1900</string>
+    <string name="statistics_worktime_default">Work: 00h 00m 00s</string>
+    <string name="statistics_breaktime_default">Break: 00m 00s</string>
 </resources>

@@ -16,6 +16,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -49,6 +50,15 @@
         <activity
             android:name=".activities.EditTaskActivity"
             android:label="@string/title_activity_edit_task"
+            android:parentActivityName=".activities.TaskListActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mathias.apps.tasktracker.activities.TaskListActivity" />
+        </activity>
+        <activity
+            android:name=".activities.StatisticsActivity"
+            android:label="@string/title_activity_statistics"
             android:parentActivityName=".activities.TaskListActivity"
             android:theme="@style/AppTheme">
             <meta-data

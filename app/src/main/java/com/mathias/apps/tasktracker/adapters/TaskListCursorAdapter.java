@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.mathias.apps.tasktracker.R;
 import com.mathias.apps.tasktracker.activities.TimerActivity;
-import com.mathias.apps.tasktracker.database.TasksDataSource;
+import com.mathias.apps.tasktracker.database.DataSource;
 import com.mathias.apps.tasktracker.models.Task;
 
 import java.util.concurrent.TimeUnit;
@@ -48,7 +48,7 @@ public class TaskListCursorAdapter extends CursorAdapter implements View.OnCreat
     @Override
     public void bindView(View view, final Context context, Cursor cursor) {
         ViewHolder holder;
-        Task task = TasksDataSource.cursorToTask(cursor);
+        Task task = DataSource.cursorToTask(cursor);
 
         final long id;
         if (task != null) {

@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.mathias.apps.tasktracker.R;
 import com.mathias.apps.tasktracker.adapters.TaskListCursorAdapter;
-import com.mathias.apps.tasktracker.database.TasksDataSource;
+import com.mathias.apps.tasktracker.database.DataSource;
 import com.mathias.apps.tasktracker.models.Task;
 
 public class TaskListActivity extends AppCompatActivity implements TaskListCursorAdapter.Callback {
@@ -27,10 +27,9 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
     public static final int REQUEST_CODE_NEW_TASK = 100;
     private static final int REQUEST_CODE_UDPATE_TASK = 1003;
 
-    private ListView listViewTasks;
-
-    private TasksDataSource dataSource;
+    private DataSource dataSource;
     private TaskListCursorAdapter cursorAdapter;
+    private ListView listViewTasks;
 
     // Think about using recycling view: http://developer.android.com/training/material/lists-cards.html
     // https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
@@ -49,7 +48,7 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
 
         registerForContextMenu(listViewTasks);
 
-        dataSource = new TasksDataSource(this);
+        dataSource = new DataSource(this);
         cursorAdapter = new TaskListCursorAdapter(this, dataSource.getAllTasksCursor(), 0);
         cursorAdapter.setCallback(this);
 
@@ -86,6 +85,10 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
             case R.id.action_settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivityForResult(intent, REQUEST_CODE_SETTINGS);
+                return true;
+            case R.id.action_statistic:
+                Intent intent2 = new Intent(this, StatisticsActivity.class);
+                startActivity(intent2);
                 return true;
             case R.id.action_exit:
                 this.finish();
@@ -171,25 +174,25 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
                 // Add snackbar to undo this step
                 return true;
             case R.id.context_menu_set_done:
-                Task changedTask = TasksDataSource.cursorToTask((Cursor) cursorAdapter.getItem(itemInfo.position));
+                Task changedTask = DataSource.cursorToTask((Cursor) cursorAdapter.getItem(itemInfo.position));
                 changedTask.setDone(true);
                 dataSource.updateTask(changedTask);
                 updateTaskListView();
                 return true;
             case R.id.context_menu_archive:
-                Task changedTask2 = TasksDataSource.cursorToTask((Cursor) cursorAdapter.getItem(itemInfo.position));
+                Task changedTask2 = DataSource.cursorToTask((Cursor) cursorAdapter.getItem(itemInfo.position));
                 changedTask2.setArchived(true);
                 dataSource.updateTask(changedTask2);
                 updateTaskListView();
                 return true;
             case R.id.context_menu_duplicate:
-                Task original = TasksDataSource.cursorToTask((Cursor) cursorAdapter.getItem(itemInfo.position));
+                Task original = DataSource.cursorToTask((Cursor) cursorAdapter.getItem(itemInfo.position));
                 dataSource.createTask(original);
                 updateTaskListView();
                 // Add snackbar to undo this step
                 return true;
             case R.id.context_menu_set_undone:
-                Task changedTask1 = TasksDataSource.cursorToTask((Cursor) cursorAdapter.getItem(itemInfo.position));
+                Task changedTask1 = DataSource.cursorToTask((Cursor) cursorAdapter.getItem(itemInfo.position));
                 changedTask1.setDone(false);
                 dataSource.updateTask(changedTask1);
                 updateTaskListView();

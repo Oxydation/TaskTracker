@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.mathias.apps.tasktracker.R;
-import com.mathias.apps.tasktracker.database.TasksDataSource;
+import com.mathias.apps.tasktracker.database.DataSource;
 import com.mathias.apps.tasktracker.models.SubTask;
 import com.mathias.apps.tasktracker.models.Task;
 
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 public class NewTaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private TasksDataSource dataSource;
+    private DataSource dataSource;
     private String selectedColor;
 
     // http://stackoverflow.com/questions/15393899/how-to-close-activity-and-go-back-to-previous-activity-in-android
@@ -33,7 +33,7 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        dataSource = new TasksDataSource(this);
+        dataSource = new DataSource(this);
         // final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, subTasks);
        /* final ListView listViewSubtasks = (ListView) findViewById(R.id.listViewSubtasks);
         listViewSubtasks.setAdapter(adapter);
