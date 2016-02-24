@@ -26,5 +26,6 @@ Task Tracker is an android application which allows managing tasks and running w
 * Online-Backup/Restore
 * Offline-Backup/Restore
 * Share tasks with friends
+* Subtasks for main tasks
 
 
