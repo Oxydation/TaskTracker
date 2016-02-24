@@ -50,4 +50,5 @@
     <string name="pomodoro_break_up">Break is up.</string>
     <string name="pomodoro_work_time_up">Work time is up.</string>
     <string name="pomodoro_break_time">It\'s break time.</string>
+    <string name="color_spinner_label">Color:</string>
 </resources>

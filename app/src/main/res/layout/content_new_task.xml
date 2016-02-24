@@ -127,7 +127,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="6dp"
-            android:text="Color:"
+            android:text="@string/color_spinner_label"
             android:textSize="18sp" />
 
         <Spinner
@@ -135,7 +135,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:elevation="10dp"
             android:spinnerMode="dropdown" />
     </LinearLayout>
 
