@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -13,6 +14,7 @@ import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -130,19 +132,22 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
             public void onClick(View v) {
                 switch (currentSelectedTimerMode) {
                     case ASK:
+                        getCurrentSelectedMode();
                         break;
                     case STOP_WATCH:
                         status = TimerStatus.WAIT_FOR_WORK;
                         setFABIcon(fabStartPause, R.drawable.ic_play_arrow_white_48dp);
                         stopWatch.stop();
+                        getCurrentSelectedMode();
                         break;
                     case POMODORO:
-                        if (status == TimerStatus.PAUSED_WORK || status == TimerStatus.BREAK || status == TimerStatus.WORK || status == TimerStatus.WAIT_FOR_BREAK || status == TimerStatus.WAIT_FOR_WORK) {
-                            status = TimerStatus.WAIT_FOR_WORK;
-                            tvTimeSubtitle.setText(R.string.activity_timer_subtitle_work);
-                            setFABIcon(fabStartPause, R.drawable.ic_play_arrow_white_48dp);
-                            pomodoroTimer.stop();
-                            updateTask(task);
+                        if (status == TimerStatus.WORK) {
+                            dialogStopPomodoro();
+                        } else if (status == TimerStatus.PAUSED_WORK
+                                || status == TimerStatus.BREAK
+                                || status == TimerStatus.WAIT_FOR_BREAK
+                                || status == TimerStatus.WAIT_FOR_WORK) {
+                            stopPomodoro();
                         } else {
 
                             // Ask user if he really wants to stop timer (e.g. if work time or work break
@@ -150,11 +155,45 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
                         }
                         break;
                 }
-                currentSelectedTimerMode = TimerMode.values()[timerMode.ordinal()];
             }
         });
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void getCurrentSelectedMode() {
+        currentSelectedTimerMode = TimerMode.values()[timerMode.ordinal()];
+    }
+
+    private void stopPomodoro() {
+        status = TimerStatus.WAIT_FOR_WORK;
+        tvTimeSubtitle.setText(R.string.activity_timer_subtitle_work);
+        setFABIcon(fabStartPause, R.drawable.ic_play_arrow_white_48dp);
+        pomodoroTimer.stop();
+        updateTask(task);
+        getCurrentSelectedMode();
+    }
+
+    private void dialogStopPomodoro() {
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(TimerActivity.this);
+        alert.setTitle(getString(R.string.dialog_stop_pomodoro_title))
+                .setMessage(getString(R.string.dialog_stop_pomodoro_message))
+                .setPositiveButton(getString(R.string.positive_button_yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        stopPomodoro();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(getString(R.string.positive_button_no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        alert.show();
     }
 
     private void initPomodoro() {
@@ -167,7 +206,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
 
             @Override
             public void onFinish() {
-                tvTimeSubtitle.setText("Break is up.");
+                tvTimeSubtitle.setText(R.string.pomodoro_break_up);
 
                 setFABIcon(fabStartPause, R.drawable.ic_play_arrow_white_48dp);
                 if (vibrationEnabled) {
@@ -177,7 +216,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
                 }
 
                 if (notificationEnabled && !isInForeground()) {
-                    notifiyTimer("Break time up.", "Task: " + task.getName(), task.getId(), 100);
+                    notifiyTimer(getString(R.string.pomodoro_break_up), "Task: " + task.getName(), task.getId(), 100);
                 }
 
                 status = TimerStatus.WAIT_FOR_WORK;
@@ -197,10 +236,10 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
             @Override
             public void onFinish() {
                 updateTask(task);
-                tvTimeSubtitle.setText("Worktime is up.");
+                tvTimeSubtitle.setText(R.string.pomodoro_work_time_up);
 
                 if (notificationEnabled && !isInForeground()) {
-                    notifiyTimer("Work time up.", "Task: " + task.getName(), task.getId(), 100);
+                    notifiyTimer(getString(R.string.pomodoro_work_time_up), "Task: " + task.getName(), task.getId(), 100);
                 }
 
                 setFABIcon(fabStartPause, R.drawable.ic_free_breakfast_white_48dp);
@@ -289,7 +328,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
             pomodoroTimer.startWork();
         } else if (status == TimerStatus.WAIT_FOR_BREAK) {
             status = TimerStatus.BREAK;
-            tvTimeSubtitle.setText("It's break time.");
+            tvTimeSubtitle.setText(R.string.pomodoro_break_time);
             setFABIcon(fabStartPause, R.drawable.ic_skip_next_white_48dp);
             pomodoroTimer.startBreak();
         } else if (status == TimerStatus.BREAK) {
@@ -323,14 +362,19 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
     // http://stackoverflow.com/questions/9742050/is-there-an-enum-string-resource-lookup-pattern-for-android
     private TimerMode fromString(String mode) {
         TimerMode modus;
-        if (mode.equals("ask")) {
-            modus = TimerMode.ASK;
-        } else if (mode.equals("stopwatch")) {
-            modus = TimerMode.STOP_WATCH;
-        } else if (mode.equals("pomodoro")) {
-            modus = TimerMode.POMODORO;
-        } else {
-            modus = TimerMode.ASK;
+        switch (mode) {
+            case "ask":
+                modus = TimerMode.ASK;
+                break;
+            case "stopwatch":
+                modus = TimerMode.STOP_WATCH;
+                break;
+            case "pomodoro":
+                modus = TimerMode.POMODORO;
+                break;
+            default:
+                modus = TimerMode.ASK;
+                break;
         }
         return modus;
     }

@@ -43,6 +43,7 @@ public class TimerSelectionDialogFragment extends DialogFragment {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.pick_timer_mode)
+                .setIcon(R.drawable.ic_icon_task)  // TODO: 24/02/2016  add a better icon
                 .setItems(R.array.timer_mode_dialog_items, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // The 'which' argument contains the index position

@@ -43,4 +43,11 @@
     <string name="context_menu_archive">Archive</string>
     <string name="context_menu_edit">Edit</string>
     <string name="action_archive">Archive</string>
+    <string name="dialog_stop_pomodoro_title">Stop Pomodoro</string>
+    <string name="dialog_stop_pomodoro_message">Are you sure to stop pomodoro?</string>
+    <string name="positive_button_yes">YES</string>
+    <string name="positive_button_no">NO</string>
+    <string name="pomodoro_break_up">Break is up.</string>
+    <string name="pomodoro_work_time_up">Work time is up.</string>
+    <string name="pomodoro_break_time">It\'s break time.</string>
 </resources>
