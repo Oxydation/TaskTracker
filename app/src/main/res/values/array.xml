@@ -22,8 +22,17 @@
     </string-array>
 
     <string-array name="background_colors">
+        <item value="#8AB6B6B6">Grey</item>
         <item value="#8A1234DC">Blue</item>
-        <item value="#8AFF9800">Orange</item>
         <item value="#8A8BC34A">Green</item>
+        <item value="#8AFF9800">Orange</item>
+        <item value="#8ac34a50">Red</item>
+    </string-array>
+    <string-array name="background_colors_values">
+        <item>#8AB6B6B6</item>
+        <item>#8A1234DC</item>
+        <item>#8A8BC34A</item>
+        <item>#8AFF9800</item>
+        <item>#8AC34A50</item>
     </string-array>
 </resources>

@@ -1,10 +1,12 @@
 package com.mathias.apps.tasktracker.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,12 +18,11 @@ import com.mathias.apps.tasktracker.models.SubTask;
 import com.mathias.apps.tasktracker.models.Task;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class NewTaskActivity extends AppCompatActivity {
+public class NewTaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private TasksDataSource dataSource;
-    private List<String> subTasks = new ArrayList<>();
+    private String selectedColor;
 
     // http://stackoverflow.com/questions/15393899/how-to-close-activity-and-go-back-to-previous-activity-in-android
     @Override
@@ -33,7 +34,7 @@ public class NewTaskActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         dataSource = new TasksDataSource(this);
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, subTasks);
+        // final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, subTasks);
        /* final ListView listViewSubtasks = (ListView) findViewById(R.id.listViewSubtasks);
         listViewSubtasks.setAdapter(adapter);
 */
@@ -44,16 +45,15 @@ public class NewTaskActivity extends AppCompatActivity {
         final EditText doneTimeMinutes = (EditText) findViewById(R.id.editTextTimeDone);
         final EditText doneTimeHours = (EditText) findViewById(R.id.editTextTimeDoneHours);
 
-        final Spinner bgColor = (Spinner) findViewById(R.id.spinnerColor);
+        final Spinner colorSpinner = (Spinner) findViewById(R.id.spinnerColor);
 
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this,
                 R.array.background_colors, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        bgColor.setAdapter(adapter);
-
+        colorSpinner.setAdapter(spinnerAdapter);
+        colorSpinner.setOnItemSelectedListener(this);
 
         //final EditText subTaskName = (EditText) findViewById(R.id.subtaskName);
 
@@ -118,6 +118,7 @@ public class NewTaskActivity extends AppCompatActivity {
                     task.setTimeDone(0);
                 }
 
+                task.setColor(Color.parseColor(selectedColor));
 
                 // Create task in db
                 task = dataSource.createTask(task);
@@ -132,4 +133,14 @@ public class NewTaskActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String[] some_array = getResources().getStringArray(R.array.background_colors_values);
+        selectedColor = some_array[position];
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 }

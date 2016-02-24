@@ -70,7 +70,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/spinnerColor"
+        android:layout_below="@+id/colorLayout"
         android:text="@string/activity_edit_task_save" />
 
     <EditText
@@ -107,14 +107,32 @@
         android:text="@string/activity_new_task_time_est"
         android:textSize="18sp" />
 
-    <Spinner
-        android:id="@+id/spinnerColor"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/colorLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
         android:layout_below="@+id/textView"
-        android:spinnerMode="dropdown" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="6dp"
+            android:text="Color:" />
+
+        <Spinner
+            android:id="@+id/spinnerColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:spinnerMode="dropdown"
+            android:elevation="10dp" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textView"
@@ -164,7 +182,7 @@
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/spinnerColor"
+        android:layout_above="@+id/colorLayout"
         android:layout_alignLeft="@+id/textView3"
         android:layout_alignStart="@+id/textView3"
         android:text="@string/activity_new_task_time_done"

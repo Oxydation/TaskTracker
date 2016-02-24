@@ -1,12 +1,17 @@
 package com.mathias.apps.tasktracker.activities;
 
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import com.mathias.apps.tasktracker.R;
 import com.mathias.apps.tasktracker.database.TasksDataSource;
@@ -16,8 +21,9 @@ import com.mathias.apps.tasktracker.models.Task;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-public class EditTaskActivity extends AppCompatActivity {
+public class EditTaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private TasksDataSource dataSource;
+    private String selectedColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +42,7 @@ public class EditTaskActivity extends AppCompatActivity {
         final EditText estTimeHours = (EditText) findViewById(R.id.editTextEstTimeHours);
         final EditText doneTimeMinutes = (EditText) findViewById(R.id.editTextTimeDone);
         final EditText doneTimeHours = (EditText) findViewById(R.id.editTextTimeDoneHours);
+        final Spinner colorSpinner = (Spinner) findViewById(R.id.spinnerColor);
 
         taskName.setText(editTask.getName());
         description.setText(editTask.getDescription());
@@ -44,6 +51,23 @@ public class EditTaskActivity extends AppCompatActivity {
 
         doneTimeHours.setText(String.valueOf((int) TimeUnit.SECONDS.toHours(editTask.getTimeDone())));
         doneTimeMinutes.setText(String.valueOf(TimeUnit.SECONDS.toMinutes(editTask.getTimeDone() % 3600)));
+
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this,
+                R.array.background_colors, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        colorSpinner.setAdapter(spinnerAdapter);
+        colorSpinner.setOnItemSelectedListener(this);
+        // Get selected color value for spinner
+        Resources res = getResources();
+        String[] answers = res.getStringArray(R.array.background_colors_values);
+        selectedColor = "#" + Integer.toHexString(editTask.getColor()).toUpperCase();
+        for (int i = 0; i < answers.length; i++) {
+            if (answers[i].toUpperCase().equals(selectedColor)) {
+                colorSpinner.setSelection(i);
+            }
+        }
 
         Button btnSave = (Button) findViewById(R.id.buttonSave);
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -94,6 +118,8 @@ public class EditTaskActivity extends AppCompatActivity {
                     editTask.setTimeDone(0);
                 }
 
+                editTask.setColor(Color.parseColor(selectedColor));
+
                 // Update task
                 dataSource.updateTask(editTask);
 
@@ -108,4 +134,14 @@ public class EditTaskActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String[] some_array = getResources().getStringArray(R.array.background_colors_values);
+        selectedColor = some_array[position];
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 }

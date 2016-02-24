@@ -23,11 +23,11 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:hint="@string/new_task_hint"
+        android:inputType="textCapSentences"
         android:maxEms="10"
         android:maxLines="1"
         android:minEms="2"
-        android:singleLine="true"
-        android:inputType="textCapSentences" />
+        android:singleLine="true" />
 
     <EditText
         android:id="@+id/editTextEstTime"
@@ -70,12 +70,12 @@
         android:id="@+id/buttonSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/activity_new_task_save"
-        android:layout_below="@+id/spinnerColor"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/colorLayout"
+        android:text="@string/activity_new_task_save" />
 
     <EditText
         android:id="@+id/editTextEstTimeHours"
@@ -103,75 +103,93 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/activity_new_task_time_est"
-        android:textSize="18sp"
         android:layout_alignTop="@+id/tvMinutes"
-        android:layout_toRightOf="@+id/tvMinutes"
-        android:layout_toEndOf="@+id/tvMinutes"
         android:layout_marginLeft="34dp"
-        android:layout_marginStart="34dp" />
+        android:layout_marginStart="34dp"
+        android:layout_toEndOf="@+id/tvMinutes"
+        android:layout_toRightOf="@+id/tvMinutes"
+        android:text="@string/activity_new_task_time_est"
+        android:textSize="18sp" />
 
-    <Spinner
-        android:id="@+id/spinnerColor"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/colorLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:spinnerMode="dropdown"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
         android:layout_below="@+id/textView"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="6dp"
+            android:text="Color:" />
+
+        <Spinner
+            android:id="@+id/spinnerColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:spinnerMode="dropdown"
+            android:elevation="10dp" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/activity_new_task_hour"
-        android:textSize="18sp"
         android:layout_alignBottom="@+id/editTextTimeDoneHours"
+        android:layout_toEndOf="@+id/editTextTimeDoneHours"
         android:layout_toRightOf="@+id/editTextTimeDoneHours"
-        android:layout_toEndOf="@+id/editTextTimeDoneHours" />
+        android:text="@string/activity_new_task_hour"
+        android:textSize="18sp" />
 
     <EditText
         android:id="@+id/editTextTimeDone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/colorLayout"
+        android:layout_alignLeft="@+id/editTextEstTime"
+        android:layout_alignStart="@+id/editTextEstTime"
         android:ems="3"
         android:hint=""
         android:inputType="number"
-        android:maxLength="3"
-        android:layout_above="@+id/spinnerColor"
-        android:layout_alignLeft="@+id/editTextEstTime"
-        android:layout_alignStart="@+id/editTextEstTime" />
+        android:maxLength="3" />
 
     <EditText
         android:id="@+id/editTextTimeDoneHours"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/editTextEstTimeHours"
+        android:layout_toLeftOf="@+id/textView2"
+        android:layout_toStartOf="@+id/textView2"
         android:ems="3"
         android:hint=""
         android:inputType="number"
-        android:maxLength="3"
-        android:layout_below="@+id/editTextEstTimeHours"
-        android:layout_toLeftOf="@+id/textView2"
-        android:layout_toStartOf="@+id/textView2" />
+        android:maxLength="3" />
 
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/activity_new_task_minute"
-        android:textSize="18sp"
         android:layout_alignBottom="@+id/editTextTimeDone"
         android:layout_alignLeft="@+id/tvMinutes"
-        android:layout_alignStart="@+id/tvMinutes" />
+        android:layout_alignStart="@+id/tvMinutes"
+        android:text="@string/activity_new_task_minute"
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/activity_new_task_time_done"
-        android:textSize="18sp"
-        android:layout_above="@+id/spinnerColor"
+        android:layout_above="@+id/colorLayout"
         android:layout_alignLeft="@+id/textView3"
-        android:layout_alignStart="@+id/textView3" />
+        android:layout_alignStart="@+id/textView3"
+        android:text="@string/activity_new_task_time_done"
+        android:textSize="18sp" />
 
 </RelativeLayout>

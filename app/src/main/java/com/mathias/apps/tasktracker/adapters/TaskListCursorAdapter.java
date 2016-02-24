@@ -161,7 +161,11 @@ public class TaskListCursorAdapter extends CursorAdapter implements View.OnCreat
                 layout.setBackgroundColor(0);
             } else {
                 layout.setAlpha((float) 1);
-                layout.setBackgroundResource(R.color.bg1_task_grey);
+                if (task.getColor() != 0) {
+                    layout.setBackgroundColor(task.getColor());
+                } else {
+                    layout.setBackgroundResource(R.color.bg1_task_grey);
+                }
             }
         }
     }
