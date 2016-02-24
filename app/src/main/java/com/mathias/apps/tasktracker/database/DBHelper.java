@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.mathias.apps.tasktracker.database.TaskTrackerContract.StatisticLogEntry;
 import com.mathias.apps.tasktracker.database.TaskTrackerContract.TaskEntry;
 
 /**
@@ -15,7 +16,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String LOGTAG = "TASKTRACKER";
 
     private static final String DATABASE_NAME = "tasktracker.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     private static final String DATABASE_CREATE_TASKS = "CREATE TABLE " + TaskEntry.TABLE_NAME +
             "("
@@ -30,6 +31,21 @@ public class DBHelper extends SQLiteOpenHelper {
             + TaskEntry.COLUMN_NAME_IS_DONE + " INTEGER DEFAULT 0"
             + ");";
 
+    private static final String DATABASE_CREATE_STATISTICS = "CREATE TABLE " + StatisticLogEntry.TABLE_NAME +
+            "("
+            + StatisticLogEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT " + ","
+            + StatisticLogEntry.COLUMN_NAME_TASK + " INTEGER " + ","
+            + StatisticLogEntry.COLUMN_NAME_TIME + " DATETIME DEFAULT CURRENT_TIMESTAMP " + ","
+            + StatisticLogEntry.COLUMN_NAME_ACTION + " TEXT " + ","
+            + StatisticLogEntry.COLUMN_NAME_MESSAGE + " TEXT " + ","
+            + StatisticLogEntry.COLUMN_NAME_BREAK_TIME + " NUMERIC " + ","
+            + StatisticLogEntry.COLUMN_NAME_WORK_TIME + " NUMERIC " + ","
+            + "FOREIGN KEY(" + StatisticLogEntry.COLUMN_NAME_TASK + ") REFERENCES " + TaskEntry.TABLE_NAME + "(" + TaskEntry._ID + ") ON DELETE CASCADE "
+            + ");";
+
+    private static final String DATABASE_DELETE_STATISTICS =
+            "DROP TABLE IF EXISTS " + StatisticLogEntry.TABLE_NAME;
+
     private static final String DATABASE_DELETE_TASKS =
             "DROP TABLE IF EXISTS " + TaskEntry.TABLE_NAME;
 
@@ -40,6 +56,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(DATABASE_CREATE_TASKS);
+        db.execSQL(DATABASE_CREATE_STATISTICS);
         Log.i(LOGTAG, "Created database.");
     }
 
@@ -52,6 +69,7 @@ public class DBHelper extends SQLiteOpenHelper {
 //        } else {
         // Create a way to update instead of delete database
         db.execSQL(DATABASE_DELETE_TASKS);
+        db.execSQL(DATABASE_DELETE_STATISTICS);
         onCreate(db);
         // }
 

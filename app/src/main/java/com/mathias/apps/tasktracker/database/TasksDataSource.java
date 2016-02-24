@@ -8,8 +8,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.mathias.apps.tasktracker.database.TaskTrackerContract.StatisticLogEntry;
 import com.mathias.apps.tasktracker.database.TaskTrackerContract.SubTaskEntry;
 import com.mathias.apps.tasktracker.database.TaskTrackerContract.TaskEntry;
+import com.mathias.apps.tasktracker.models.StatisticLog;
 import com.mathias.apps.tasktracker.models.SubTask;
 import com.mathias.apps.tasktracker.models.Task;
 
@@ -205,29 +207,113 @@ public class TasksDataSource {
         return count;
     }
 
-
-    public int deleteTask(Task task) {
-        open();
-
-        // Define 'where' part of query.
-        String selection = TaskEntry._ID + " = ?";
-
-        // Specify arguments in placeholder order.
-        String[] selectionArgs = {String.valueOf(task.getId())};
-
-        // Issue SQL statement.
-        int result = db.delete(TaskEntry.TABLE_NAME, selection, selectionArgs);
-
-        close();
-
-        return result;
-    }
-
     public int deleteTask(long id) {
         open();
         int result = db.delete(TaskEntry.TABLE_NAME, TaskEntry._ID + " =?", new String[]{Long.toString(id)});
         close();
         return result;
     }
-    // Boolean flag = (cursor.getInt(cursor.getColumnIndex("flag")) == 1);
+
+    public StatisticLog createStatisticLog(StatisticLog statisticLog) {
+        if (statisticLog == null) {
+            Log.w(LOGTAG, "Could not create statistic log: is null.");
+            return null;
+        }
+
+        open();
+
+        ContentValues values = statisticLogToContentValues(statisticLog);
+
+        long insertId = db.insert(TaskTrackerContract.StatisticLogEntry.TABLE_NAME, null, values);
+        statisticLog.setId(insertId);
+        close();
+
+        return statisticLog;
+    }
+
+    private ContentValues statisticLogToContentValues(StatisticLog statisticLog) {
+        ContentValues values = new ContentValues();
+        if (statisticLog.getTask() != null) {
+            values.put(StatisticLogEntry.COLUMN_NAME_TASK, statisticLog.getTask().getId());
+        }
+        values.put(StatisticLogEntry.COLUMN_NAME_ACTION, statisticLog.getAction());
+        values.put(StatisticLogEntry.COLUMN_NAME_MESSAGE, statisticLog.getMessage());
+        values.put(StatisticLogEntry.COLUMN_NAME_BREAK_TIME, statisticLog.getBreakTime());
+        values.put(StatisticLogEntry.COLUMN_NAME_WORK_TIME, statisticLog.getWorkTime());
+        return values;
+    }
+
+    public StatisticLog getStatisticLog(long id) {
+        open();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT " + "* " +
+                        " FROM " + TaskEntry.TABLE_NAME +
+                        " INNER JOIN " + StatisticLogEntry.TABLE_NAME +
+                        " ON " + TaskEntry.TABLE_NAME + "." + TaskEntry._ID + " = " + StatisticLogEntry.TABLE_NAME + "." + StatisticLogEntry.COLUMN_NAME_TASK +
+                        " WHERE " + TaskEntry.TABLE_NAME + "." + TaskEntry._ID + " = " + id
+                , null);
+
+        cursor.moveToFirst();
+        StatisticLog statisticLog = cursorToStatisticLog(cursor);
+        cursor.close();
+        close();
+
+        return statisticLog;
+    }
+
+    private StatisticLog cursorToStatisticLog(Cursor cursor) {
+        try {
+            StatisticLog statisticLog = new StatisticLog();
+            Task task = null;
+            try {
+                task = cursorToTask(cursor);
+
+                if (task != null) {
+                    task.setId(cursor.getLong(cursor.getColumnIndexOrThrow(StatisticLogEntry.COLUMN_NAME_TASK)));
+                }
+            } catch (Exception e) {
+                // No Task set
+            }
+            statisticLog.setId(cursor.getLong(cursor.getColumnIndexOrThrow(StatisticLogEntry._ID)));
+            statisticLog.setAction(cursor.getString(cursor.getColumnIndexOrThrow(StatisticLogEntry.COLUMN_NAME_ACTION)));
+            statisticLog.setMessage(cursor.getString(cursor.getColumnIndexOrThrow(StatisticLogEntry.COLUMN_NAME_MESSAGE)));
+            statisticLog.setBreakTime(cursor.getLong(cursor.getColumnIndexOrThrow(StatisticLogEntry.COLUMN_NAME_BREAK_TIME)));
+            statisticLog.setWorkTime(cursor.getLong(cursor.getColumnIndexOrThrow(StatisticLogEntry.COLUMN_NAME_WORK_TIME)));
+            statisticLog.setTime(Timestamp.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(StatisticLogEntry.COLUMN_NAME_TIME))));
+            statisticLog.setTask(task);
+            return statisticLog;
+        } catch (CursorIndexOutOfBoundsException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public Cursor getAllStatisticLogsCursor() {
+        return getAllStatisticLogsCursor(new Timestamp(0), new Timestamp(0));
+    }
+
+    public Cursor getAllStatisticLogsCursor(Timestamp from, Timestamp to) {
+        open();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT " + "* " +
+                        " FROM " + TaskEntry.TABLE_NAME +
+                        " INNER JOIN " + StatisticLogEntry.TABLE_NAME +
+                        " ON " + TaskEntry.TABLE_NAME + "." + TaskEntry._ID + " = " + StatisticLogEntry.TABLE_NAME + "." + StatisticLogEntry.COLUMN_NAME_TASK, null);
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+
+        close();
+        return cursor;
+    }
+
+    public int deleteStatisticLog(long id) {
+        open();
+        int result = db.delete(StatisticLogEntry.TABLE_NAME, StatisticLogEntry._ID + " =?", new String[]{Long.toString(id)});
+        close();
+        return result;
+    }
 }

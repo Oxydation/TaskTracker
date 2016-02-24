@@ -50,17 +50,22 @@ public final class TaskTrackerContract {
                 COLUMN_NAME_IS_DONE};
     }
 
-    public static abstract class LogEntry implements BaseColumns {
-        public static final String TABLE_NAME = "subtask";
-        // public static final String COLUMN_NAME_ENTRY_ID = "subTaskId";
-        public static final String COLUMN_NAME_NAME = "name";
-        public static final String COLUMN_NAME_PARENT_TASK = "taskId";
-
+    public static abstract class StatisticLogEntry implements BaseColumns {
+        public static final String TABLE_NAME = "statistics";
+        public static final String COLUMN_NAME_TASK = "taskId";
+        public static final String COLUMN_NAME_TIME = "timeStamp";
+        public static final String COLUMN_NAME_ACTION = "action";
+        public static final String COLUMN_NAME_MESSAGE = "message";
+        public static final String COLUMN_NAME_WORK_TIME = "workTime";
+        public static final String COLUMN_NAME_BREAK_TIME = "breakTime";
         public static final String[] ALL_COLUMNS = {
                 _ID,
-                COLUMN_NAME_NAME,
-                COLUMN_NAME_PARENT_TASK,
+                COLUMN_NAME_TASK,
+                COLUMN_NAME_TIME,
+                COLUMN_NAME_ACTION,
+                COLUMN_NAME_MESSAGE,
+                COLUMN_NAME_WORK_TIME,
+                COLUMN_NAME_BREAK_TIME
         };
     }
-
 }
