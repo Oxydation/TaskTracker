@@ -32,22 +32,11 @@
         <!--android:maxLength="2"-->
         <!--android:numeric="integer"-->
         <!--android:title="Work Duration" />-->
-        <!--<EditTextPreference-->
-        <!--android:defaultValue="5"-->
-        <!--android:inputType="number"-->
-        <!--android:key="break_duration"-->
-        <!--android:maxLength="2"-->
-        <!--android:numeric="integer"-->
-        <!--android:title="Break Duration" />-->
 
         <SwitchPreference
+            android:defaultValue="true"
             android:key="long_break_enabled"
             android:title="Long Break Enabled" />
-        <!--<EditTextPreference-->
-        <!--android:defaultValue="4"-->
-        <!--android:key="long_break_interval"-->
-        <!--android:numeric="integer"-->
-        <!--android:title="Long Break Interval" />-->
         <com.mathias.apps.tasktracker.preferences.SeekBarPreferenceAutoSummary
             android:defaultValue="4"
             android:dependency="long_break_enabled"

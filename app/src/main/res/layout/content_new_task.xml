@@ -103,11 +103,13 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/editTextDescription"
-        android:layout_alignRight="@+id/editTextDescription"
-        android:layout_alignTop="@+id/tvMinutes"
         android:text="@string/activity_new_task_time_est"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:layout_alignTop="@+id/tvMinutes"
+        android:layout_toRightOf="@+id/tvMinutes"
+        android:layout_toEndOf="@+id/tvMinutes"
+        android:layout_marginLeft="34dp"
+        android:layout_marginStart="34dp" />
 
     <Spinner
         android:id="@+id/spinnerColor"

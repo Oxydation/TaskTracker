@@ -10,21 +10,13 @@ import com.sileria.android.view.SeekBarPreference;
 // http://www.codeproject.com/Articles/163541/SeekBar-Preference
 // http://no-magic.info/development-for-android-os/seekbar-in-preferences.html
 // http://stackoverflow.com/questions/5050272/android-seekbarpreference
+
 /**
  * Created by Mathias on 21/02/2016.
  */
 public class SeekBarPreferenceAutoSummary extends SeekBarPreference {
     private int max;
-
-    public int getMax() {
-        return max;
-    }
-
-    @Override
-    public void setMax(int max) {
-        super.setMax(max);
-        this.max = max;
-    }
+    private int min = 1;
 
     public SeekBarPreferenceAutoSummary(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
@@ -38,14 +30,28 @@ public class SeekBarPreferenceAutoSummary extends SeekBarPreference {
         super(context);
     }
 
+    public int getMin() {
+        return min;
+    }
+
+    public void setMin(int min) {
+        this.min = min;
+    }
+
+    public int getMax() {
+        return max;
+    }
+
+    @Override
+    public void setMax(int max) {
+        super.setMax(max);
+        this.max = max;
+    }
+
     @Override
     public CharSequence getSummary() {
         String summary = (String) super.getSummary();
-        if (summary != null) {
-            return String.format(summary, String.valueOf(getPersistedInt(1)));
-        } else {
-            return String.valueOf(String.valueOf(getPersistedInt(1)));
-        }
+        return getSummary(getPersistedInt(1));
     }
 
     public CharSequence getSummary(int value) {
@@ -61,6 +67,11 @@ public class SeekBarPreferenceAutoSummary extends SeekBarPreference {
     public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
         super.onProgressChanged(seekBar, i, b);
         //setSummary(getSummary(i));
+
+        if (i < min) {
+            i = min;
+            seekBar.setProgress(i);
+        }
 
         onStopTrackingTouch(seekBar);
     }
