@@ -15,7 +15,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String LOGTAG = "TASKTRACKER";
 
     private static final String DATABASE_NAME = "tasktracker.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     private static final String DATABASE_CREATE_TASKS = "CREATE TABLE " + TaskEntry.TABLE_NAME +
             "("
@@ -26,6 +26,7 @@ public class DBHelper extends SQLiteOpenHelper {
             + TaskEntry.COLUMN_NAME_TIME_EST + " NUMERIC " + ","
             + TaskEntry.COLUMN_NAME_TIME_DONE + " NUMERIC " + ","
             + TaskEntry.COLUMN_NAME_ARCHIVED + " INTEGER DEFAULT 0 " + ","
+            + TaskEntry.COLUMN_NAME_STAMP_CREATED + " DATETIME DEFAULT CURRENT_TIMESTAMP " + ","
             + TaskEntry.COLUMN_NAME_IS_DONE + " INTEGER DEFAULT 0"
             + ");";
 
@@ -46,9 +47,13 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.w(DBHelper.class.getName(), "Upgrading database from version " + oldVersion + " to " + newVersion + ", which will destroy all old data");
 
-
+//        if (oldVersion == 2) {
+//            db.execSQL("ALTER TABLE " + TaskEntry.TABLE_NAME + " ADD COLUMN " + TaskEntry.COLUMN_NAME_STAMP_CREATED + " DATETIME DEFAULT CURRENT_TIMESTAMP ;");
+//        } else {
         // Create a way to update instead of delete database
         db.execSQL(DATABASE_DELETE_TASKS);
         onCreate(db);
+        // }
+
     }
 }

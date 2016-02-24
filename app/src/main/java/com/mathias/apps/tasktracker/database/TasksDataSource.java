@@ -13,6 +13,7 @@ import com.mathias.apps.tasktracker.database.TaskTrackerContract.TaskEntry;
 import com.mathias.apps.tasktracker.models.SubTask;
 import com.mathias.apps.tasktracker.models.Task;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,6 +110,7 @@ public class TasksDataSource {
             task.setTimeEstaminated(cursor.getLong(cursor.getColumnIndexOrThrow(TaskEntry.COLUMN_NAME_TIME_EST)));
             task.setTimeDone(cursor.getLong(cursor.getColumnIndexOrThrow(TaskEntry.COLUMN_NAME_TIME_DONE)));
             task.setColor(cursor.getInt(cursor.getColumnIndexOrThrow(TaskEntry.COLUMN_NAME_COLOR)));
+            task.setCreatedTime(Timestamp.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(TaskEntry.COLUMN_NAME_STAMP_CREATED))));
             task.setArchived(cursor.getInt(cursor.getColumnIndexOrThrow(TaskEntry.COLUMN_NAME_ARCHIVED)) == 1);
             task.setDone(cursor.getInt(cursor.getColumnIndexOrThrow(TaskEntry.COLUMN_NAME_IS_DONE)) == 1);
             return task;
@@ -156,6 +158,7 @@ public class TasksDataSource {
                         TaskEntry.COLUMN_NAME_COLOR + ", " +
                         TaskEntry.COLUMN_NAME_IS_DONE + ", " +
                         TaskEntry.COLUMN_NAME_ARCHIVED + ", " +
+                        TaskEntry.COLUMN_NAME_STAMP_CREATED + ", " +
                         TaskEntry.COLUMN_NAME_NAME +
                         " FROM " + TaskEntry.TABLE_NAME + where, selection);
 

@@ -1,6 +1,7 @@
 package com.mathias.apps.tasktracker.models;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -16,6 +17,7 @@ public class Task implements Serializable {
     private boolean done;
     private String description;
     private boolean archived;
+    private Timestamp createdTime;
 
     //TODO: add created and modified datetime
 
@@ -111,4 +113,11 @@ public class Task implements Serializable {
         return name;
     }
 
+    public void setCreatedTime(Timestamp createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public Timestamp getCreatedTime() {
+        return createdTime;
+    }
 }

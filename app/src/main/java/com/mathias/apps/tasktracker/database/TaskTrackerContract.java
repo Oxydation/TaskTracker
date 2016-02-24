@@ -21,6 +21,7 @@ public final class TaskTrackerContract {
         public static final String COLUMN_NAME_TIME_EST = "timeEstimated";
         public static final String COLUMN_NAME_TIME_DONE = "timeDone";
         public static final String COLUMN_NAME_ARCHIVED = "archived";
+        public static final String COLUMN_NAME_STAMP_CREATED = "stampCreated";
         public static final String COLUMN_NAME_IS_DONE = "isDone";
 
         public static final String[] ALL_COLUMNS = {
@@ -31,6 +32,7 @@ public final class TaskTrackerContract {
                 COLUMN_NAME_TIME_DONE,
                 COLUMN_NAME_TIME_EST,
                 COLUMN_NAME_ARCHIVED,
+                COLUMN_NAME_STAMP_CREATED,
                 COLUMN_NAME_IS_DONE};
     }
 
