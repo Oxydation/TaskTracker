@@ -99,20 +99,22 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/editTextDescription"
-        android:layout_alignRight="@+id/editTextDescription"
         android:layout_alignTop="@+id/tvMinutes"
-        android:text="@string/activity_edit_task_time_est"
+        android:layout_marginLeft="34dp"
+        android:layout_marginStart="34dp"
+        android:layout_toEndOf="@+id/tvMinutes"
+        android:layout_toRightOf="@+id/tvMinutes"
+        android:text="@string/activity_new_task_time_est"
         android:textSize="18sp" />
 
     <Spinner
         android:id="@+id/spinnerColor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:spinnerMode="dropdown"
-        android:layout_below="@+id/textView"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView"
+        android:spinnerMode="dropdown" />
 
     <TextView
         android:id="@+id/textView"
@@ -128,13 +130,13 @@
         android:id="@+id/editTextTimeDone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView"
+        android:layout_toLeftOf="@+id/textView4"
+        android:layout_toStartOf="@+id/textView4"
         android:ems="3"
         android:hint=""
         android:inputType="number"
-        android:maxLength="3"
-        android:layout_alignBottom="@+id/textView"
-        android:layout_toLeftOf="@+id/textView4"
-        android:layout_toStartOf="@+id/textView4" />
+        android:maxLength="3" />
 
     <EditText
         android:id="@+id/editTextTimeDoneHours"
