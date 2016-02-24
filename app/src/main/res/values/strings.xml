@@ -54,7 +54,7 @@
     <string name="title_activity_statistics">Statistic</string>
     <string name="statistic_list_empty">No previous statistic data found.</string>
     <string name="statistic_action_default">Action</string>
-    <string name="statistic_timestamp_default">1.1.1900</string>
+    <string name="statistic_timestamp_default">2016-02-24 13:38:51.0</string>
     <string name="statistics_worktime_default">Work: 00h 00m 00s</string>
     <string name="statistics_breaktime_default">Break: 00m 00s</string>
 </resources>

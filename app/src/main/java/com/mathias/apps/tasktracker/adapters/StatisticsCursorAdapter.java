@@ -16,6 +16,12 @@ import com.mathias.apps.tasktracker.activities.TimerActivity;
 import com.mathias.apps.tasktracker.database.DataSource;
 import com.mathias.apps.tasktracker.models.StatisticLog;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+
 /**
  * Created by Mathias on 20/02/2016.
  */
@@ -105,34 +111,20 @@ public class StatisticsCursorAdapter extends CursorAdapter implements View.OnCre
         public void populateRow(StatisticLog statisticLog) {
             action.setText(statisticLog.getAction());
             taskName.setText(statisticLog.getTask().getName());
-            timeStamp.setText(statisticLog.getTime().toString());
 
-//            // Populate the data into the template view using the data object
-//            name.setText(statisticLog.getName());
-//
-//            // Get time done in hours and minutes
-//            long hours = TimeUnit.SECONDS.toHours((long) statisticLog.getTimeDone());
-//            long remainMinute = (long) (TimeUnit.SECONDS.toMinutes((long) statisticLog.getTimeDone()) - TimeUnit.HOURS.toMinutes(hours));
-//            String result = String.format("%01d", hours) + "h " + String.format("%01d", remainMinute) + "m";
-//            timeDone.setText(result);
-//
-//            if (statisticLog.getDescription() == null || statisticLog.getDescription().isEmpty()) {
-//                status.setText(R.string.task_item_description_empty);
-//            } else {
-//                status.setText(statisticLog.getDescription());
-//            }
-//            // Set opacity of task
-//            if (statisticLog.isDone()) {
-//                layout.setAlpha((float) 0.5);
-//                layout.setBackgroundColor(0);
-//            } else {
-//                layout.setAlpha((float) 1);
-//                if (statisticLog.getColor() != 0) {
-//                    layout.setBackgroundColor(statisticLog.getColor());
-//                } else {
-//                    layout.setBackgroundResource(R.color.bg1_task_grey);
-//                }
-//            }
+            DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.GERMANY);
+            Date netDate = (new Date(statisticLog.getTime().getTime()));
+            timeStamp.setText(sdf.format(netDate));
+
+            // Get time done in hours and minutes
+            long hours = TimeUnit.SECONDS.toHours(statisticLog.getWorkTime());
+            long remainMinute = TimeUnit.SECONDS.toMinutes(statisticLog.getWorkTime()) - TimeUnit.HOURS.toMinutes(hours);
+            String result = "Work: " + String.format("%01d", hours) + "h " + String.format("%01d", remainMinute) + "m";
+            workTime.setText(result);
+
+            DateFormat dateFormat = new SimpleDateFormat("mm:ss", Locale.GERMANY);
+            netDate = (new Date(statisticLog.getBreakTime() * 1000));
+            breakTime.setText("Break: " + dateFormat.format(netDate) + "m");
         }
     }
 }
