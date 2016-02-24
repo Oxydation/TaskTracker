@@ -41,4 +41,6 @@
     <string name="context_menu_duplicate">Duplicate</string>
     <string name="content_timer_status_empty">0s spent</string>
     <string name="context_menu_archive">Archive</string>
+    <string name="context_menu_edit">Edit</string>
+    <string name="action_archive">Archive</string>
 </resources>

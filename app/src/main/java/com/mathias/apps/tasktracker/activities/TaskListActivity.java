@@ -162,6 +162,9 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo itemInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
+            case R.id.context_menu_edit:
+                onEditButtonClick(cursorAdapter.getItemId(itemInfo.position));
+                return true;
             case R.id.context_menu_delete_item:
                 long taskId = cursorAdapter.getItemId(itemInfo.position);
                 deleteTask(taskId);
