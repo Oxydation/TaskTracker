@@ -46,8 +46,8 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
 
         taskName.setText(editTask.getName());
         description.setText(editTask.getDescription());
-        estTime.setText(String.valueOf(editTask.getTimeEstaminated() % 60));
-        estTimeHours.setText(String.valueOf((int) editTask.getTimeEstaminated() / 60));
+        estTime.setText(String.valueOf((int) TimeUnit.SECONDS.toHours(editTask.getTimeEstaminated())));
+        estTimeHours.setText(String.valueOf(TimeUnit.SECONDS.toMinutes(editTask.getTimeEstaminated() % 3600)));
 
         doneTimeHours.setText(String.valueOf((int) TimeUnit.SECONDS.toHours(editTask.getTimeDone())));
         doneTimeMinutes.setText(String.valueOf(TimeUnit.SECONDS.toMinutes(editTask.getTimeDone() % 3600)));
