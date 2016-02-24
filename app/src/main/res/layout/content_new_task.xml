@@ -117,9 +117,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="5dp"
         android:layout_below="@+id/textView"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <TextView
@@ -127,15 +127,16 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="6dp"
-            android:text="Color:" />
+            android:text="Color:"
+            android:textSize="18sp" />
 
         <Spinner
             android:id="@+id/spinnerColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:spinnerMode="dropdown"
-            android:elevation="10dp" />
+            android:elevation="10dp"
+            android:spinnerMode="dropdown" />
     </LinearLayout>
 
     <TextView
