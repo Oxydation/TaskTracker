@@ -3,9 +3,11 @@ package com.mathias.apps.tasktracker.models;
 import android.animation.ObjectAnimator;
 import android.os.Build;
 import android.os.CountDownTimer;
+import android.os.SystemClock;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
+import android.widget.Chronometer;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -17,10 +19,16 @@ import java.util.concurrent.TimeUnit;
  * Created by Mathias on 22/02/2016.
  */
 public class PomodoroTimer {
+    private Chronometer chronometer;
+
     public interface CountDownTimerEvent {
         void onTick(long millisUntilFinished);
 
         void onFinish();
+    }
+
+    public interface OverflowStopWatchEvent {
+        void onTick(long baseTime, long difference);
     }
 
     private static final long TIMER_INTERVAL = 1000;
@@ -37,6 +45,9 @@ public class PomodoroTimer {
     private long lastTimerValue;
     private int amountWorkPeriods = 0;
 
+    private long currentWorkTime = 0;
+    private long currentBreakTime = 0;
+
     private TimerStatus status = TimerStatus.WAIT_FOR_WORK;
     private ObjectAnimator progressBarAnimation;
     private TextView tvTime;
@@ -44,28 +55,47 @@ public class PomodoroTimer {
 
     private CountDownTimerEvent workTimerEvents;
     private CountDownTimerEvent breakTimerEvents;
+    private OverflowStopWatchEvent overflowStopWatchEvent;
 
-    public PomodoroTimer(ProgressBar progressBar, TextView timeText, TextView tvTimeSubtitle) {
+    private long lastChronometerValue = 0;
+
+    public PomodoroTimer(Chronometer dummy, ProgressBar progressBar, TextView timeText, TextView tvTimeSubtitle) {
         this.progressBar = progressBar;
         tvTime = timeText;
         this.tvTimeSubtitle = tvTimeSubtitle;
+        chronometer = dummy;
         init();
     }
 
-    public PomodoroTimer(ProgressBar progressBar, TextView tvTime) {
-        this(progressBar, tvTime, null);
+    public PomodoroTimer(Chronometer dummy, ProgressBar progressBar, TextView tvTime) {
+        this(dummy, progressBar, tvTime, null);
     }
 
     private void init() {
         countDownBreakTimer = getCountDownBreakTimer(1000 * 60 * breakDuration);
         countDownWorkTimer = getCountdownWorkTimer((long) 1000 * 60 * workDuration);
         progressBarAnimation = ObjectAnimator.ofInt(progressBar, "progress", 500, 0);
+
+        chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            @Override
+            public void onChronometerTick(Chronometer chronometer) {
+                long newValue = SystemClock.elapsedRealtime() - chronometer.getBase();
+                long difference = newValue - lastChronometerValue;
+                currentWorkTime += difference;
+                lastChronometerValue = newValue;
+
+                if (overflowStopWatchEvent != null) {
+                    overflowStopWatchEvent.onTick(chronometer.getBase(), difference);
+                }
+            }
+        });
     }
 
     private CountDownTimer getCountDownBreakTimer(long duration) {
         return new CountDownTimer(duration, TIMER_INTERVAL) {
             @Override
             public void onTick(long millisUntilFinished) {
+                currentBreakTime = breakDuration * 1000 - millisUntilFinished;
                 tvTime.setText(getTimeString(millisUntilFinished));
 
                 if (breakTimerEvents != null) {
@@ -85,6 +115,8 @@ public class PomodoroTimer {
                 if (breakTimerEvents != null) {
                     breakTimerEvents.onFinish();
                 }
+                // TODO: check
+                // currentBreakTime = 0;
             }
         };
     }
@@ -94,7 +126,9 @@ public class PomodoroTimer {
 
             @Override
             public void onTick(long millisUntilFinished) {
+                currentWorkTime = currentWorkTime * 1000 - millisUntilFinished;
                 lastTimerValue = millisUntilFinished;
+
                 tvTime.setText(getTimeString(millisUntilFinished));
 
                 if (workTimerEvents != null) {
@@ -117,6 +151,30 @@ public class PomodoroTimer {
                 if (workTimerEvents != null) {
                     workTimerEvents.onFinish();
                 }
+
+                chronometer.setBase(SystemClock.elapsedRealtime());
+                chronometer.start();
+//                workTimer = new java.util.Timer("bla", false);
+//                workTimer.scheduleAtFixedRate(new TimerTask() {
+//                    @Override
+//                    public void run() {
+//                        if (workTimerEvents != null) {
+//                            new AsyncTask<Void, Void, Void>() {
+//                                @Override
+//                                protected Void doInBackground(Void... params) {
+//                                    return null;
+//                                }
+//
+//                                @Override
+//                                protected void onPostExecute(Void aVoid) {
+//                                    workTimerEvents.onTick(0);
+//                                }
+//                            }.execute();
+//                        }
+//                    }
+//                }, 0, TIMER_INTERVAL);
+
+                // currentWorkTime = 0;
             }
         };
     }
@@ -124,6 +182,10 @@ public class PomodoroTimer {
 
     public void startWork() {
         status = TimerStatus.WORK;
+
+        currentWorkTime = 0;
+        currentBreakTime = 0;
+
         progressBarAnimation.setDuration(1000 * 60 * workDuration); //in milliseconds
         progressBarAnimation.setInterpolator(new LinearInterpolator());
         progressBarAnimation.start();
@@ -135,6 +197,11 @@ public class PomodoroTimer {
 
     public void startBreak() {
         status = TimerStatus.BREAK;
+        chronometer.stop();
+
+        currentWorkTime = 0;
+        currentBreakTime = 0;
+
         if (isLongBreakEnabled() && isLongBreak()) {
             // Long break -> change sub title
             progressBarAnimation.setDuration(1000 * 60 * longBreakDuration); //in milliseconds
@@ -182,6 +249,7 @@ public class PomodoroTimer {
 
     public void stop() {
         status = TimerStatus.WAIT_FOR_WORK;
+        chronometer.stop();
         countDownWorkTimer.cancel();
         countDownBreakTimer.cancel();
         progressBarAnimation.end();
@@ -316,5 +384,29 @@ public class PomodoroTimer {
 
     public boolean isLongBreak() {
         return (amountWorkPeriods > 0 && (amountWorkPeriods % longBreakInterval) == 0);
+    }
+
+    public long getCurrentWorkTime() {
+        return currentWorkTime;
+    }
+
+    public void setCurrentWorkTime(long currentWorkTime) {
+        this.currentWorkTime = currentWorkTime;
+    }
+
+    public long getCurrentBreakTime() {
+        return currentBreakTime;
+    }
+
+    public void setCurrentBreakTime(long currentBreakTime) {
+        this.currentBreakTime = currentBreakTime;
+    }
+
+    public OverflowStopWatchEvent getOverflowStopWatchEvent() {
+        return overflowStopWatchEvent;
+    }
+
+    public void setOverflowStopWatchEvent(OverflowStopWatchEvent overflowStopWatchEvent) {
+        this.overflowStopWatchEvent = overflowStopWatchEvent;
     }
 }

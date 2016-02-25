@@ -68,6 +68,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
     private TextView tvTaskStatus;
     private FloatingActionButton fabStartPause;
     private FloatingActionButton fabStop;
+    private long startTimeValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +94,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         tvTimeChrono = (Chronometer) findViewById(R.id.tvTimeChrono);
         tvTimeSubtitle = (TextView) findViewById(R.id.tvTimeSubtitle);
         tvTaskStatus = (TextView) findViewById(R.id.tvTaskStatus);
+        Chronometer dummyChronometer = (Chronometer) findViewById(R.id.dummyChronometer);
         final TextView tvTaskName = (TextView) findViewById(R.id.tvTaskName);
         final TextView tvTaskDescription = (TextView) findViewById(R.id.tvTaskDescription);
         if (task != null) {
@@ -109,7 +111,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
 
         // Initialize timers
         stopWatch = new StopWatch(tvTimeChrono);
-        pomodoroTimer = new PomodoroTimer(progressBar, tvTimeChrono);
+        pomodoroTimer = new PomodoroTimer(dummyChronometer, progressBar, tvTimeChrono);
         initPomodoro();
         initStopWatch();
 
@@ -251,6 +253,8 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
 
             @Override
             public void onFinish() {
+                // Update time one last time
+                task.setTimeDone(task.getTimeDone() + 1);
                 updateTask(task);
                 createStatisticLog("Work", "Work time finished.", 1000, 500);
 
@@ -267,6 +271,15 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
                     vibrator.vibrate(VIBRATE_DURATION);
                 }
                 status = TimerStatus.WAIT_FOR_BREAK;
+            }
+        });
+
+        pomodoroTimer.setOverflowStopWatchEvent(new PomodoroTimer.OverflowStopWatchEvent() {
+            @Override
+            public void onTick(long baseTime, long difference) {
+                // Update task time
+                task.setTimeDone(task.getTimeDone() + difference);
+                updateTask(task);
             }
         });
     }
@@ -322,8 +335,16 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         stopWatch.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
             public void onChronometerTick(Chronometer chronometer) {
-                task.setTimeDone(task.getTimeDone() + 1);
+                // task.setTimeDone(task.getTimeDone() + 1);
+                task.setTimeDone(startTimeValue + (stopWatch.getCurrentMeasuredTime() / 1000));
                 updateTask(task);
+            }
+        });
+
+        stopWatch.setOnBeforeStartListener(new StopWatch.OnBeforeStartListener() {
+            @Override
+            public void onBeforeStart() {
+                startTimeValue = task.getTimeDone();
             }
         });
     }
@@ -407,6 +428,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
 
     /**
      * Creates a status test from a task.
+     *
      * @param task
      * @return
      */
@@ -475,6 +497,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
 
     /**
      * Updates the task and sets the status text.
+     *
      * @param task
      */
     private void updateTask(Task task) {
@@ -579,6 +602,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
 
     /**
      * Checks if the activity is in foreground.
+     *
      * @return
      */
     public boolean isInForeground() {

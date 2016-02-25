@@ -8,8 +8,15 @@ import android.widget.Chronometer;
  * Created by Mathias on 22/02/2016.
  */
 public class StopWatch {
+    public interface OnBeforeStartListener {
+        void onBeforeStart();
+    }
+
     private Chronometer chronometer;
     private long lastStopTime;
+    private long currentMeasuredTime;
+
+    private OnBeforeStartListener onBeforeStartListener;
     private String format;
     private Chronometer.OnChronometerTickListener onChronometerTickListener;
 
@@ -22,8 +29,8 @@ public class StopWatch {
         // http://stackoverflow.com/questions/4897665/android-chronometer-format
         chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             public void onChronometerTick(Chronometer c) {
-                long elapsedMillis = SystemClock.elapsedRealtime() - c.getBase();
-                if (elapsedMillis > 3600000L) {
+                currentMeasuredTime = SystemClock.elapsedRealtime() - c.getBase();
+                if (currentMeasuredTime > 3600000L) {
                     c.setFormat("0%s");
                 } else {
                     c.setFormat("00:%s");
@@ -79,5 +86,21 @@ public class StopWatch {
 
     public void setOnChronometerTickListener(Chronometer.OnChronometerTickListener onChronometerTickListener) {
         this.onChronometerTickListener = onChronometerTickListener;
+    }
+
+    public long getCurrentMeasuredTime() {
+        return currentMeasuredTime;
+    }
+
+    public void setCurrentMeasuredTime(long currentMeasuredTime) {
+        this.currentMeasuredTime = currentMeasuredTime;
+    }
+
+    public OnBeforeStartListener getOnBeforeStartListener() {
+        return onBeforeStartListener;
+    }
+
+    public void setOnBeforeStartListener(OnBeforeStartListener onBeforeStartListener) {
+        this.onBeforeStartListener = onBeforeStartListener;
     }
 }

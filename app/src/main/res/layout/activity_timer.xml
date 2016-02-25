@@ -24,4 +24,10 @@
 
     <include layout="@layout/content_timer" />
 
+    <Chronometer
+        android:id="@+id/dummyChronometer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone" />
+
 </android.support.design.widget.CoordinatorLayout>
