@@ -1,6 +1,5 @@
 package com.mathias.apps.tasktracker.activities;
 
-import android.annotation.TargetApi;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
@@ -13,11 +12,9 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -220,6 +217,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
             @Override
             public void onTick(long millisUntilFinished) {
                 // Nothing to do
+                // notifiyTimer(getString(R.string.activity_timer_subtitle_work), "Task: " + task.getName(), task.getId(), 0);
             }
 
             @Override
@@ -234,7 +232,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
                 }
 
                 if (notificationEnabled && !isInForeground()) {
-                    notifiyTimer(getString(R.string.pomodoro_break_up), "Task: " + task.getName(), task.getId(), 100);
+                    //  notifiyTimer(getString(R.string.pomodoro_break_up), "Task: " + task.getName(), task.getId(), 100);
                 }
 
                 status = TimerStatus.WAIT_FOR_WORK;
@@ -261,7 +259,9 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
                 tvTimeSubtitle.setText(R.string.pomodoro_work_time_up);
 
                 if (notificationEnabled && !isInForeground()) {
-                    notifiyTimer(getString(R.string.pomodoro_work_time_up), "Task: " + task.getName(), task.getId(), 100);
+                    notifiyTimer(getString(R.string.pomodoro_work_time_up), "Task: " + task.getName(), task.getId(), 500);
+                } else {
+                    notificationManager.cancel(workTimerNotificationId);
                 }
 
                 setFABIcon(fabStartPause, R.drawable.ic_free_breakfast_white_48dp);
@@ -458,16 +458,30 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         return modus;
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    int workTimerNotificationId = 1;
+    android.support.v7.app.NotificationCompat.Builder builder;
+    NotificationManager notificationManager;
+
+    private void updateTimerNotification(String description, int percent) {
+        builder.setContentText(description)
+                .setProgress(500, percent, false);
+        notificationManager.notify(workTimerNotificationId, builder.build());
+    }
+
     private void notifiyTimer(String title, String description, long taskId, int percent) {
+
+        if (builder != null) {
+            updateTimerNotification(description, percent);
+            return;
+        }
         // TODO
         // http://stackoverflow.com/questions/14885368/update-text-of-notification-not-entire-notification
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle(title)
-                        .setContentText(description)
-                        .setProgress(500, percent, false);
+
+        builder = new android.support.v7.app.NotificationCompat.Builder(this);
+        builder.setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(title)
+                .setContentText(description).setProgress(500, 0, true);
+
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, TimerActivity.class);
         resultIntent.putExtra("taskId", taskId);
@@ -486,14 +500,11 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
                         0,
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
-        mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        // mId allows you to update the notification later on.
-        int mId = 1;
-        mBuilder.setAutoCancel(true);
-        mNotificationManager.notify(mId, mBuilder.build());
-        Log.i(LOGTAG, "Throwed notification.");
+
+        builder.setContentIntent(resultPendingIntent);
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        builder.setAutoCancel(true);
+        notificationManager.notify(workTimerNotificationId, builder.build());
     }
 
     /**
