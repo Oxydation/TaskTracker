@@ -38,6 +38,8 @@ import com.mathias.apps.tasktracker.models.TimerStatus;
 
 import java.util.concurrent.TimeUnit;
 
+// Use following technique to run the timer
+// http://developer.android.com/guide/components/services.html
 public class TimerActivity extends AppCompatActivity implements TimerSelectionDialogFragment.TimerSelectionDialogListener {
     private static final long VIBRATE_DURATION = 500;
     private static final String LOGTAG = "TimerActivity";
@@ -162,10 +164,16 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    /**
+     * Gets the current selected timer mode.
+     */
     private void getCurrentSelectedMode() {
         currentSelectedTimerMode = TimerMode.values()[timerMode.ordinal()];
     }
 
+    /**
+     * Stops the pomodoro timer.
+     */
     private void stopPomodoro() {
         status = TimerStatus.WAIT_FOR_WORK;
         tvTimeSubtitle.setText(R.string.activity_timer_subtitle_work);
@@ -176,6 +184,9 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         getCurrentSelectedMode();
     }
 
+    /**
+     * Shows a dialog to prevent stopping of the pomodoro timer.
+     */
     private void dialogStopPomodoro() {
 
         AlertDialog.Builder alert = new AlertDialog.Builder(TimerActivity.this);
@@ -198,6 +209,9 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         alert.show();
     }
 
+    /**
+     * Initializes the pomodoro timer with event handlers.
+     */
     private void initPomodoro() {
         updatePomodoroSettings();
         pomodoroTimer.setBreakTimerEvents(new PomodoroTimer.CountDownTimerEvent() {
@@ -257,6 +271,9 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         });
     }
 
+    /**
+     * Updates the pomodoro settings.
+     */
     private void updatePomodoroSettings() {
         pomodoroTimer.setBreakDuration(breakDuration);
         pomodoroTimer.setWorkDuration(workDuration);
@@ -265,6 +282,9 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         pomodoroTimer.setLongBreakEnabled(longBreakEnabled);
     }
 
+    /**
+     * Loads preferences to use them in this activity.
+     */
     private void loadSharedPreferences() {
         sharedPreferences = getSharedPreferences(SettingsActivityFragment.SETTINGS_SHARED_PREFERENCES_FILE_NAME, MODE_PRIVATE);
         timerMode = fromString(sharedPreferences.getString("timer_mode", "ask"));
@@ -295,6 +315,9 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         });
     }
 
+    /**
+     * Initalizes the stop watch via the event handler.
+     */
     private void initStopWatch() {
         stopWatch.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
@@ -305,6 +328,9 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         });
     }
 
+    /**
+     * Handles the button "StartPause" in stop watch mode.
+     */
     private void handleStartPauseStopWatch() {
         if (status == TimerStatus.WAIT_FOR_WORK) {
             status = TimerStatus.WORK;
@@ -324,6 +350,9 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         }
     }
 
+    /**
+     * Handles the button "StartPause" in pomodoro mode.
+     */
     private void handleStartPausePomodoro() {
         if (status == TimerStatus.WAIT_FOR_WORK) {
             status = TimerStatus.WORK;
@@ -358,6 +387,14 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         tvTimeChrono.setAnimation(null);
     }
 
+    /**
+     * Creates a new statistic log.
+     *
+     * @param action    The action which is done (e.g. Work, Break, ...)
+     * @param message   The message for the statistic.
+     * @param workTime  The time of work done when creating the statistic log.
+     * @param breakTime The amount of break time done when creating the statistic log.
+     */
     private void createStatisticLog(String action, String message, long workTime, long breakTime) {
         StatisticLog statisticLog = new StatisticLog();
         statisticLog.setTask(task);
@@ -368,6 +405,11 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         dataSource.createStatisticLog(statisticLog);
     }
 
+    /**
+     * Creates a status test from a task.
+     * @param task
+     * @return
+     */
     public static String getStatusText(Task task) {
         return String.format("%s spent", getFriendlyTimeString(TimeUnit.SECONDS.toMillis((long) (task.getTimeDone())), false, true));
     }
@@ -431,6 +473,10 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         Log.i(LOGTAG, "Throwed notification.");
     }
 
+    /**
+     * Updates the task and sets the status text.
+     * @param task
+     */
     private void updateTask(Task task) {
         tvTaskStatus.setText(getStatusText(task));
         dataSource.updateTask(task);
@@ -531,6 +577,10 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
         isInForegroundMode = true;
     }
 
+    /**
+     * Checks if the activity is in foreground.
+     * @return
+     */
     public boolean isInForeground() {
         return isInForegroundMode;
     }

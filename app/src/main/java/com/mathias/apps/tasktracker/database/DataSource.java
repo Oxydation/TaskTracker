@@ -293,6 +293,7 @@ public class DataSource {
         return getAllStatisticLogsCursor(new Timestamp(0), new Timestamp(0));
     }
 
+    //TODO: add from, to functionality
     public Cursor getAllStatisticLogsCursor(Timestamp from, Timestamp to) {
         open();
 

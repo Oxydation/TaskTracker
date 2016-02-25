@@ -2,13 +2,12 @@ package com.mathias.apps.tasktracker.activities;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
-import android.util.Log;
 
 import com.mathias.apps.tasktracker.R;
 import com.mathias.apps.tasktracker.preferences.SeekBarPreferenceAutoSummary;
 
 /**
- * A placeholder fragment containing a simple view.
+ * Fragment for the preference view.
  */
 public class SettingsActivityFragment extends PreferenceFragment {
 
@@ -30,12 +29,12 @@ public class SettingsActivityFragment extends PreferenceFragment {
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
 
+        // Load preference objects and set the maximum (as it is not set via the preference.xml)
         SeekBarPreferenceAutoSummary workDuration = (SeekBarPreferenceAutoSummary) findPreference("work_duration");
         SeekBarPreferenceAutoSummary breakDuration = (SeekBarPreferenceAutoSummary) findPreference("break_duration");
         SeekBarPreferenceAutoSummary longBreakDuration = (SeekBarPreferenceAutoSummary) findPreference("long_break_duration");
         SeekBarPreferenceAutoSummary longBreakInterval = (SeekBarPreferenceAutoSummary) findPreference("long_break_interval");
 
-        Log.i(LOGTAG, String.valueOf(workDuration.getMax()));
         workDuration.setMax(40);
         breakDuration.setMax(10);
         longBreakDuration.setMax(20);

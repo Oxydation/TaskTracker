@@ -11,10 +11,11 @@ public final class TaskTrackerContract {
     public TaskTrackerContract() {
     }
 
-    /* Inner class that defines the table contents */
+    /**
+     * Represents columns for the task model.
+     */
     public static abstract class TaskEntry implements BaseColumns {
         public static final String TABLE_NAME = "task";
-        // public static final String COLUMN_NAME_ENTRY_ID = "taskId";
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_DESC = "description";
         public static final String COLUMN_NAME_COLOR = "color";
@@ -36,9 +37,11 @@ public final class TaskTrackerContract {
                 COLUMN_NAME_IS_DONE};
     }
 
+    /**
+     * Represents columns for the sub task model.
+     */
     public static abstract class SubTaskEntry implements BaseColumns {
         public static final String TABLE_NAME = "subtask";
-        // public static final String COLUMN_NAME_ENTRY_ID = "subTaskId";
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_IS_DONE = "isDone";
         public static final String COLUMN_NAME_PARENT_TASK = "taskId";
@@ -50,6 +53,9 @@ public final class TaskTrackerContract {
                 COLUMN_NAME_IS_DONE};
     }
 
+    /**
+     * Represents columns for the statistic log model.
+     */
     public static abstract class StatisticLogEntry implements BaseColumns {
         public static final String TABLE_NAME = "statistics";
         public static final String COLUMN_NAME_TASK = "taskId";

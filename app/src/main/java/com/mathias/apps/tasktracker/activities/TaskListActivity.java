@@ -63,6 +63,9 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
 
     }
 
+    /**
+     * Updates the list view with data from the database.
+     */
     private void updateTaskListView() {
         cursorAdapter.changeCursor(dataSource.getAllTasksCursor());
     }
@@ -122,10 +125,9 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
 
         // Get the clicked item
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-
-        // Get the name of the clicked item
         Task clickedItem = dataSource.getTask(cursorAdapter.getItemId(info.position));
 
+        // Set visibility of the "done" action of the context menu
         if (clickedItem.isDone()) {
             menu.findItem(R.id.context_menu_set_done).setVisible(false);
             menu.findItem(R.id.context_menu_set_undone).setVisible(true);
@@ -137,6 +139,11 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
         super.onCreateContextMenu(menu, v, menuInfo);
     }
 
+    /**
+     * Deletes a certain task via a dialog to prevent deleting accidentally.
+     *
+     * @param taskId
+     */
     private void deleteTask(final long taskId) {
         AlertDialog.Builder alert = new AlertDialog.Builder(
                 TaskListActivity.this);
