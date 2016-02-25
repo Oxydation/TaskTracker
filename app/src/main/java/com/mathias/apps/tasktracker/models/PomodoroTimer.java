@@ -59,11 +59,11 @@ public class PomodoroTimer {
 
     private long lastChronometerValue = 0;
 
-    public PomodoroTimer(Chronometer dummy, ProgressBar progressBar, TextView timeText, TextView tvTimeSubtitle) {
+    public PomodoroTimer(Chronometer workTimerChronometer, ProgressBar progressBar, TextView timeText, TextView tvTimeSubtitle) {
         this.progressBar = progressBar;
         tvTime = timeText;
         this.tvTimeSubtitle = tvTimeSubtitle;
-        chronometer = dummy;
+        chronometer = workTimerChronometer;
         init();
     }
 
@@ -79,7 +79,7 @@ public class PomodoroTimer {
         chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
             public void onChronometerTick(Chronometer chronometer) {
-                long newValue = SystemClock.elapsedRealtime() - chronometer.getBase();
+                long newValue = (SystemClock.elapsedRealtime() - chronometer.getBase()) / 1000;
                 long difference = newValue - lastChronometerValue;
                 currentWorkTime += difference;
                 lastChronometerValue = newValue;
@@ -95,7 +95,7 @@ public class PomodoroTimer {
         return new CountDownTimer(duration, TIMER_INTERVAL) {
             @Override
             public void onTick(long millisUntilFinished) {
-                currentBreakTime = breakDuration * 1000 - millisUntilFinished;
+                currentBreakTime = ((breakDuration * 1000) - millisUntilFinished) / 1000;
                 tvTime.setText(getTimeString(millisUntilFinished));
 
                 if (breakTimerEvents != null) {
@@ -126,7 +126,7 @@ public class PomodoroTimer {
 
             @Override
             public void onTick(long millisUntilFinished) {
-                currentWorkTime = currentWorkTime * 1000 - millisUntilFinished;
+                currentWorkTime = ((currentWorkTime * 1000) - millisUntilFinished) / 1000;
                 lastTimerValue = millisUntilFinished;
 
                 tvTime.setText(getTimeString(millisUntilFinished));

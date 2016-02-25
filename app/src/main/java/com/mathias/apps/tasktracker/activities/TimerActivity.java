@@ -278,6 +278,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
             @Override
             public void onTick(long baseTime, long difference) {
                 // Update task time
+                //task.setTimeDone(pomodoroTimer.getCurrentWorkTime());
                 task.setTimeDone(task.getTimeDone() + difference);
                 updateTask(task);
             }
