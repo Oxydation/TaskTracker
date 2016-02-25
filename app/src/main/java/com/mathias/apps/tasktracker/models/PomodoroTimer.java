@@ -134,6 +134,13 @@ public class PomodoroTimer {
                 if (workTimerEvents != null) {
                     workTimerEvents.onTick(millisUntilFinished);
                 }
+
+                //LayerDrawable ld = (LayerDrawable) progressBar.getProgressDrawable();
+                // GradientDrawable sd = (GradientDrawable) ld.getDrawable(1);sd.setColor(Color.argb(100, 40, 100, 20));
+                //sd.setColor((int) millisUntilFinished);
+                //sd.getPaint().setColor((int) millisUntilFinished);
+                //  Shader shader = new LinearGradient(0, 0, 0, progressBar.getHeight(), Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP);
+                // sd.getPaint().s
             }
 
             @Override
@@ -154,25 +161,6 @@ public class PomodoroTimer {
 
                 chronometer.setBase(SystemClock.elapsedRealtime());
                 chronometer.start();
-//                workTimer = new java.util.Timer("bla", false);
-//                workTimer.scheduleAtFixedRate(new TimerTask() {
-//                    @Override
-//                    public void run() {
-//                        if (workTimerEvents != null) {
-//                            new AsyncTask<Void, Void, Void>() {
-//                                @Override
-//                                protected Void doInBackground(Void... params) {
-//                                    return null;
-//                                }
-//
-//                                @Override
-//                                protected void onPostExecute(Void aVoid) {
-//                                    workTimerEvents.onTick(0);
-//                                }
-//                            }.execute();
-//                        }
-//                    }
-//                }, 0, TIMER_INTERVAL);
 
                 // currentWorkTime = 0;
             }

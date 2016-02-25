@@ -17,7 +17,11 @@
             android:shape="ring"
             android:thickness="13sp"
             android:useLevel="true">
-            <solid android:color="@color/primary" />
+            <gradient
+                android:centerColor="@color/primary"
+                android:endColor="@color/primary"
+                android:startColor="#f33d21"
+                android:type="sweep" />
         </shape>
     </item>
 </layer-list>
