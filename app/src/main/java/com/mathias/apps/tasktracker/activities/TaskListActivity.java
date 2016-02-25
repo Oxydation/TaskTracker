@@ -3,6 +3,7 @@ package com.mathias.apps.tasktracker.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -67,7 +68,19 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
      * Updates the list view with data from the database.
      */
     private void updateTaskListView() {
-        cursorAdapter.changeCursor(dataSource.getAllTasksCursor());
+        new UpdateTaskListTask().execute();
+    }
+
+    private class UpdateTaskListTask extends AsyncTask<Void, Void, Cursor> {
+        @Override
+        protected Cursor doInBackground(Void... params) {
+            return dataSource.getAllTasksCursor();
+        }
+
+        @Override
+        protected void onPostExecute(Cursor cursor) {
+            cursorAdapter.changeCursor(cursor);
+        }
     }
 
     @Override

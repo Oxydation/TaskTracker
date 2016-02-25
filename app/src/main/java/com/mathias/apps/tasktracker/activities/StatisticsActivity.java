@@ -1,5 +1,7 @@
 package com.mathias.apps.tasktracker.activities;
 
+import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -36,6 +38,25 @@ public class StatisticsActivity extends AppCompatActivity {
         listView.setAdapter(cursorAdapter);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    /**
+     * Updates the list view with data from the database.
+     */
+    private void updateStatistics() {
+        new UpdateStatisticTask().execute();
+    }
+
+    private class UpdateStatisticTask extends AsyncTask<Void, Void, Cursor> {
+        @Override
+        protected Cursor doInBackground(Void... params) {
+            return dataSource.getAllStatisticLogsCursor();
+        }
+
+        @Override
+        protected void onPostExecute(Cursor cursor) {
+            cursorAdapter.changeCursor(cursor);
+        }
     }
 
 }
