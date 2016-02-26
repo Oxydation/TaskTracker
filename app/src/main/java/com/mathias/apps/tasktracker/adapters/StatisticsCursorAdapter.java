@@ -51,14 +51,6 @@ public class StatisticsCursorAdapter extends CursorAdapter implements View.OnCre
         ViewHolder holder;
         final StatisticLog statisticLog = DataSource.cursorToStatisticLog(cursor);
 
-        final long id;
-        if (statisticLog != null) {
-            id = statisticLog.getId();
-        } else {
-            Log.e(LOGTAG, "Not able to show task because log is null.");
-            return;
-        }
-
         if (view.getTag() == null) {
             // Lookup view for data population
             holder = new ViewHolder(view);
@@ -72,9 +64,13 @@ public class StatisticsCursorAdapter extends CursorAdapter implements View.OnCre
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, TimerActivity.class);
-                intent.putExtra("taskId", statisticLog.getTask().getId());
-                context.startActivity(intent);
+                if (statisticLog != null) {
+                    Intent intent = new Intent(context, TimerActivity.class);
+                    intent.putExtra("taskId", statisticLog.getTask().getId());
+                    context.startActivity(intent);
+                } else {
+                    Log.e(LOGTAG, "An error occurred, the statistic log is null for the given view.");
+                }
             }
         });
 
@@ -119,12 +115,12 @@ public class StatisticsCursorAdapter extends CursorAdapter implements View.OnCre
             // Get time done in hours and minutes
             long hours = TimeUnit.SECONDS.toHours(statisticLog.getWorkTime());
             long remainMinute = TimeUnit.SECONDS.toMinutes(statisticLog.getWorkTime()) - TimeUnit.HOURS.toMinutes(hours);
-            String result = "Work: " + String.format("%01d", hours) + "h " + String.format("%01d", remainMinute) + "m";
+            String result = String.format("Work: %sh %sm", String.format("%01d", hours), String.format("%01d", remainMinute));
             workTime.setText(result);
 
             DateFormat dateFormat = new SimpleDateFormat("mm:ss", Locale.GERMANY);
             netDate = (new Date(statisticLog.getBreakTime() * 1000));
-            breakTime.setText("Break: " + dateFormat.format(netDate) + "m");
+            breakTime.setText(String.format("Break: %sm", dateFormat.format(netDate)));
         }
     }
 }

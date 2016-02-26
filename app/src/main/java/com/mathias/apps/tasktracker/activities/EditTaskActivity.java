@@ -74,7 +74,7 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
             @Override
             public void onClick(View v) {
 
-                if (taskName.getText().toString() != null && taskName.getText().toString().trim().isEmpty()) {
+                if (taskName.getText().toString().trim().isEmpty()) {
                     taskName.setError(getString(R.string.error_no_name));
                     return;
                 } else {

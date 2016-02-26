@@ -15,6 +15,8 @@ import com.mathias.apps.tasktracker.R;
 
 import java.util.concurrent.TimeUnit;
 
+import static com.sileria.android.Resource.getString;
+
 /**
  * Created by Mathias Nigsch on 22/02/2016.
  */
@@ -107,7 +109,7 @@ public class PomodoroTimer {
             public void onFinish() {
                 tvTime.setText(R.string.timer_finished_text);
                 if (tvTimeSubtitle != null) {
-                    tvTimeSubtitle.setText("Break is up.");
+                    tvTimeSubtitle.setText(getString(R.string.pomodoro_break_up));
                 }
                 tvTime.setAnimation(getBlinkAnimation());
                 status = TimerStatus.WAIT_FOR_WORK;
@@ -149,7 +151,7 @@ public class PomodoroTimer {
                 tvTime.setText(R.string.timer_finished_text);
 
                 if (tvTimeSubtitle != null) {
-                    tvTimeSubtitle.setText("Worktime is up.");
+                    tvTimeSubtitle.setText(getString(R.string.pomodoro_work_time_up));
                 }
 
                 tvTime.setAnimation(getBlinkAnimation());

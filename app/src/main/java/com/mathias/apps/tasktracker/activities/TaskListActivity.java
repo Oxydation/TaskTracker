@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +28,7 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
     public static final int REQUEST_CODE_SETTINGS = 1002;
     public static final int REQUEST_CODE_NEW_TASK = 100;
     private static final int REQUEST_CODE_UDPATE_TASK = 1003;
+    private static final String LOGTAG = "TASKTRACKER";
 
     private DataSource dataSource;
     private TaskListCursorAdapter cursorAdapter;
@@ -195,9 +197,13 @@ public class TaskListActivity extends AppCompatActivity implements TaskListCurso
                 return true;
             case R.id.context_menu_set_done:
                 Task changedTask = DataSource.cursorToTask((Cursor) cursorAdapter.getItem(itemInfo.position));
-                changedTask.setDone(true);
-                dataSource.updateTask(changedTask);
-                updateTaskListView();
+                if (changedTask != null) {
+                    changedTask.setDone(true);
+                    dataSource.updateTask(changedTask);
+                    updateTaskListView();
+                } else {
+                    Log.e(LOGTAG, "Not able to set task to done, no task found.");
+                }
                 return true;
             case R.id.context_menu_archive:
                 Task changedTask2 = DataSource.cursorToTask((Cursor) cursorAdapter.getItem(itemInfo.position));

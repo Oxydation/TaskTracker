@@ -73,7 +73,7 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
                 // Get data
                 Task task = new Task();
 
-                if (taskName.getText().toString() != null && taskName.getText().toString().trim().isEmpty()) {
+                if (taskName.getText().toString().trim().isEmpty()) {
                     taskName.setError(getString(R.string.error_no_name));
                     return;
                 } else {
