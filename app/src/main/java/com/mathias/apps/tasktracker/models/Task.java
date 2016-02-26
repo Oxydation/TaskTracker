@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 /**
- * Created by Mathias on 06/02/2016.
+ * Created by Mathias Nigsch on 06/02/2016.
  */
 public class Task implements Serializable {
     private long id;

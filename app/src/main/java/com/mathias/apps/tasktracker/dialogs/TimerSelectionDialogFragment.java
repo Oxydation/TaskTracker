@@ -10,7 +10,7 @@ import android.support.v7.app.AlertDialog;
 import com.mathias.apps.tasktracker.R;
 
 /**
- * Created by Mathias on 22/02/2016.
+ * Created by Mathias Nigsch on 22/02/2016.
  */
 public class TimerSelectionDialogFragment extends DialogFragment {
     /* The activity that creates an instance of this dialog fragment must

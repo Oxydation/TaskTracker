@@ -5,7 +5,7 @@ import android.widget.Chronometer;
 
 /**
  * Represents a stopwatch using a chronometer.
- * Created by Mathias on 22/02/2016.
+ * Created by Mathias Nigsch on 22/02/2016.
  */
 public class StopWatch {
     public interface OnBeforeStartListener {

@@ -3,7 +3,7 @@ package com.mathias.apps.tasktracker.database;
 import android.provider.BaseColumns;
 
 /**
- * Created by Mathias on 18/02/2016.
+ * Created by Mathias Nigsch on 18/02/2016.
  */
 public final class TaskTrackerContract {
     // To prevent someone from accidentally instantiating the contract class,

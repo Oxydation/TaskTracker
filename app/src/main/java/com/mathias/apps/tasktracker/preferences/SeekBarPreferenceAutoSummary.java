@@ -12,7 +12,7 @@ import com.sileria.android.view.SeekBarPreference;
 // http://stackoverflow.com/questions/5050272/android-seekbarpreference
 
 /**
- * Created by Mathias on 21/02/2016.
+ * Created by Mathias Nigsch on 21/02/2016.
  */
 public class SeekBarPreferenceAutoSummary extends SeekBarPreference {
     private int max;

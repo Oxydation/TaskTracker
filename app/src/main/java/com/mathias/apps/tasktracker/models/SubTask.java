@@ -3,7 +3,7 @@ package com.mathias.apps.tasktracker.models;
 import java.io.Serializable;
 
 /**
- * Created by Mathias on 11/02/2016.
+ * Created by Mathias Nigsch on 11/02/2016.
  */
 public class SubTask implements Serializable {
     private long id;

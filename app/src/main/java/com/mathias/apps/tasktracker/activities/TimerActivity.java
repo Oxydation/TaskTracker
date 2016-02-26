@@ -35,6 +35,9 @@ import com.mathias.apps.tasktracker.models.TimerStatus;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Created by Mathias Nigsch.
+ */
 // Use following technique to run the timer
 // http://developer.android.com/guide/components/services.html
 public class TimerActivity extends AppCompatActivity implements TimerSelectionDialogFragment.TimerSelectionDialogListener {
@@ -100,7 +103,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
             tvTaskStatus.setText(getStatusText(task));
         }
 
-        if (timerMode != null && timerMode.equals("pomodoro")) {
+        if (timerMode == TimerMode.POMODORO) {
             // Set time remaining
             long millis = TimeUnit.MINUTES.toMillis(workDuration);
             tvTimeChrono.setText(PomodoroTimer.getTimeString(millis));
@@ -430,11 +433,11 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
     /**
      * Creates a status test from a task.
      *
-     * @param task
-     * @return
+     * @param task The task to get the status from.
+     * @return A formated string of the current status.
      */
     public static String getStatusText(Task task) {
-        return String.format("%s spent", getFriendlyTimeString(TimeUnit.SECONDS.toMillis((long) (task.getTimeDone())), false, true));
+        return String.format("%s spent", getFriendlyTimeString(TimeUnit.SECONDS.toMillis(task.getTimeDone()), false, true));
     }
 
     // TODO: Create a better approach to convert from string to enum
@@ -510,7 +513,7 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
     /**
      * Updates the task and sets the status text.
      *
-     * @param task
+     * @param task The task to update.
      */
     private void updateTask(Task task) {
         tvTaskStatus.setText(getStatusText(task));

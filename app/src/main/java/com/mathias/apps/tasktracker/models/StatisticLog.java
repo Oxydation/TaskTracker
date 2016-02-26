@@ -3,7 +3,7 @@ package com.mathias.apps.tasktracker.models;
 import java.sql.Timestamp;
 
 /**
- * Created by Mathias on 24/02/2016.
+ * Created by Mathias Nigsch on 24/02/2016.
  */
 public class StatisticLog {
     private long id;

@@ -16,7 +16,7 @@ import com.mathias.apps.tasktracker.R;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by Mathias on 22/02/2016.
+ * Created by Mathias Nigsch on 22/02/2016.
  */
 public class PomodoroTimer {
     private Chronometer chronometer;

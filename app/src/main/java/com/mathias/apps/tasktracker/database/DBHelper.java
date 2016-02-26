@@ -9,7 +9,7 @@ import com.mathias.apps.tasktracker.database.TaskTrackerContract.StatisticLogEnt
 import com.mathias.apps.tasktracker.database.TaskTrackerContract.TaskEntry;
 
 /**
- * Created by Mathias on 18/02/2016.
+ * Created by Mathias Nigsch on 18/02/2016.
  */
 public class DBHelper extends SQLiteOpenHelper {
 
