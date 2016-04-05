@@ -336,19 +336,18 @@ public class TimerActivity extends AppCompatActivity implements TimerSelectionDi
      * Initalizes the stop watch via the event handler.
      */
     private void initStopWatch() {
+        stopWatch.setOnBeforeStartListener(new StopWatch.OnBeforeStartListener() {
+            @Override
+            public void onBeforeStart() {
+                startTimeValue = task.getTimeDone();
+            }
+        });
         stopWatch.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
             public void onChronometerTick(Chronometer chronometer) {
                 // task.setTimeDone(task.getTimeDone() + 1);
                 task.setTimeDone(startTimeValue + (stopWatch.getCurrentMeasuredTime() / 1000));
                 updateTask(task);
-            }
-        });
-
-        stopWatch.setOnBeforeStartListener(new StopWatch.OnBeforeStartListener() {
-            @Override
-            public void onBeforeStart() {
-                startTimeValue = task.getTimeDone();
             }
         });
     }

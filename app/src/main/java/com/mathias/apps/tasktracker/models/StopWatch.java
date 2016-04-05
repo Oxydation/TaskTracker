@@ -41,6 +41,8 @@ public class StopWatch {
     }
 
     public void start() {
+        onBeforeStartListener.onBeforeStart();
+
         // on first start
         if (lastStopTime == 0) {
             chronometer.setFormat("00:%s");
@@ -50,7 +52,6 @@ public class StopWatch {
             long intervalOnPause = (SystemClock.elapsedRealtime() - lastStopTime);
             chronometer.setBase(chronometer.getBase() + intervalOnPause);
         }
-
         chronometer.start();
     }
 
