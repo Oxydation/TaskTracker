@@ -20,6 +20,7 @@ Task Tracker is an android application which allows managing tasks and running w
   <img src="screenshots/Screenshot_2016-02-24-02-02-58.png" height="350"/>
 </p>
 <b>Future Improvements/Features:</b>
+
 * Archive mode to archiv task which are finished
 * Statistics page with graph
 * Donation feature
